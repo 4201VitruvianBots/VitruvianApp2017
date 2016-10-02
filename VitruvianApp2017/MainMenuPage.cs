@@ -6,14 +6,13 @@ namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage() };
-		String[] mainMenuPageTitles = { "Robot Information" };
-		Button[] btnArray;
-		int index = 0;
+		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PitScoutingIndexPage() };
+		String[] mainMenuPageTitles = { "Robot Information", "Pit Scouting" };
+
 		public MainMenuPage()
 		{
 			Title = "Team 4201 Scouting App";
-			Label title = new Label(){
+			Label titleLbl = new Label(){
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				Text = "Team 4201 Scouting App",
 				TextColor = Color.White,
@@ -26,16 +25,26 @@ namespace VitruvianApp2017
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				Spacing = 20
+				Spacing = 20,
+
+				Children = {
+					titleLbl
+				}
 			};
 
+			Console.WriteLine("Test: " + mainMenuPageTitles.Length);
+
 			foreach (String pageTitle in mainMenuPageTitles){
-				btnArray[index] = new Button();
-				btnArray[index].Clicked	+= (object sender, EventArgs e) => {
+				int index = Array.IndexOf(mainMenuPageTitles, pageTitle);
+				var btn = new Button(){
+					Text = mainMenuPageTitles[index],
+					BackgroundColor = Color.Green,
+					TextColor = Color.White
+				};
+				btn.Clicked	+= (object sender, EventArgs e) => {
 					Navigation.PushModalAsync(mainMenuLinks[index]);
 				};
-				pageStack.Children.Add(btnArray[index]);
-				index++;
+				pageStack.Children.Add(btn);
 			}
 
 			this.Content = new ScrollView(){

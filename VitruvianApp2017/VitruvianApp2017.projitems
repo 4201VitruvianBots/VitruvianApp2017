@@ -13,10 +13,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainMenuPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GlobalVariables.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\RobotInfoIndexPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PitScouting\PitScoutingIndexPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\Buttons\" />
+    <Folder Include="$(MSBuildThisFileDirectory)PitScouting\" />
   </ItemGroup>
 </Project>

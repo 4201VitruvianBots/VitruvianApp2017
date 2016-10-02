@@ -7,6 +7,7 @@ namespace VitruvianApp2017
 	{
 		public RobotInfoIndexPage()
 		{
+			BackgroundColor = Color.Black;
 		}
 	}
 }
