@@ -14,11 +14,20 @@
     <Compile Include="$(MSBuildThisFileDirectory)GlobalVariables.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\RobotInfoIndexPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PitScouting\PitScoutingIndexPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Functions\CheckInternetConnectivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\BackButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Cells\TeamListCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\DoubleCounter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\SingleCounter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\Buttons\" />
     <Folder Include="$(MSBuildThisFileDirectory)PitScouting\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Depreciated\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
   </ItemGroup>
 </Project>
