@@ -52,6 +52,7 @@ namespace VitruvianApp2017
 			};
 
 			BackgroundColor = Color.White;
+
 		}
 	}
 }
