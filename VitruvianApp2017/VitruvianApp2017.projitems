@@ -19,6 +19,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Cells\TeamListCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\DoubleCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\SingleCounter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Objects\TeamData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\NavigationButtons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\AddTeamPopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\LineEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />
@@ -26,6 +31,8 @@
     <Folder Include="$(MSBuildThisFileDirectory)Models\Buttons\" />
     <Folder Include="$(MSBuildThisFileDirectory)PitScouting\" />
     <Folder Include="$(MSBuildThisFileDirectory)Depreciated\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Objects\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Models\Entries\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />

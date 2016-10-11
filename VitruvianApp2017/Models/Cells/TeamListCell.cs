@@ -14,6 +14,9 @@ namespace VitruvianApp2017
 			HeightRequest = 50;
 			teamName.FontSize = Device.GetNamedSize (NamedSize.Medium, typeof(Label));
 			teamName.TextColor = Color.Black;
+			teamName.VerticalOptions = LayoutOptions.CenterAndExpand;
+			BackgroundColor = Color.White;
+
 
 			Content = teamName;
 		}

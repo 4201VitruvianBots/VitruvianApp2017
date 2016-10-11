@@ -1,27 +1,119 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Rg.Plugins.Popup.Pages;
+using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
+using Firebase.Xamarin;
+using Firebase.Xamarin.Database;
+using Firebase.Xamarin.Database.Query;
 
 namespace VitruvianApp2017
 {
-	public class RobotInfoIndexPage:ContentPage
+	public class RobotInfoIndexPage : ContentPage
 	{
+		ScrollView teamIndex;
+		StackLayout teamStack = new StackLayout()
+		{
+			Padding = new Thickness(0, 0, 0, 1),
+			BackgroundColor = Color.Silver
+		};
+
+		ActivityIndicator busyIcon = new ActivityIndicator();
+
 		public RobotInfoIndexPage()
 		{
-			int i = 0, j = 0, k = 0, l = 0;
-			String test = "Title", test2 = "Title2";
+			Title = "Team 4201 Scouting App";
+			Label titleLbl = new Label()
+			{
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Text = "Team 4201 Scouting App",
+				TextColor = Color.White,
+				BackgroundColor = Color.Black,
+				FontSize = GlobalVariables.sizeTitle,
+				FontAttributes = FontAttributes.Bold
+			};
 
-			var singleCounterTest = new SingleCounter(test, i);
-			var singleCounterTest2 = new SingleCounter(test2, j);
-			var doubleCounterTest = new DoubleCounter("Main Title", test, test2, k, l);
 
-			var testGrid = new Grid();
-			testGrid.Children.Add(singleCounterTest, 0, 0);
-			testGrid.Children.Add(singleCounterTest2, 1, 0);
-			testGrid.Children.Add(doubleCounterTest, 0, 2, 1, 2);
+			teamIndex = new ScrollView()
+			{
+				Content = teamStack
+			};
 
-			this.Content = testGrid;
+			var navigationBtns = new NavigationButtons(true);
+			navigationBtns.refreshBtn.Clicked += (object sender, EventArgs e) =>
+			{
+				if (new CheckInternetConnectivity().InternetStatus())
+					UpdateTeamList();
+			};
 
-			BackgroundColor = Color.Lime;
+			Button addTeamBtn = new Button()
+			{
+				Text = "Add Team"
+			};
+			addTeamBtn.Clicked += (object sender, EventArgs e) =>
+			{
+				popUpPage();
+			};
+
+			this.Appearing += (object sender, EventArgs e) =>
+			{
+				if (new CheckInternetConnectivity().InternetStatus())
+					UpdateTeamList();
+			};
+
+			this.Content = new StackLayout()
+			{
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.FillAndExpand,
+
+				Children = {
+					titleLbl,
+					busyIcon,
+					teamIndex,
+					navigationBtns,
+					addTeamBtn
+				}
+			};
+
+			BackgroundColor = Color.White;
+		}
+
+		async void UpdateTeamList()
+		{
+			busyIcon.IsVisible = true;
+			busyIcon.IsRunning = true;
+			var db = new FirebaseClient("https://vitruvianapptest.firebaseio.com/");
+			var teams = await db
+				.Child("teamData")
+				.OrderByKey()
+				.OnceAsync<TeamData>();
+			
+			teamStack.Children.Clear();
+
+			foreach (var team in teams)
+			{
+				TeamListCell cell = new TeamListCell();
+				cell.teamName.Text = "Team " + team.Object.teamNumber.ToString();
+				teamStack.Children.Add(cell);
+				TapGestureRecognizer tap = new TapGestureRecognizer();
+				tap.Tapped += (object sender, EventArgs e) =>
+				{
+					//Navigation.PushModalAsync(new RobotInfoViewPage(obj));
+				};
+				cell.GestureRecognizers.Add(tap);
+			}
+
+			busyIcon.IsVisible = false;
+			busyIcon.IsRunning = false;
+
+		}
+
+		async void popUpPage()
+		{
+			await Task.Yield();
+			await PopupNavigation.PushAsync(new AddTeamPopupPage(), false);
 		}
 	}
 }

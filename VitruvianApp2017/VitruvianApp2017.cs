@@ -1,7 +1,5 @@
 ﻿using System;
 using Xamarin.Forms;
-using Firebase;
-using Firebase.Database;
 
 namespace VitruvianApp2017
 {
@@ -10,6 +8,7 @@ namespace VitruvianApp2017
 		public App()
 		{
 			//ParseClient.Initialize("efyheG3BwD7TagqRBxCvq377InnwhThDxrzo5iNS","znyJSWdN3xaV3ifTZLjSrNCy10vkJzkm3sv0v25Q");
+			/*
 			//Firebase Initialization
 			var options = new FirebaseOptions.Builder()
 											 .SetApplicationId("1:222280551868:android:051a820459657e45\n")
@@ -20,6 +19,7 @@ namespace VitruvianApp2017
 			var firebaseApp = FirebaseApp.InitializeApp(Forms.Context, options);
 			var database = FirebaseDatabase.GetInstance(firebaseApp);
 			database.GetReference("test3").SetValue("Hello world!");
+			*/
 
 			MainPage = new MainMenuPage();
 		}
