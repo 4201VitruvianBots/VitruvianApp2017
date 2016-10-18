@@ -8,10 +8,11 @@ using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
+using Newtonsoft.Json;
 
 namespace VitruvianApp2017
 {
-	public class TestPage:ContentPage
+	public class TestPage2:ContentPage
 	{
 		ScrollView teamIndex;
 		StackLayout teamStack = new StackLayout()
@@ -22,7 +23,7 @@ namespace VitruvianApp2017
 
 		ActivityIndicator busyIcon = new ActivityIndicator();
 
-		public TestPage()
+		public TestPage2()
 		{
 		}
 	}

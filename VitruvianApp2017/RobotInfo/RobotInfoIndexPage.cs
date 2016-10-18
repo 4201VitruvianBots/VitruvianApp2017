@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Rg.Plugins.Popup.Pages;
-using Rg.Plugins.Popup.Services;
+using System.Linq;
+using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
-using Firebase.Xamarin;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
 
@@ -16,7 +13,7 @@ namespace VitruvianApp2017
 		ScrollView teamIndex;
 		StackLayout teamStack = new StackLayout()
 		{
-			Padding = new Thickness(0, 0, 0, 1),
+			Spacing = 1,
 			BackgroundColor = Color.Silver
 		};
 
@@ -24,13 +21,13 @@ namespace VitruvianApp2017
 
 		public RobotInfoIndexPage()
 		{
-			Title = "Team 4201 Scouting App";
+			Title = "Robot Info";
 			Label titleLbl = new Label()
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Text = "Team 4201 Scouting App",
+				Text = "Robot Info",
 				TextColor = Color.White,
-				BackgroundColor = Color.Black,
+				BackgroundColor = Color.FromHex("1B5E20"),
 				FontSize = GlobalVariables.sizeTitle,
 				FontAttributes = FontAttributes.Bold
 			};
@@ -44,22 +41,13 @@ namespace VitruvianApp2017
 			var navigationBtns = new NavigationButtons(true);
 			navigationBtns.refreshBtn.Clicked += (object sender, EventArgs e) =>
 			{
-				if (new CheckInternetConnectivity().InternetStatus())
+				if (CheckInternetConnectivity.InternetStatus())
 					UpdateTeamList();
-			};
-
-			Button addTeamBtn = new Button()
-			{
-				Text = "Add Team"
-			};
-			addTeamBtn.Clicked += (object sender, EventArgs e) =>
-			{
-				popUpPage();
 			};
 
 			this.Appearing += (object sender, EventArgs e) =>
 			{
-				if (new CheckInternetConnectivity().InternetStatus())
+				if (CheckInternetConnectivity.InternetStatus())
 					UpdateTeamList();
 			};
 
@@ -72,48 +60,75 @@ namespace VitruvianApp2017
 					titleLbl,
 					busyIcon,
 					teamIndex,
-					navigationBtns,
-					addTeamBtn
+					navigationBtns
 				}
 			};
 
 			BackgroundColor = Color.White;
 		}
 
-		async void UpdateTeamList()
+		public async Task UpdateTeamList()
 		{
 			busyIcon.IsVisible = true;
 			busyIcon.IsRunning = true;
-			var db = new FirebaseClient("https://vitruvianapptest.firebaseio.com/");
-			var teams = await db
-				.Child("teamData")
-				.OrderByKey()
-				.OnceAsync<TeamData>();
-			
+
+			var db = new FirebaseClient(GlobalVariables.firebaseURL);
+			var teamList = TheBlueAlliance.Events.GetEventTeamsList("2017calb");
+			var sorted = from Teams in teamList orderby Teams.team_number select Teams;
+
 			teamStack.Children.Clear();
 
-			foreach (var team in teams)
+			foreach (var team in sorted)
 			{
 				TeamListCell cell = new TeamListCell();
-				cell.teamName.Text = "Team " + team.Object.teamNumber.ToString();
+				cell.teamName.Text = "Team " + team.team_number.ToString();
 				teamStack.Children.Add(cell);
 				TapGestureRecognizer tap = new TapGestureRecognizer();
-				tap.Tapped += (object sender, EventArgs e) =>
+
+				var data = await db
+					.Child(GlobalVariables.regionalPointer)
+					.Child("teamData")
+					.Child(team.team_number.ToString())
+					.OnceSingleAsync<TeamData>();
+				
+				if (data == null)
 				{
-					//Navigation.PushModalAsync(new RobotInfoViewPage(obj));
-				};
+					var send = db
+						.Child(GlobalVariables.regionalPointer)
+						.Child("teamData")
+						.Child(team.team_number.ToString())
+						.PutAsync(new TeamData()
+						{
+							teamName = team.nickname,
+							teamNumber = Convert.ToDouble(team.team_number)
+						});
+
+					data = await db
+						.Child(GlobalVariables.regionalPointer)
+						.Child("teamData")
+						.Child(team.team_number.ToString())
+						.OnceSingleAsync<TeamData>();
+				}
+
+				if (data != null)
+				{
+					tap.Tapped += (object sender, EventArgs e) =>
+					{
+						Navigation.PushPopupAsync(new TeamCardPopupPage(data));
+					};
+				}
+				else {
+					tap.Tapped += (object sender, EventArgs e) =>
+					{
+						DisplayAlert("Error:", "No Team Data found!", "OK");
+					};
+				}
 				cell.GestureRecognizers.Add(tap);
 			}
 
 			busyIcon.IsVisible = false;
 			busyIcon.IsRunning = false;
 
-		}
-
-		async void popUpPage()
-		{
-			await Task.Yield();
-			await PopupNavigation.PushAsync(new AddTeamPopupPage(), false);
 		}
 	}
 }

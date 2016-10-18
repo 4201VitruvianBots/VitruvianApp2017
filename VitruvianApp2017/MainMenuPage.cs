@@ -6,8 +6,8 @@ namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PitScoutingIndexPage(), new TestPage() };
-		String[] mainMenuPageTitles = { "Robot Information", "Pit Scouting", "Test Page" };
+		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new TestPage(), new TestPage2()  };
+		String[] mainMenuPageTitles = { "Robot Information", "Test Page", "Test Page 2" };
 
 		public MainMenuPage()
 		{
@@ -16,7 +16,17 @@ namespace VitruvianApp2017
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				Text = "Team 4201 Scouting App",
 				TextColor = Color.White,
-				BackgroundColor = Color.Black,
+				BackgroundColor = Color.FromHex("1B5E20"),
+				FontSize = GlobalVariables.sizeTitle,
+				FontAttributes = FontAttributes.Bold
+			};
+
+			Label regionalLbl = new Label()
+			{
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Text = "Current Regional: " + GlobalVariables.regionalPointer,
+				TextColor = Color.White,
+				BackgroundColor = Color.Green,
 				FontSize = GlobalVariables.sizeTitle,
 				FontAttributes = FontAttributes.Bold
 			};
@@ -28,7 +38,16 @@ namespace VitruvianApp2017
 				Spacing = 20,
 
 				Children = {
-					titleLbl
+					new StackLayout(){
+						//HorizontalOptions = LayoutOptions.FillAndExpand,
+						//VerticalOptions = LayoutOptions.FillAndExpand,
+						Spacing = 0,
+
+						Children = {
+							titleLbl,
+							regionalLbl
+						}
+					}
 				}
 			};
 

@@ -17,7 +17,6 @@ namespace VitruvianApp2017
 			teamName.VerticalOptions = LayoutOptions.CenterAndExpand;
 			BackgroundColor = Color.White;
 
-
 			Content = teamName;
 		}
 	}

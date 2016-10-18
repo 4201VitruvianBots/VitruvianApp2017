@@ -4,13 +4,10 @@ using Xamarin.Forms;
              
 namespace VitruvianApp2017
 {
-	public class CheckInternetConnectivity:ContentPage
+	public class CheckInternetConnectivity
 	{
-		public CheckInternetConnectivity()
-		{
-		}
 
-		public bool InternetStatus()
+		public static bool InternetStatus()
 		{
 			ConnectivityManager test = (ConnectivityManager)Android.App.Application.Context.GetSystemService(
 										   Android.App.Activity.ConnectivityService);
@@ -18,7 +15,8 @@ namespace VitruvianApp2017
 			if (test2 != null && test2.IsConnected)
 				return true;
 			else {
-				DisplayAlert("Error:", "No Internet Connection", "OK");
+				Page display = new Page();
+				display.DisplayAlert("Error:", "No Internet Connection", "OK");
 				return false;
 			}
 		}

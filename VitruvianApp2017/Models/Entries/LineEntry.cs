@@ -6,7 +6,7 @@ namespace VitruvianApp2017
 	public class LineEntry:StackLayout
 	{
 		Label entryLbl = new Label();
-		Entry inputEntry = new Entry();
+		public Entry inputEntry = new Entry();
 		public string data;
 
 		public LineEntry(String entryTitle) : this(entryTitle, null)
@@ -16,9 +16,11 @@ namespace VitruvianApp2017
 		public LineEntry(String entryTitle, String entryPlaceholder)
 		{
 			entryLbl.Text = entryTitle;
+			entryLbl.FontAttributes = FontAttributes.Bold;
+
 			inputEntry.Placeholder = entryPlaceholder;
 			inputEntry.TextChanged += (object sender, TextChangedEventArgs e) => {
-				data = entryLbl.Text;
+				data = inputEntry.Text;
 			};
 			Children.Add(entryLbl);
 			Children.Add(inputEntry);

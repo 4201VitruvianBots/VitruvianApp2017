@@ -17,7 +17,7 @@ namespace VitruvianApp2017
 
 		}
 
-		public NavigationButtons(bool toogleRefreshBtn) : this(toogleRefreshBtn, null)
+		public NavigationButtons(bool toggleRefreshBtn) : this(toggleRefreshBtn, null)
 		{
 
 		}
@@ -27,7 +27,7 @@ namespace VitruvianApp2017
 
 		}
 
-		public NavigationButtons(bool toogleRefreshBtn, Button[] array)
+		public NavigationButtons(bool toggleRefreshBtn, Button[] array)
 		{
 			arrayOfBtn = array;
 
@@ -43,21 +43,7 @@ namespace VitruvianApp2017
 			};
 			backBtn.Clicked += (object sender, EventArgs e) =>
 			{
-				try
-				{
-					try
-					{
-						Navigation.PopModalAsync();
-					}
-					catch
-					{
-						popUpReturn();
-					}
-				}
-				catch
-				{
-
-				}
+				returnPage();
 			};
 
 			//Refresh Button
@@ -79,14 +65,14 @@ namespace VitruvianApp2017
 			if(arrayOfBtn != null)
 				foreach (Button btn in arrayOfBtn)
 					Children.Add(btn);
-			if (toogleRefreshBtn)
+			if (toggleRefreshBtn)
 				Children.Add(refreshBtn);
 		}
 
-		async void popUpReturn()
+		public virtual async void returnPage()
 		{
-			await Task.Yield();
-			await PopupNavigation.PopAsync();
+			await Navigation.PopModalAsync();
 		}
 	}
+
 }

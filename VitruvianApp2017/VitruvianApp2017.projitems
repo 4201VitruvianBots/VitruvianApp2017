@@ -13,28 +13,41 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainMenuPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GlobalVariables.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\RobotInfoIndexPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PitScouting\PitScoutingIndexPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Functions\CheckInternetConnectivity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\BackButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Cells\TeamListCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\DoubleCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\SingleCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Objects\TeamData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\NavigationButtons.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\AddTeamPopupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\LineEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\PopupNavigationButtons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Functions\AppSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestPage2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\TeamData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Events.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\EventTeams.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\ImagePopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Functions\ImageCapture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\Buttons\" />
-    <Folder Include="$(MSBuildThisFileDirectory)PitScouting\" />
     <Folder Include="$(MSBuildThisFileDirectory)Depreciated\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Objects\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\Entries\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Images\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Examples\" />
+    <Folder Include="$(MSBuildThisFileDirectory)External APIs\" />
+    <Folder Include="$(MSBuildThisFileDirectory)External APIs\Firebase\" />
+    <Folder Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Examples\AppSettingsTest.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Depreciated\AddTeamPopupPage.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Images\AppIcon.png" />
+    <None Include="$(MSBuildThisFileDirectory)Images\Placeholder_image_placeholder.png" />
   </ItemGroup>
 </Project>
