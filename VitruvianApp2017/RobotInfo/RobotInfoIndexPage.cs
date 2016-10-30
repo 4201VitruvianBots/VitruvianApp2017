@@ -5,6 +5,7 @@ using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
+using TheBlueAlliance;
 
 namespace VitruvianApp2017
 {
@@ -41,14 +42,12 @@ namespace VitruvianApp2017
 			var navigationBtns = new NavigationButtons(true);
 			navigationBtns.refreshBtn.Clicked += (object sender, EventArgs e) =>
 			{
-				if (CheckInternetConnectivity.InternetStatus())
-					UpdateTeamList();
+				UpdateTeamList();
 			};
 
 			this.Appearing += (object sender, EventArgs e) =>
 			{
-				if (CheckInternetConnectivity.InternetStatus())
-					UpdateTeamList();
+				UpdateTeamList();
 			};
 
 			this.Content = new StackLayout()
@@ -69,66 +68,68 @@ namespace VitruvianApp2017
 
 		public async Task UpdateTeamList()
 		{
-			busyIcon.IsVisible = true;
-			busyIcon.IsRunning = true;
+			if (CheckInternetConnectivity.InternetStatus()) {
+				busyIcon.IsVisible = true;
+				busyIcon.IsRunning = true;
 
-			var db = new FirebaseClient(GlobalVariables.firebaseURL);
-			var teamList = TheBlueAlliance.Events.GetEventTeamsList("2017calb");
-			var sorted = from Teams in teamList orderby Teams.team_number select Teams;
-
-			teamStack.Children.Clear();
-
-			foreach (var team in sorted)
-			{
-				TeamListCell cell = new TeamListCell();
-				cell.teamName.Text = "Team " + team.team_number.ToString();
-				teamStack.Children.Add(cell);
-				TapGestureRecognizer tap = new TapGestureRecognizer();
-
-				var data = await db
-					.Child(GlobalVariables.regionalPointer)
-					.Child("teamData")
-					.Child(team.team_number.ToString())
-					.OnceSingleAsync<TeamData>();
-				
-				if (data == null)
-				{
-					var send = db
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
+				var fbTeams = await db
 						.Child(GlobalVariables.regionalPointer)
 						.Child("teamData")
-						.Child(team.team_number.ToString())
-						.PutAsync(new TeamData()
-						{
-							teamName = team.nickname,
-							teamNumber = Convert.ToDouble(team.team_number)
-						});
+						.OnceAsync<TeamData>();
+				//var sorted = fbTeams.OrderByDescending((arg) => arg.Key("team_number"));
 
-					data = await db
+				teamStack.Children.Clear();
+
+				foreach (var team in fbTeams) {
+					TeamListCell cell = new TeamListCell();
+					cell.teamName.Text = "Team " + team.Object.teamNumber.ToString();
+					teamStack.Children.Add(cell);
+					TapGestureRecognizer tap = new TapGestureRecognizer();
+
+					/*
+					var data = await db
 						.Child(GlobalVariables.regionalPointer)
 						.Child("teamData")
 						.Child(team.team_number.ToString())
 						.OnceSingleAsync<TeamData>();
+
+					if (data == null)
+					{
+						var send = db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamData")
+							.Child(team.team_number.ToString())
+							.PutAsync(new TeamData()
+							{
+								teamName = team.nickname,
+								teamNumber = Convert.ToDouble(team.team_number)
+							});
+
+						data = await db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamData")
+							.Child(team.team_number.ToString())
+							.OnceSingleAsync<TeamData>();
+					}
+					*/
+
+					if (team != null) {
+						tap.Tapped += (object sender, EventArgs e) => {
+							Navigation.PushPopupAsync(new TeamCardPopupPage(team.Object));
+						};
+					} else {
+						tap.Tapped += (object sender, EventArgs e) => {
+							DisplayAlert("Error:", "No Team Data found!", "OK");
+						};
+					}
+					cell.GestureRecognizers.Add(tap);
 				}
 
-				if (data != null)
-				{
-					tap.Tapped += (object sender, EventArgs e) =>
-					{
-						Navigation.PushPopupAsync(new TeamCardPopupPage(data));
-					};
-				}
-				else {
-					tap.Tapped += (object sender, EventArgs e) =>
-					{
-						DisplayAlert("Error:", "No Team Data found!", "OK");
-					};
-				}
-				cell.GestureRecognizers.Add(tap);
+				busyIcon.IsVisible = false;
+				busyIcon.IsRunning = false;
 			}
-
-			busyIcon.IsVisible = false;
-			busyIcon.IsRunning = false;
-
 		}
 	}
 }

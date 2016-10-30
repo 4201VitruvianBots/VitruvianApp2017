@@ -16,6 +16,7 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+    <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,6 +27,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
+    <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
+    <AotAssemblies>true</AotAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,15 +108,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Rg.Plugins.Popup">
-      <HintPath>..\packages\Rg.Plugins.Popup.1.0.2\lib\MonoAndroid\Rg.Plugins.Popup.dll</HintPath>
-    </Reference>
-    <Reference Include="Rg.Plugins.Popup.Droid">
-      <HintPath>..\packages\Rg.Plugins.Popup.1.0.2\lib\MonoAndroid\Rg.Plugins.Popup.Droid.dll</HintPath>
-    </Reference>
-    <Reference Include="Rg.Plugins.Popup.Platform">
-      <HintPath>..\packages\Rg.Plugins.Popup.1.0.2\lib\MonoAndroid\Rg.Plugins.Popup.Platform.dll</HintPath>
-    </Reference>
     <Reference Include="FFImageLoading">
       <HintPath>..\packages\Xamarin.FFImageLoading.2.1.8\lib\MonoAndroid10\FFImageLoading.dll</HintPath>
     </Reference>
@@ -128,6 +122,58 @@
     </Reference>
     <Reference Include="Xamarin.Mobile">
       <HintPath>..\Components\xamarin.mobile-0.7.7\lib\android\Xamarin.Mobile.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Basement">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.32.940.0-beta3\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Tasks">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Tasks.32.940.0-beta3\lib\MonoAndroid41\Xamarin.GooglePlayServices.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Firebase.Common">
+      <HintPath>..\packages\Xamarin.Firebase.Common.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Base">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.32.940.0-beta3\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Firebase.Storage.Common">
+      <HintPath>..\packages\Xamarin.Firebase.Storage.Common.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Storage.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Firebase.Storage">
+      <HintPath>..\packages\Xamarin.Firebase.Storage.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.0.3\lib\MonoAndroid\Rg.Plugins.Popup.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup.Droid">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.0.3\lib\MonoAndroid\Rg.Plugins.Popup.Droid.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup.Platform">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.0.3\lib\MonoAndroid\Rg.Plugins.Popup.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Firebase.Auth.Module">
+      <HintPath>..\packages\Xamarin.Firebase.Auth.Module.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Auth.Module.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Firebase.Auth.Common">
+      <HintPath>..\packages\Xamarin.Firebase.Auth.Common.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Auth.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Firebase.Auth">
+      <HintPath>..\packages\Xamarin.Firebase.Auth.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Firebase.Database.Connection">
+      <HintPath>..\packages\Xamarin.Firebase.Database.Connection.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Database.Connection.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Firebase.Database">
+      <HintPath>..\packages\Xamarin.Firebase.Database.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Database.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="ModernHttpClient">
+      <HintPath>..\packages\modernhttpclient.2.4.2\lib\MonoAndroid\ModernHttpClient.dll</HintPath>
+    </Reference>
+    <Reference Include="OkHttp">
+      <HintPath>..\packages\modernhttpclient.2.4.2\lib\MonoAndroid\OkHttp.dll</HintPath>
+    </Reference>
+    <Reference Include="TheBlueAlliance">
+      <HintPath>..\packages\TheBlueAlliance_API.1.0.1\lib\TheBlueAlliance.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +195,12 @@
     <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
+    <AndroidResource Include="..\VitruvianApp2017\Images\Images\AppIcon.png">
+      <Link>Resources\drawable\AppIcon.png</Link>
+    </AndroidResource>
+    <AndroidResource Include="..\VitruvianApp2017\Images\Images\Placeholder_image_placeholder.png">
+      <Link>Resources\drawable\Placeholder_image_placeholder.png</Link>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamarin.mobile">
@@ -160,4 +212,5 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets')" />
   <Import Project="..\packages\Xamarin.Forms.2.3.2.127\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.2.127\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
+  <Import Project="..\packages\Xamarin.GooglePlayServices.Basement.32.940.0-beta3\build\Xamarin.GooglePlayServices.Basement.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Basement.32.940.0-beta3\build\Xamarin.GooglePlayServices.Basement.targets')" />
 </Project>

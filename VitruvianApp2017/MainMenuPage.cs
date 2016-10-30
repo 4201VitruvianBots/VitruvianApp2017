@@ -1,13 +1,15 @@
 ﻿using System;
 using Xamarin.Forms;
 using System.Threading.Tasks;
+using Firebase.Xamarin.Database;
+using Firebase.Xamarin.Database.Query;
 
 namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
 		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new TestPage(), new TestPage2()  };
-		String[] mainMenuPageTitles = { "Robot Information", "Test Page", "Test Page 2" };
+		String[] mainMenuPageTitles = { "Robot Information" , "Test Page", "Test Page 2" };
 
 		public MainMenuPage()
 		{

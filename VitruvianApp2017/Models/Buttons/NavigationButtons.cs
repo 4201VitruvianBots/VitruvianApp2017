@@ -27,39 +27,35 @@ namespace VitruvianApp2017
 
 		}
 
-		public NavigationButtons(bool toggleRefreshBtn, Button[] array)
-		{
+		public NavigationButtons(bool toggleRefreshBtn, Button[] array){
+			HorizontalOptions = LayoutOptions.FillAndExpand;
+			Orientation = StackOrientation.Horizontal;
+			BackgroundColor = Color.Green;
+			Padding = 5;
+
 			arrayOfBtn = array;
-
-
 			//Back Button
-			backBtn = new Button()
-			{
+			backBtn = new Button(){
+				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				Text = "Back",
 				TextColor = Color.Green,
 				BackgroundColor = Color.Black,
 				FontSize = GlobalVariables.sizeMedium
 			};
-			backBtn.Clicked += (object sender, EventArgs e) =>
-			{
+			backBtn.Clicked += (object sender, EventArgs e) =>{
 				returnPage();
 			};
 
 			//Refresh Button
-			refreshBtn = new Button()
-			{
+			refreshBtn = new Button(){
+				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				Text = "Refresh",
 				TextColor = Color.Green,
 				BackgroundColor = Color.Black,
 				FontSize = GlobalVariables.sizeMedium
 			};
-
-			HorizontalOptions = LayoutOptions.FillAndExpand;
-			Orientation = StackOrientation.Horizontal;
-			BackgroundColor = Color.Green;
-			Padding = 5;
 
 			Children.Add(backBtn);
 			if(arrayOfBtn != null)
@@ -69,8 +65,7 @@ namespace VitruvianApp2017
 				Children.Add(refreshBtn);
 		}
 
-		public virtual async void returnPage()
-		{
+		public virtual async void returnPage(){
 			await Navigation.PopModalAsync();
 		}
 	}

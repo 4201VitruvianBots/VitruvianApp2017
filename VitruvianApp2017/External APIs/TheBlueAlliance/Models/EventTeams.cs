@@ -2,7 +2,7 @@
 
 namespace TheBlueAlliance.Models
 {
-	public class EventTeams
+	public class EventTeamsHttp
 	{
 		public class Team
 		{

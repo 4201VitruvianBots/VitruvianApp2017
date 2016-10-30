@@ -26,10 +26,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Functions\AppSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestPage2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\TeamData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Functions\Listeners\Listeners.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\RobotImageLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FBApp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Events.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\EventTeams.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\ImagePopupPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Functions\ImageCapture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Teams.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />
@@ -42,12 +45,15 @@
     <Folder Include="$(MSBuildThisFileDirectory)External APIs\" />
     <Folder Include="$(MSBuildThisFileDirectory)External APIs\Firebase\" />
     <Folder Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Functions\Listeners\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Admin\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Images\Images\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AppSettingsTest.cs" />
     <None Include="$(MSBuildThisFileDirectory)Depreciated\AddTeamPopupPage.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Images\AppIcon.png" />
-    <None Include="$(MSBuildThisFileDirectory)Images\Placeholder_image_placeholder.png" />
+    <None Include="$(MSBuildThisFileDirectory)Images\Images\AppIcon.png" />
+    <None Include="$(MSBuildThisFileDirectory)Images\Images\Placeholder_image_placeholder.png" />
   </ItemGroup>
 </Project>
