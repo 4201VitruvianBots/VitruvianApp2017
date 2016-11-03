@@ -8,6 +8,8 @@ namespace VitruvianApp2017
 		public double avgScore { get; set; }
 		public bool imageWrite { get; set; }
 
-		// 
+		// Pit Data
+
+		// Match Data
 	}
 }

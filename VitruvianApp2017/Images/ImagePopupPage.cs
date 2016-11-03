@@ -11,7 +11,6 @@ namespace VitruvianApp2017
 {
 	public class ImagePopupPage:PopupPage
 	{
-		MediaFile robotImageFile;
 		CachedImage robotImage = new CachedImage ();
 		Button[] btnArray;
 		TeamData team;

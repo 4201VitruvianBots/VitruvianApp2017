@@ -69,7 +69,6 @@ namespace VitruvianApp2017
 			teamGrid.Children.Add(teamNo, 1, 0);
 			teamGrid.Children.Add(teamNa, 1, 1);
 			teamGrid.Children.Add(new Label() { Text = "test" }, 0, 2, 2, 3);
-			teamGrid.Children.Add(new Label() { Text = "test" }, 0, 2, 3, 4);
 			teamGrid.Children.Add(navigationBtns, 0, 2, 4, 5);
 
 			Content = new Frame()

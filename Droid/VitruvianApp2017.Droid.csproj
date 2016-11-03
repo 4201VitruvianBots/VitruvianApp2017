@@ -28,7 +28,6 @@
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
-    <AotAssemblies>true</AotAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -108,18 +107,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="FFImageLoading">
-      <HintPath>..\packages\Xamarin.FFImageLoading.2.1.8\lib\MonoAndroid10\FFImageLoading.dll</HintPath>
-    </Reference>
-    <Reference Include="FFImageLoading.Platform">
-      <HintPath>..\packages\Xamarin.FFImageLoading.2.1.8\lib\MonoAndroid10\FFImageLoading.Platform.dll</HintPath>
-    </Reference>
-    <Reference Include="FFImageLoading.Forms">
-      <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.1.8\lib\MonoAndroid10\FFImageLoading.Forms.dll</HintPath>
-    </Reference>
-    <Reference Include="FFImageLoading.Forms.Droid">
-      <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.1.8\lib\MonoAndroid10\FFImageLoading.Forms.Droid.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Mobile">
       <HintPath>..\Components\xamarin.mobile-0.7.7\lib\android\Xamarin.Mobile.dll</HintPath>
     </Reference>
@@ -159,12 +146,6 @@
     <Reference Include="Xamarin.Firebase.Auth">
       <HintPath>..\packages\Xamarin.Firebase.Auth.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Auth.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Firebase.Database.Connection">
-      <HintPath>..\packages\Xamarin.Firebase.Database.Connection.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Database.Connection.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Firebase.Database">
-      <HintPath>..\packages\Xamarin.Firebase.Database.32.940.0-beta3\lib\MonoAndroid41\Xamarin.Firebase.Database.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="ModernHttpClient">
       <HintPath>..\packages\modernhttpclient.2.4.2\lib\MonoAndroid\ModernHttpClient.dll</HintPath>
@@ -174,6 +155,18 @@
     </Reference>
     <Reference Include="TheBlueAlliance">
       <HintPath>..\packages\TheBlueAlliance_API.1.0.1\lib\TheBlueAlliance.dll</HintPath>
+    </Reference>
+    <Reference Include="FFImageLoading">
+      <HintPath>..\packages\Xamarin.FFImageLoading.2.2.2\lib\MonoAndroid10\FFImageLoading.dll</HintPath>
+    </Reference>
+    <Reference Include="FFImageLoading.Platform">
+      <HintPath>..\packages\Xamarin.FFImageLoading.2.2.2\lib\MonoAndroid10\FFImageLoading.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="FFImageLoading.Forms">
+      <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.2.2\lib\MonoAndroid10\FFImageLoading.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="FFImageLoading.Forms.Droid">
+      <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.2.2\lib\MonoAndroid10\FFImageLoading.Forms.Droid.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +193,9 @@
     </AndroidResource>
     <AndroidResource Include="..\VitruvianApp2017\Images\Images\Placeholder_image_placeholder.png">
       <Link>Resources\drawable\Placeholder_image_placeholder.png</Link>
+    </AndroidResource>
+    <AndroidResource Include="..\VitruvianApp2017\Images\Images\Menu_Icon.png">
+      <Link>Resources\drawable\Menu_Icon.png</Link>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>

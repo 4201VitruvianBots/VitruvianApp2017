@@ -15,7 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\RobotInfoIndexPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Functions\CheckInternetConnectivity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\BackButton.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Cells\TeamListCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\DoubleCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\SingleCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestPage.cs" />
@@ -33,6 +32,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Events.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Teams.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleListContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchListIndexPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchInfoPopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\Data\PitData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\PitDataCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Cells\TeamListCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\PreMatchScoutingPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\AutoMatchScoutingPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\TeleOpMatchScoutingPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\PostMatchScoutingPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />
@@ -48,6 +58,12 @@
     <Folder Include="$(MSBuildThisFileDirectory)Functions\Listeners\" />
     <Folder Include="$(MSBuildThisFileDirectory)Admin\" />
     <Folder Include="$(MSBuildThisFileDirectory)Images\Images\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\" />
+    <Folder Include="$(MSBuildThisFileDirectory)MatchList\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\Data\" />
+    <Folder Include="$(MSBuildThisFileDirectory)MatchScouting\" />
+    <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Models\Cells\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
@@ -55,5 +71,6 @@
     <None Include="$(MSBuildThisFileDirectory)Depreciated\AddTeamPopupPage.cs" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\AppIcon.png" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Placeholder_image_placeholder.png" />
+    <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />
   </ItemGroup>
 </Project>

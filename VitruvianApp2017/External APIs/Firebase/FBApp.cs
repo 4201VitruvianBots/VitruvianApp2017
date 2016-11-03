@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using Firebase;
 using Firebase.Storage;
 using Firebase.Xamarin;
-using Firebase.Xamarin.Database;
-using Firebase.Xamarin.Database.Query;
 using Firebase.Auth;
 using Android.Gms.Auth.Api;
 using Android.Gms.Auth.Api.SignIn;

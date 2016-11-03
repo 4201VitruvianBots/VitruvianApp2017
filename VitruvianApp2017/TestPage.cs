@@ -20,31 +20,35 @@ namespace VitruvianApp2017
 			VerticalOptions = LayoutOptions.FillAndExpand,
 			Margin = new Thickness(0, 0, 0, 0),
 
-			RowDefinitions ={
-					new RowDefinition {Height = GridLength.Auto},
-					new RowDefinition {Height = GridLength.Auto},
-					new RowDefinition {Height = new GridLength(1, GridUnitType.Star)},
-					new RowDefinition {Height = new GridLength(1, GridUnitType.Star)},
-					new RowDefinition {Height = GridLength.Auto}
-				},
-
+			RowDefinitions = {
+				new RowDefinition(){ Height = GridLength.Star },
+				new RowDefinition(){ Height = GridLength.Auto },
+			}
 		};
 
 		ActivityIndicator busyIcon = new ActivityIndicator();
 
-		public TestPage()
-		{
+		public TestPage() {
+			var list = new CollapsibleListContainer();
+
+			var group1 = new CollapsibleList("Pit Scouting Data");
+			group1.addData(new PitData() { dataHeader = "Data Header", data = "data" });
+			group1.addData(new PitData() { dataHeader = "Data Header", data = "data" });
+			group1.addData(new PitData() { dataHeader = "Data Header", data = "data" });
+
+			var group2 = new CollapsibleList("Match Scouting Data");
+			group2.addData(new PitData() { dataHeader = "Data Header", data = "data" });
+			group2.addData(new PitData() { dataHeader = "Data Header", data = "data" });
+			group2.addData(new PitData() { dataHeader = "Data Header", data = "data" });
+
+
+			list.AddList(group1);
+			list.AddList(group2);
+
 			var navigationBtns = new NavigationButtons();
 
-			layoutTest.Children.Add(new Image()
-			{
-				Source = "Placeholder_image_placeholder.png"
-			}, 0, 1, 0, 2);
-			layoutTest.Children.Add(new Label() { Text = "test1" }, 1, 0);
-			layoutTest.Children.Add(new Label() { Text = "test2" }, 1, 1);
-			layoutTest.Children.Add(new Label() { Text = "test3" }, 0, 2, 2, 3);
-			layoutTest.Children.Add(new Label() { Text = "test4" }, 0, 2, 3, 4);
-			layoutTest.Children.Add(navigationBtns, 0, 2, 4, 5);
+			layoutTest.Children.Add(list, 0, 2, 0, 1);
+			layoutTest.Children.Add(navigationBtns, 0, 2, 1, 2);
 
 			Content = layoutTest;
 		}

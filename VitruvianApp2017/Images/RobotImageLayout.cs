@@ -74,6 +74,7 @@ namespace VitruvianApp2017
 					busyIcon.IsVisible = false;
 
 					Console.WriteLine(robotImage.Source);
+				};
 			}
 			catch(Exception ex) {
 				robotImage.Source = "Placeholder_image_placeholder.png";
