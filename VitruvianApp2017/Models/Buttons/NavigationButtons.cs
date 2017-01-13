@@ -28,7 +28,7 @@ namespace VitruvianApp2017
 		}
 
 		public NavigationButtons(bool toggleRefreshBtn, Button[] array){
-			HorizontalOptions = LayoutOptions.FillAndExpand;
+			HorizontalOptions = LayoutOptions.Fill;
 			Orientation = StackOrientation.Horizontal;
 			BackgroundColor = Color.Green;
 			Padding = 5;
@@ -36,8 +36,8 @@ namespace VitruvianApp2017
 			arrayOfBtn = array;
 			//Back Button
 			backBtn = new Button(){
-				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
+				//VerticalOptions = LayoutOptions.FillAndExpand,
 				Text = "Back",
 				TextColor = Color.Green,
 				BackgroundColor = Color.Black,
@@ -49,8 +49,8 @@ namespace VitruvianApp2017
 
 			//Refresh Button
 			refreshBtn = new Button(){
-				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
+				//VerticalOptions = LayoutOptions.FillAndExpand,
 				Text = "Refresh",
 				TextColor = Color.Green,
 				BackgroundColor = Color.Black,

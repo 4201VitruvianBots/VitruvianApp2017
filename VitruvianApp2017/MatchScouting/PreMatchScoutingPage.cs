@@ -1,9 +1,11 @@
 ﻿using System;
+using Xamarin.Forms;
+
 namespace VitruvianApp2017
 {
-	public class PreMatchScoutingPage__
+	public class PreMatchScoutingPage:ContentPage
 	{
-		public PreMatchScoutingPage__() {
+		public PreMatchScoutingPage() {
 		}
 	}
 }

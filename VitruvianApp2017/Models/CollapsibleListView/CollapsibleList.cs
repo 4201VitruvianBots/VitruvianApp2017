@@ -74,7 +74,7 @@ namespace VitruvianApp2017
 				Source = "Menu_Icon.png",
 				WidthRequest = GlobalVariables.sizeMedium,
 				HeightRequest = GlobalVariables.sizeMedium,
-				DownsampleToViewSize = true,
+				DownsampleToViewSize = false,
 			};
 			img.RotateTo(180, 0);
 			   

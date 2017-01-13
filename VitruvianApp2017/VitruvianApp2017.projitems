@@ -43,6 +43,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\AutoMatchScoutingPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\TeleOpMatchScoutingPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\PostMatchScoutingPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Admin\AdminLoginPopup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Admin\AdminPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />

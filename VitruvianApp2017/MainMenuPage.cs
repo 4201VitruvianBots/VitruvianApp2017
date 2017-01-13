@@ -3,13 +3,15 @@ using Xamarin.Forms;
 using System.Threading.Tasks;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
+using Rg.Plugins.Popup.Pages;
+using Rg.Plugins.Popup.Extensions;
 
 namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new TestPage(), new TestPage2()  };
-		String[] mainMenuPageTitles = { "Robot Information" , "Match Scouting", "Test Page", "Test Page 2" };
+		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new AdminLoginPopup(), new TestPage(), new TestPage2()  };
+		String[] mainMenuPageTitles = { "Robot Information" , "Match Scouting", "Admin Page", "Test Page", "Test Page 2" };
 
 		public MainMenuPage()
 		{
@@ -53,8 +55,6 @@ namespace VitruvianApp2017
 				}
 			};
 
-			Console.WriteLine("Test: " + mainMenuPageTitles.Length);
-
 			foreach (String pageTitle in mainMenuPageTitles){
 				int index = Array.IndexOf(mainMenuPageTitles, pageTitle);
 				var btn = new Button(){
@@ -62,8 +62,18 @@ namespace VitruvianApp2017
 					BackgroundColor = Color.Green,
 					TextColor = Color.White
 				};
+
 				btn.Clicked	+= (object sender, EventArgs e) => {
-					Navigation.PushModalAsync(mainMenuLinks[index]);
+					if (mainMenuLinks[index].GetType().ToString() == "VitruvianApp2017.AdminLoginPopup") {
+						var setting = AppSettings.RetrieveSettings("AdminLogin");
+
+						if (setting == "true")
+							Navigation.PushModalAsync(new AdminPage());
+						else
+							Navigation.PushPopupAsync((PopupPage)mainMenuLinks[index]);
+					}
+					else
+						Navigation.PushModalAsync(mainMenuLinks[index]);
 				};
 				pageStack.Children.Add(btn);
 			}
