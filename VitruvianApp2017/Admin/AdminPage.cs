@@ -83,6 +83,7 @@ namespace VitruvianApp2017
 
 				foreach (var team in teamList) {
 					foreach (var fbteam in fbTeams) {
+						Console.WriteLine("TBA: " + team.team_number + ", FB: " + (int)fbteam.Object.teamNumber);
 						if (team.team_number == (int)fbteam.Object.teamNumber)
 							break;
 						else {
@@ -97,6 +98,7 @@ namespace VitruvianApp2017
 						}
 					}
 				}
+				DisplayAlert("Done", "Team List Successfully Updated", "OK");
 			}
 		}
 	}
