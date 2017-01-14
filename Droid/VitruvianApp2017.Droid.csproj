@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>VitruvianApp2017.Droid</RootNamespace>
     <AssemblyName>VitruvianApp2017.Droid</AssemblyName>
-    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
@@ -192,7 +192,7 @@
       <HintPath>..\packages\Rx-PlatformServices.2.3\lib\portable-windows8+net45+wp8\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta1\lib\netstandard1.1\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
