@@ -74,5 +74,6 @@
     <None Include="$(MSBuildThisFileDirectory)Images\Images\AppIcon.png" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Placeholder_image_placeholder.png" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />
+    <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\TeamDataGridModel.cs" />
   </ItemGroup>
 </Project>
