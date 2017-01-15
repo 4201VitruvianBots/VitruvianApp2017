@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Rg.Plugins.Popup.Pages;
 using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
@@ -9,7 +8,7 @@ using FFImageLoading.Forms;
 
 namespace VitruvianApp2017
 {
-	public class TeamCardPopupPage:PopupPage
+	public class TeamCardPopupEditPage:PopupPage
 	{
 		Grid teamGrid = new Grid()
 		{
@@ -32,10 +31,8 @@ namespace VitruvianApp2017
 		};
 
 		TeamData data;
-		string[] pitdataTitles = { "Volume Configuration:", "Max Fuel Capacity:", "Ground Intake:"};
-		string[] pitdata = new string[3];
 
-		public TeamCardPopupPage(TeamData team)
+		public TeamCardPopupEditPage(TeamData team)
 		{
 			data = team;
 
@@ -52,35 +49,28 @@ namespace VitruvianApp2017
 				FontSize = 18
 			};
 
-			var teamOPR = new Label() {
-				Text = data.tbaOPR.ToString(),
-				FontSize = 14
-			};
-
-			Button editTeamBtn = new Button(){
+			Button saveDataBtn = new Button(){
 				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Text = "Edit Info",
+				Text = "Save",
 				TextColor = Color.Green,
 				BackgroundColor = Color.Black,
 				FontSize = GlobalVariables.sizeMedium
 			};
-			editTeamBtn.Clicked += (object sender, EventArgs e) =>
+			saveDataBtn.Clicked += (object sender, EventArgs e) =>
 			{
-				Navigation.PushPopupAsync(new TeamCardPopupEditPage(data));
+				saveData();
 			};
 
-			Button[] btnArray = { editTeamBtn };
-			var navigationBtns = new PopupNavigationButtons(true, btnArray);
+			Button[] btnArray = { saveDataBtn };
+			var navigationBtns = new PopupNavigationButtons(false, btnArray);
 
 			int gridYIndex = 0;
-			//teamGrid.Children.Add(new RobotImageLayout(data), 0, 2, gridYIndex, gridYIndex + 2);
+			//teamGrid.Children.Add(new RobotImageLayout(data), 0, 1, gridYIndex, gridYIndex + 2);
 			teamGrid.Children.Add(teamNo, 1, gridYIndex++);
 			teamGrid.Children.Add(teamNa, 1, gridYIndex++);
-			teamGrid.Children.Add(teamOPR, 1, gridYIndex++);
-
-			//teamGrid.Children.Add(teamOPR, 0, 2, gridYIndex, gridYIndex++ + 1);
-			//teamGrid.Children.Add(teamOPR, 0, 2, gridYIndex, gridYIndex++ + 1);
+			//
+			teamGrid.Children.Add(new Label() { Text = "test" }, 0, 2, gridYIndex, gridYIndex++ + 1);
 
 			//
 			teamGrid.Children.Add(navigationBtns, 0, 2, gridYIndex, gridYIndex++ + 1);
@@ -99,41 +89,14 @@ namespace VitruvianApp2017
 			};
 		}
 
+		void saveData() {
+
+		}
+
 		async void popUpPage(CachedImage rImage)
 		{
 			//await Task.Yield();
 			//await Navigation.PushPopupAsync(new ImagePopupPage(rImage));
-		}
-
-		protected override void OnAppearing() {
-			base.OnAppearing();
-
-			getFirebaseData();
-			setPitData();
-			//setMatchData();
-		}
-
-		async Task getFirebaseData() {
-			var db = new FirebaseClient(GlobalVariables.firebaseURL);
-			var fbTeam = await db
-					.Child(GlobalVariables.regionalPointer)
-					.Child("teamData")
-					.Child(data.teamNumber.ToString())
-					.OnceSingleAsync<TeamData>();
-
-			data = fbTeam;
-		}
-
-		void setPitData() {
-			pitdata[0] = data.volumeConfig;
-			pitdata[1] = data.maxFuelCapacity.ToString();
-			pitdata[2] = data.groundIntake.ToString();
-
-			//populate dynamic list
-		}
-
-		void setMatchData() {
-
 		}
 	}
 }

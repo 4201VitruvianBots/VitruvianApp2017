@@ -10,8 +10,8 @@ namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new AdminLoginPopup(), new TestPage(), new TestPage2()  };
-		String[] mainMenuPageTitles = { "Robot Information" , "Match Scouting", "Admin Page", "Test Page", "Test Page 2" };
+		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new AdminPage()};
+		String[] mainMenuPageTitles = { "Robot Info", "Admin Page"};
 
 		public MainMenuPage()
 		{
@@ -64,6 +64,7 @@ namespace VitruvianApp2017
 				};
 
 				btn.Clicked	+= (object sender, EventArgs e) => {
+					/*
 					if (mainMenuLinks[index].GetType().ToString() == "VitruvianApp2017.AdminLoginPopup") {
 						var setting = AppSettings.RetrieveSettings("AdminLogin");
 
@@ -73,7 +74,8 @@ namespace VitruvianApp2017
 							Navigation.PushPopupAsync((PopupPage)mainMenuLinks[index]);
 					}
 					else
-						Navigation.PushModalAsync(mainMenuLinks[index]);
+					*/
+					Navigation.PushModalAsync(mainMenuLinks[index]);
 				};
 				pageStack.Children.Add(btn);
 			}

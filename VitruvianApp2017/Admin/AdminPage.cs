@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Firebase.Xamarin.Database;
@@ -26,6 +27,18 @@ namespace VitruvianApp2017
 				BackgroundColor = Color.FromHex("1B5E20"),
 				FontSize = GlobalVariables.sizeTitle,
 				FontAttributes = FontAttributes.Bold
+			};
+
+			var updateMatchListBtn = new Button() {
+				VerticalOptions = LayoutOptions.Fill,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Text = "Update Match List",
+				TextColor = Color.Green,
+				BackgroundColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium
+			};
+			updateMatchListBtn.Clicked += (sender, e) => {
+				UpdateMatchList();
 			};
 
 			var updateTeamListBtn = new Button() {
@@ -58,9 +71,11 @@ namespace VitruvianApp2017
 				Children = {
 					titleLbl,
 					updateTeamListBtn,
+					updateMatchListBtn,
 					navigationBtns
 				}
 			};
+			Console.WriteLine("Regional Pointer: " + GlobalVariables.regionalPointer);
 		}
 
 		void logout() {
@@ -72,33 +87,78 @@ namespace VitruvianApp2017
 		public async Task UpdateTeamList() {
 			if (CheckInternetConnectivity.InternetStatus()) {
 				var teamList = await EventsHttp.GetEventTeamsListHttp(GlobalVariables.regionalPointer);
+				var sorted = from Teams in teamList orderby Teams.team_number select Teams;
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
-				//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
-				var fbTeams = await db
-						.Child(GlobalVariables.regionalPointer)
-						.Child("teamData")
-						.OnceAsync<TeamData>();
-				//var sorted = fbTeams.OrderByDescending((arg) => arg.Key("team_number"));
-
-				foreach (var team in teamList) {
-					foreach (var fbteam in fbTeams) {
-						Console.WriteLine("TBA: " + team.team_number + ", FB: " + (int)fbteam.Object.teamNumber);
-						if (team.team_number == (int)fbteam.Object.teamNumber)
-							break;
-						else {
-							var send = db
-								.Child(GlobalVariables.regionalPointer)
-								.Child("teamData")
-								.Child(team.team_number.ToString())
-								.PutAsync(new TeamData() {
-									teamName = team.nickname,
-									teamNumber = Convert.ToDouble(team.team_number)
-								});
-						}
+				
+				foreach (var team in sorted) {
+					var fbTeam = await db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamData")
+							.Child(team.team_number.ToString())
+							.OnceSingleAsync<TeamData>();
+					if (fbTeam == null) {
+						var send = db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamData")
+							.Child(team.team_number.ToString())
+							.PutAsync(new TeamData() {
+								teamName = team.nickname,
+								teamNumber = team.team_number
+							});
 					}
 				}
 				DisplayAlert("Done", "Team List Successfully Updated", "OK");
+			}
+		}
+
+		public async Task UpdateMatchList() {
+			if (CheckInternetConnectivity.InternetStatus()) {
+				var matchList = await EventsHttp.GetEventMatchesHttp(GlobalVariables.regionalPointer);
+				var sorted = from Match in matchList orderby Match.time select Match;
+
+				foreach (var match in sorted)
+					Console.WriteLine("Match: " + match.match_number);
+
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+ 
+				foreach (var match in sorted) {
+					int n = 0, m = 0;
+					int[] blueA = new int[3], redA = new int[3];
+
+					foreach (var team in match.alliances.blue.teams) {
+						blueA[n] = Convert.ToInt32(match.alliances.blue.teams[n].Substring(3));
+						Console.WriteLine("Blue: " + blueA[n]);
+						n++;
+					}
+					foreach (var team in match.alliances.red.teams) {
+						redA[m] = Convert.ToInt32(match.alliances.red.teams[m].Substring(3));
+						Console.WriteLine("Red: " + redA[m]);
+						m++;;
+					}
+
+					var fbMatch = await db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("matchList")
+							.Child(match.match_number.ToString())
+							.OnceSingleAsync<EventMatchData>();
+
+					var send = db
+						.Child(GlobalVariables.regionalPointer)
+						.Child("matchList")
+						.Child("Q" + ((match.match_number < 10) ? "0" + match.match_number.ToString() : match.match_number.ToString()))
+						.PutAsync(new EventMatchData() {
+							matchNumber = "Q" + ((match.match_number < 10)? "0" + match.match_number.ToString():match.match_number.ToString()),
+							blue = blueA,
+							red = redA,
+							matchTime = match.time
+						});
+
+					Console.WriteLine("Completed Match: " + match.match_number);
+				}
+
+
+				DisplayAlert("Done", "Match List Successfully Updated", "OK");
 			}
 		}
 	}
