@@ -10,12 +10,13 @@ namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new AdminPage()};
-		String[] mainMenuPageTitles = { "Robot Info", "Admin Page"};
+		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new AdminPage(), new AutoCompleteTest()};
+		String[] mainMenuPageTitles = { "Robot Info", "Match Scouting", "Admin Page", "AutoComplete"};
 
 		public MainMenuPage()
 		{
 			Title = "Team 4201 Scouting App";
+			/*
 			Label titleLbl = new Label(){
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				Text = "Team 4201 Scouting App",
@@ -24,7 +25,7 @@ namespace VitruvianApp2017
 				FontSize = GlobalVariables.sizeTitle,
 				FontAttributes = FontAttributes.Bold
 			};
-
+			*/
 			Label regionalLbl = new Label()
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -48,7 +49,6 @@ namespace VitruvianApp2017
 						Spacing = 0,
 
 						Children = {
-							titleLbl,
 							regionalLbl
 						}
 					}
@@ -69,13 +69,13 @@ namespace VitruvianApp2017
 						var setting = AppSettings.RetrieveSettings("AdminLogin");
 
 						if (setting == "true")
-							Navigation.PushModalAsync(new AdminPage());
+							Navigation.PushAsync(new AdminPage());
 						else
 							Navigation.PushPopupAsync((PopupPage)mainMenuLinks[index]);
 					}
 					else
 					*/
-					Navigation.PushModalAsync(mainMenuLinks[index]);
+					Navigation.PushAsync(mainMenuLinks[index]);
 				};
 				pageStack.Children.Add(btn);
 			}

@@ -18,16 +18,13 @@ namespace VitruvianApp2017
 		}
 		*/
 
+		ActivityIndicator busyIcon = new ActivityIndicator() {
+			IsVisible = false,
+			IsRunning = false
+		};
+
 		public AdminPage() {
 			Title = "Admin Page";
-			var titleLbl = new Label() {
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Text = "Admin Page",
-				TextColor = Color.White,
-				BackgroundColor = Color.FromHex("1B5E20"),
-				FontSize = GlobalVariables.sizeTitle,
-				FontAttributes = FontAttributes.Bold
-			};
 
 			var updateMatchListBtn = new Button() {
 				VerticalOptions = LayoutOptions.Fill,
@@ -69,7 +66,7 @@ namespace VitruvianApp2017
 
 			Content = new StackLayout() {
 				Children = {
-					titleLbl,
+					busyIcon,
 					updateTeamListBtn,
 					updateMatchListBtn,
 					navigationBtns
@@ -81,10 +78,12 @@ namespace VitruvianApp2017
 		void logout() {
 			AppSettings.SaveSettings("AdminLogin", "false");
 
-			Navigation.PopModalAsync();
+			Navigation.PopToRootAsync();
 		}
 
 		public async Task UpdateTeamList() {
+			busyIcon.IsRunning = true;
+			busyIcon.IsVisible = true;
 			if (CheckInternetConnectivity.InternetStatus()) {
 				var teamList = await EventsHttp.GetEventTeamsListHttp(GlobalVariables.regionalPointer);
 				var sorted = from Teams in teamList orderby Teams.team_number select Teams;
@@ -108,12 +107,16 @@ namespace VitruvianApp2017
 							});
 					}
 				}
-				DisplayAlert("Done", "Team List Successfully Updated", "OK");
+				await DisplayAlert("Done", "Team List Successfully Updated", "OK");
+				busyIcon.IsRunning = false;
+				busyIcon.IsVisible = false;
 			}
 		}
 
 		public async Task UpdateMatchList() {
 			if (CheckInternetConnectivity.InternetStatus()) {
+				busyIcon.IsRunning = true;
+				busyIcon.IsVisible = true;
 				var matchList = await EventsHttp.GetEventMatchesHttp(GlobalVariables.regionalPointer);
 				var sorted = from Match in matchList orderby Match.time select Match;
 
@@ -128,12 +131,12 @@ namespace VitruvianApp2017
 
 					foreach (var team in match.alliances.blue.teams) {
 						blueA[n] = Convert.ToInt32(match.alliances.blue.teams[n].Substring(3));
-						Console.WriteLine("Blue: " + blueA[n]);
+						//Console.WriteLine("Blue: " + blueA[n]);
 						n++;
 					}
 					foreach (var team in match.alliances.red.teams) {
 						redA[m] = Convert.ToInt32(match.alliances.red.teams[m].Substring(3));
-						Console.WriteLine("Red: " + redA[m]);
+						//Console.WriteLine("Red: " + redA[m]);
 						m++;;
 					}
 
@@ -146,19 +149,19 @@ namespace VitruvianApp2017
 					var send = db
 						.Child(GlobalVariables.regionalPointer)
 						.Child("matchList")
-						.Child("Q" + ((match.match_number < 10) ? "0" + match.match_number.ToString() : match.match_number.ToString()))
+						.Child("QM" + ((match.match_number < 10) ? "0" + match.match_number.ToString() : match.match_number.ToString()))
 						.PutAsync(new EventMatchData() {
-							matchNumber = "Q" + ((match.match_number < 10)? "0" + match.match_number.ToString():match.match_number.ToString()),
-							blue = blueA,
-							red = redA,
+							matchNumber = "QM" + ((match.match_number < 10)? "0" + match.match_number.ToString():match.match_number.ToString()),
+							Blue = blueA,
+							Red = redA,
 							matchTime = match.time
 						});
 
 					Console.WriteLine("Completed Match: " + match.match_number);
 				}
-
-
-				DisplayAlert("Done", "Match List Successfully Updated", "OK");
+				await DisplayAlert("Done", "Match List Successfully Updated", "OK");
+				busyIcon.IsRunning = false;
+				busyIcon.IsVisible = false;
 			}
 		}
 	}

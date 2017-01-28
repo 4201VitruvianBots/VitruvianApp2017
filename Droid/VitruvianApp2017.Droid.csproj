@@ -180,19 +180,19 @@
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
     <AndroidResource Include="Resources\layout\Toolbar.axml" />
     <AndroidResource Include="Resources\values\styles.xml" />
-    <AndroidResource Include="Resources\drawable\icon.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
-    <AndroidResource Include="..\VitruvianApp2017\Images\Images\AppIcon.png">
-      <Link>Resources\drawable\AppIcon.png</Link>
-    </AndroidResource>
     <AndroidResource Include="..\VitruvianApp2017\Images\Images\Placeholder_image_placeholder.png">
       <Link>Resources\drawable\Placeholder_image_placeholder.png</Link>
     </AndroidResource>
     <AndroidResource Include="..\VitruvianApp2017\Images\Images\Menu_Icon.png">
       <Link>Resources\drawable\Menu_Icon.png</Link>
     </AndroidResource>
+    <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
+    <AndroidResource Include="Resources\drawable\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\drawable-hdpi\" />
   </ItemGroup>
   <Import Project="..\VitruvianApp2017\VitruvianApp2017.projitems" Label="Shared" Condition="Exists('..\VitruvianApp2017\VitruvianApp2017.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

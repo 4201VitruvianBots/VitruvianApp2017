@@ -38,6 +38,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\RobotInfoIndexPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupEditPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\ColorButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\ColorButtonStackArray.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AutoCompleteTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\TeamNumberAutoCompleteEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\ScouterNameAutoCompleteEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Global.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Lists\ScouterName.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />
@@ -59,12 +66,13 @@
     <Folder Include="$(MSBuildThisFileDirectory)MatchScouting\" />
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\Cells\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Models\Lists\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AppSettingsTest.cs" />
     <None Include="$(MSBuildThisFileDirectory)Depreciated\AddTeamPopupPage.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Images\Images\AppIcon.png" />
+    <None Include="$(MSBuildThisFileDirectory)Images\Images\icon.png" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Placeholder_image_placeholder.png" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />
     <None Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
@@ -77,5 +85,6 @@
     <None Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleList.cs" />
     <None Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleListContainer.cs" />
     <None Include="$(MSBuildThisFileDirectory)Admin\AdminLoginPopup.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Examples\AutoCompleteTest.cs" />
   </ItemGroup>
 </Project>

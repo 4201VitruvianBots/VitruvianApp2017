@@ -23,16 +23,6 @@ namespace VitruvianApp2017
 		public RobotInfoIndexPage()
 		{
 			Title = "Robot Info";
-			Label titleLbl = new Label()
-			{
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Text = "Robot Info",
-				TextColor = Color.White,
-				BackgroundColor = Color.FromHex("1B5E20"),
-				FontSize = GlobalVariables.sizeTitle,
-				FontAttributes = FontAttributes.Bold
-			};
-
 
 			teamIndex = new ScrollView()
 			{
@@ -56,7 +46,6 @@ namespace VitruvianApp2017
 				VerticalOptions = LayoutOptions.FillAndExpand,
 
 				Children = {
-					titleLbl,
 					busyIcon,
 					teamIndex,
 					navigationBtns

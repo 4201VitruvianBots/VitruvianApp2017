@@ -4,8 +4,8 @@ namespace VitruvianApp2017
 	public class EventMatchData
 	{
 		public string matchNumber { get; set; }
-		public int[] blue { get; set; }
-		public int[] red { get; set; }
+		public int[] Blue { get; set; }
+		public int[] Red { get; set; }
 		public int matchTime { get; set; }
 
 		// Pit Data

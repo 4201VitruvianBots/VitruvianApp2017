@@ -3,14 +3,17 @@ namespace VitruvianApp2017
 {
 	public class TeamMatchData
 	{
+		// Pre-Matchc
+		public string scouterName { get; set; }
 		public string matchNumber { get; set; }
 		public int teamNumber { get; set; }
+		public string alliance { get; set; }
+		public string startPos { get; set; }
 
 		// Auto
 		public bool autoCross { get; set; }
 		public bool gearDeposit { get; set; }
 		public int autoHighHit { get; set; }
-		public int autoHighMiss { get; set; }
 		public int autoLowHit { get; set; }
 		public int autoScore { get; set; }
 
@@ -22,6 +25,7 @@ namespace VitruvianApp2017
 		public int droppedGears { get; set; }
 		public int climbTime { get; set; }
 		public bool successfulClimb { get; set; }
+		public int teleOpScore { get; set; }
 
 		// Post Match
 		public int fouls { get; set; }

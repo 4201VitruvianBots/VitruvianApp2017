@@ -14,7 +14,7 @@ namespace VitruvianApp2017
 			//FBApp.Initialize();
 			getPtr();
 
-			MainPage = new MainMenuPage();
+			MainPage = new NavigationPage(new MainMenuPage());
 		}
 
 		void getPtr() {

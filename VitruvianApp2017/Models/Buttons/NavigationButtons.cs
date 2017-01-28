@@ -66,7 +66,7 @@ namespace VitruvianApp2017
 		}
 
 		public virtual async void returnPage(){
-			await Navigation.PopModalAsync();
+			await Navigation.PopAsync();
 		}
 	}
 

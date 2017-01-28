@@ -5,16 +5,26 @@ namespace VitruvianApp2017
 {
 	public class SingleCounter:Grid
 	{
+		public event PropertyChangingEventHandler ValueChanged;
 		int i;
+		public int lowerLimit = 0;
+		public int upperLimit = 9001;
+
+		public SingleCounter(String title): this(title, 0){
+
+		}
 
 		public SingleCounter(String title, int counter)
 		{
+			lowerLimit = counter;
 			i = counter;
 
 			var titleLbl = new Label()
 			{
 				Text = title,
+				TextColor = Color.Black,
 				FontAttributes = FontAttributes.Bold,
+				FontSize = GlobalVariables.sizeMedium,
 				HorizontalTextAlignment = TextAlignment.Center
 			};
 
@@ -31,10 +41,11 @@ namespace VitruvianApp2017
 			};
 			decrement.Clicked += (object sender, EventArgs e) =>
 			{
-				if (i > 0)
+				if (i > lowerLimit)
 				{
 					i--;
 					valueLbl.Text = i.ToString();
+					this.OnPropertyChanged();
 				}
 			};
 
@@ -45,8 +56,11 @@ namespace VitruvianApp2017
 			};
 			increment.Clicked += (object sender, EventArgs e) =>
 			{
-				i++;
-				valueLbl.Text = i.ToString();
+				if (i < upperLimit) {
+					i++;
+					valueLbl.Text = i.ToString();
+					this.OnPropertyChanged();
+				}
 			};
 
 			this.Children.Add(titleLbl, 0, 3, 0, 1);
@@ -58,6 +72,14 @@ namespace VitruvianApp2017
 		public int value()
 		{
 			return i;
+		}
+
+		protected void OnValueChanged(string i) {
+			PropertyChangingEventHandler c = this.ValueChanged;
+
+			if (c != null) {
+				c(this, new PropertyChangingEventArgs(i));
+			}
 		}
 	}
 }

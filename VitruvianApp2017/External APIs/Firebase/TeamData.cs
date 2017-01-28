@@ -16,7 +16,7 @@ namespace VitruvianApp2017
 		public TeamMatchData[] matchData { get; set; }
 		public double tbaOPR { get; set; }
 		public int matchCount { get; set; }
-		public double avgScore { get; set; }
+		public double avgEstScore { get; set; }
 
 		public double avgAutoScore { get; set; }
 		public int autoGearDeposits { get; set; }
