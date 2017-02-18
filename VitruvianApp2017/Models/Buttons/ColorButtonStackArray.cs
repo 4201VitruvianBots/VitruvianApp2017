@@ -3,19 +3,24 @@ using Xamarin.Forms;
 
 namespace VitruvianApp2017
 {
-	public class ColorButtonStackArray:Grid
+	public class ColorButtonStackArray:StackLayout
 	{
-		ColorButton[] btnArray;
+		Button[] btnArray;
+		bool[] on;
 		double divisions;
 		double halfDivision;
 		int buttonCount;
 
 		public ColorButtonStackArray(string title, int buttons) {
-			btnArray = new ColorButton[buttons];
+			HorizontalOptions = LayoutOptions.StartAndExpand;
+			Spacing = 5;
+			btnArray = new Button[buttons];
+			on = new bool[buttons];
 			buttonCount = buttons;
-			divisions = 1 / buttons;
-			halfDivision = divisions / 2;
+			divisions = 1 / Convert.ToDouble(buttons);
+			halfDivision = (divisions / 2);
 
+			Console.WriteLine("Divisions: " + divisions);
 
 			Label titleLbl = new Label() {
 				Text = title,
@@ -25,27 +30,35 @@ namespace VitruvianApp2017
 				HorizontalTextAlignment = TextAlignment.Center
 			};
 
+
+
 			for (int i = 0; i < buttons; i++) {
-				btnArray[i] = new ColorButton((i * divisions) + "% - " + (i * divisions + divisions) + "%");
-				btnArray[i].PropertyChanged += (sender, e) => {
-					setButtonBackground(i);
+				btnArray[i] = new Button() {
+					HorizontalOptions = LayoutOptions.CenterAndExpand,
+					VerticalOptions = LayoutOptions.CenterAndExpand,
+					Text = string.Format("{0:0%} - {1:0%}", i * divisions, i * divisions + divisions),
+					BackgroundColor = Color.Red
 				};
 			}
-
-			Children.Add(titleLbl, 0, 1);
-			int j = 0;
 			foreach (var btn in btnArray)
-				Children.Add(btn, 0, j++);
+				btn.Clicked += (sender, e) => {
+					setButtonBackground(btn);
+				};
+
+			Children.Add(titleLbl);
+			foreach (var btn in btnArray)
+				Children.Add(btn);
 		}
 
-		void setButtonBackground(int index) {
+		void setButtonBackground(Button btn) {
+			//Console.WriteLine("Button: " + index);
 			for (int i = 0; i < buttonCount; i++) {
-				if (i != index){
+				if (btnArray[i] != btn){
 					btnArray[i].BackgroundColor = Color.Red;
-					btnArray[i].on = false;
+					on[i] = false;
 				} else {
 					btnArray[i].BackgroundColor = Color.Green;
-					btnArray[i].on = true;
+					on[i] = true;
 				}
 			}
 		}
@@ -53,7 +66,7 @@ namespace VitruvianApp2017
 		public double getAvgPercentage() {
 			int index = 0;
 			for (int i = 0; i < buttonCount; i++)
-				if (btnArray[i].on)
+				if (on[i])
 					index = i;
 
 			return index * divisions + halfDivision;

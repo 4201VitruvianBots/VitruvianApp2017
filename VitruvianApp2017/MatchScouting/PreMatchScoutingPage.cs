@@ -35,7 +35,7 @@ namespace VitruvianApp2017
 
 			if (!string.IsNullOrEmpty(scouts.scouterName))
 				scouts.lineEntry.Text = scouterName;
-			
+
 			matchNo = new LineEntry("Match Number:");
 			matchNo.inputEntry.Keyboard = Keyboard.Numeric;
 			matchNo.inputEntry.TextChanged += (sender, e) => {
@@ -51,7 +51,6 @@ namespace VitruvianApp2017
 			alliancePicker.Title = "Choose an Option";
 			foreach (var item in Enum.GetValues(typeof(alliances)))
 				alliancePicker.Items.Add(item.ToString());
-
 			alliancePicker.SelectedIndexChanged += (sender, e) => {
 				alliancePicker.Title = alliancePicker.Items[alliancePicker.SelectedIndex];
 				getTeamNoPickerOptions();
@@ -108,7 +107,7 @@ namespace VitruvianApp2017
 
 			var navigationBtns = new NavigationButtons(false, new Button[] { beginMatchBtn });
 			navigationBtns.backBtn.Clicked += (sender, e) => {
-				Navigation.PushModalAsync(new NavigationPage(new MainMenuPage()));
+				Navigation.PopToRootAsync();
 			};
 
 			var pageLayout = new StackLayout() {
@@ -149,6 +148,9 @@ namespace VitruvianApp2017
 		}
 
 		async Task getTeamNoPickerOptions() {
+			busyIcon.IsVisible = true;
+			busyIcon.IsRunning = true;
+
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
 			var matchGet = await db
@@ -171,6 +173,8 @@ namespace VitruvianApp2017
 						teamNoPicker.Items.Add(item.ToString());
 			}
 
+			busyIcon.IsVisible = false;
+			busyIcon.IsRunning = false;
 		}
 
 		async Task initializeTeamData() {

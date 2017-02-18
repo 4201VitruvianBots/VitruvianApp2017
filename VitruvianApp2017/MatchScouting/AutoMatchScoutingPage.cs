@@ -96,29 +96,40 @@ namespace VitruvianApp2017
 			};
 
 
-			var topBar = new Grid() {
+			var topBar = new StackLayout() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				VerticalOptions = LayoutOptions.FillAndExpand,
-				BackgroundColor = Color.Green
+				Orientation = StackOrientation.Horizontal,
+				BackgroundColor = Color.Green,
+				Spacing = 0,
 			};
-			topBar.Children.Add(teamNumberLbl, 0, 0);
-			topBar.Children.Add(autoScoreLbl, 1, 0);
+			topBar.Children.Add(teamNumberLbl);
+			topBar.Children.Add(autoScoreLbl);
 
-			pageLayout.Children.Add(topBar, 0, 3, 0, 1);
-			pageLayout.Children.Add(crossingLbl, 0, 1);
-			pageLayout.Children.Add(inputs[0], 0, 2);
-			pageLayout.Children.Add(highGoalHits, 1, 2, 1, 3);
-			pageLayout.Children.Add(lowGoalHits, 1, 2, 3, 5);
-			pageLayout.Children.Add(gearsLbl, 2, 1);
-			pageLayout.Children.Add(inputs[1], 2, 2);
-			pageLayout.Children.Add(inputs[2], 2, 3);
-			pageLayout.Children.Add(teleOpBtn, 0, 3, 6, 7);
+			pageLayout.Children.Add(crossingLbl, 0, 0);
+			pageLayout.Children.Add(inputs[0], 0, 1);
+			pageLayout.Children.Add(highGoalHits, 1, 2, 0, 2);
+			pageLayout.Children.Add(lowGoalHits, 1, 2, 2, 4);
+			pageLayout.Children.Add(gearsLbl, 2, 0);
+			pageLayout.Children.Add(inputs[1], 2, 1);
+			pageLayout.Children.Add(inputs[2], 2, 2);
+			pageLayout.Children.Add(teleOpBtn, 0, 3, 5, 6);
 
-			Content = new ScrollView() {
+			BackgroundColor = Color.Teal;
+
+			Content = new StackLayout() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
+				//Spacing = 0,
 
-				Content = pageLayout
+				Children = {
+					topBar,
+					new ScrollView(){
+						HorizontalOptions = LayoutOptions.FillAndExpand,
+						VerticalOptions = LayoutOptions.FillAndExpand,
+
+						Content = pageLayout
+					}
+				}
 			};
 		}
 

@@ -15,6 +15,7 @@ namespace VitruvianApp2017
 			getPtr();
 
 			MainPage = new NavigationPage(new MainMenuPage());
+			//GlobalVariables.rootPage = MainPage;
 		}
 
 		void getPtr() {

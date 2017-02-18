@@ -1,9 +1,11 @@
 ﻿using System;
+using Xamarin.Forms;
+
 namespace VitruvianApp2017
 {
-	public class PostMatchScoutingPage
+	public class PostMatchScoutingPage:ContentPage
 	{
-		public PostMatchScoutingPage() {
+		public PostMatchScoutingPage(TeamMatchData matchData) {
 		}
 	}
 }

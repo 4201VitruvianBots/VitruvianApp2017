@@ -131,12 +131,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="FFImageLoading">
-      <HintPath>..\packages\Xamarin.FFImageLoading.2.2.7\lib\MonoAndroid10\FFImageLoading.dll</HintPath>
-    </Reference>
-    <Reference Include="FFImageLoading.Platform">
-      <HintPath>..\packages\Xamarin.FFImageLoading.2.2.7\lib\MonoAndroid10\FFImageLoading.Platform.dll</HintPath>
-    </Reference>
     <Reference Include="FFImageLoading.Forms">
       <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.2.7\lib\MonoAndroid10\FFImageLoading.Forms.dll</HintPath>
     </Reference>
@@ -163,6 +157,12 @@
     </Reference>
     <Reference Include="XLabs.Forms.Droid">
       <HintPath>..\packages\XLabs.Forms.2.0.5782\lib\MonoAndroid\XLabs.Forms.Droid.dll</HintPath>
+    </Reference>
+    <Reference Include="FFImageLoading">
+      <HintPath>..\packages\Xamarin.FFImageLoading.2.2.8\lib\MonoAndroid10\FFImageLoading.dll</HintPath>
+    </Reference>
+    <Reference Include="FFImageLoading.Platform">
+      <HintPath>..\packages\Xamarin.FFImageLoading.2.2.8\lib\MonoAndroid10\FFImageLoading.Platform.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

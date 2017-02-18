@@ -40,7 +40,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupEditPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\ColorButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\ColorButtonStackArray.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AutoCompleteTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\TeamNumberAutoCompleteEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\ScouterNameAutoCompleteEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Global.cs" />
@@ -82,9 +81,10 @@
     <None Include="$(MSBuildThisFileDirectory)TestPage2.cs" />
     <None Include="$(MSBuildThisFileDirectory)Functions\Listeners\Listeners.cs" />
     <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FBApp.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleList.cs" />
     <None Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleListContainer.cs" />
     <None Include="$(MSBuildThisFileDirectory)Admin\AdminLoginPopup.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AutoCompleteTest.cs" />
+    <None Include="$(MSBuildThisFileDirectory)AutoCompleteTest.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleList.cs" />
   </ItemGroup>
 </Project>

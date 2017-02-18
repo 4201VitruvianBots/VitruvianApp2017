@@ -38,18 +38,17 @@ namespace VitruvianApp2017
 					}
 				};
 			});
+			list.ItemTapped  += (sender, e) => {
+				scouterName = ((ScouterName)list.SelectedItem).scouterName;
+				lineEntry.Text = scouterName;
+				list.SelectedItem = null;
+			};
 			list.ItemSelected += (sender, e) => {
 				listScroll.IsVisible = false;
 				listScroll.IsEnabled = false;
-				HeightRequest = initialHieght;
-				scouterName = ((ScouterName)list.SelectedItem).scouterName;
-				lineEntry.Text = scouterName;
 			};
 			lineEntry.TextChanged += (sender, e) => {
-				if (semaphore)
-					autoCompleteOptions();
-				else
-					semaphore = true;
+				autoCompleteOptions();
 			};
 
 			listScroll.Content = list;
@@ -77,28 +76,30 @@ namespace VitruvianApp2017
 
 		async Task getNameList() {
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
-
 			var nameList = await db
 							.Child("Global")
 							.OnceSingleAsync<ScouterName>();
-			foreach(var name in nameList.scouterNames)
+			foreach (var name in nameList.scouterNames) {
 				scouterNames.Add(new ScouterName() { scouterName = name });
+			}
 			list.ItemsSource = scouterNames;
 		}
 
 		void autoCompleteOptions() {
 			var filtered = new List<ScouterName>();
+			int height = 20;
 
 			foreach (var name in scouterNames)
-				if (name.scouterName.ToLower().Contains(lineEntry.Text.ToLower()))
+				if (name.scouterName.ToLower().Contains(lineEntry.Text.ToLower())) {
 					filtered.Add(name);
-
+					height += 40;
+				}
+			
+			list.HeightRequest = height;
+			listScroll.HeightRequest = height;
 			list.ItemsSource = filtered;
 			listScroll.IsVisible = true;
 			listScroll.IsEnabled = true;
-			//listScroll.HeightRequest = 
-			semaphore = false;
 		}
-
 	}
 }
