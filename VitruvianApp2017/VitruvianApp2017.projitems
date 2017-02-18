@@ -40,11 +40,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupEditPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\ColorButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\ColorButtonStackArray.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AutoCompleteTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\TeamNumberAutoCompleteEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\ScouterNameAutoCompleteEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Global.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Lists\ScouterName.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchListCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataAnalysis\DataAnalysisPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Cells\TeamNumberCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />
@@ -67,6 +69,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\Cells\" />
     <Folder Include="$(MSBuildThisFileDirectory)Models\Lists\" />
+    <Folder Include="$(MSBuildThisFileDirectory)DataAnalysis\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
@@ -86,5 +89,6 @@
     <None Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleListContainer.cs" />
     <None Include="$(MSBuildThisFileDirectory)Admin\AdminLoginPopup.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AutoCompleteTest.cs" />
+    <None Include="$(MSBuildThisFileDirectory)AutoCompleteTest.cs" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Linq;
+using System.Collections.Generic;
 using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 using Firebase.Xamarin.Database;
@@ -11,6 +11,8 @@ namespace VitruvianApp2017
 {
 	public class RobotInfoIndexPage : ContentPage
 	{
+		ListView teamListView;
+		List<TeamData> teamList;
 		ScrollView teamIndex;
 		StackLayout teamStack = new StackLayout()
 		{
@@ -20,13 +22,39 @@ namespace VitruvianApp2017
 
 		ActivityIndicator busyIcon = new ActivityIndicator();
 
-		public RobotInfoIndexPage()
-		{
+		public RobotInfoIndexPage() {
 			Title = "Robot Info";
+
+			teamListView = new ListView() {
+				ItemsSource = teamList,
+				ItemTemplate = new DataTemplate(() => {
+
+					var teamNumber = new Label();
+					teamNumber.SetBinding(Label.TextProperty, new Binding( "teamNumber", BindingMode.Default, null, null, "Team {0}"));
+					teamNumber.TextColor = Color.Black;
+					teamNumber.VerticalOptions = LayoutOptions.CenterAndExpand;
+
+					return new ViewCell() {
+						View = new StackLayout() {
+							BackgroundColor = Color.White,
+
+							Children = {
+								teamNumber
+							}
+						}
+					};
+				})
+			};
+			teamListView.ItemSelected += (sender, e) => {
+				((ListView)sender).SelectedItem = null;
+			};
+			teamListView.ItemTapped += (sender, e) => {
+				Navigation.PushPopupAsync(new TeamCardPopupPage((TeamData)sender));
+			};
 
 			teamIndex = new ScrollView()
 			{
-				Content = teamStack
+				Content = teamListView
 			};
 
 			var navigationBtns = new NavigationButtons(true);
@@ -72,37 +100,11 @@ namespace VitruvianApp2017
 				teamStack.Children.Clear();
 
 				foreach (var team in fbTeams) {
+					teamList.Add(team.Object);
 					TeamListCell cell = new TeamListCell();
 					cell.teamName.Text = "Team " + team.Object.teamNumber.ToString();
 					teamStack.Children.Add(cell);
 					TapGestureRecognizer tap = new TapGestureRecognizer();
-
-					/*
-					var data = await db
-						.Child(GlobalVariables.regionalPointer)
-						.Child("teamData")
-						.Child(team.team_number.ToString())
-						.OnceSingleAsync<TeamData>();
-
-					if (data == null)
-					{
-						var send = db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.Child(team.team_number.ToString())
-							.PutAsync(new TeamData()
-							{
-								teamName = team.nickname,
-								teamNumber = Convert.ToDouble(team.team_number)
-							});
-
-						data = await db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.Child(team.team_number.ToString())
-							.OnceSingleAsync<TeamData>();
-					}
-					*/
 
 					if (team != null) {
 						tap.Tapped += (object sender, EventArgs e) => {

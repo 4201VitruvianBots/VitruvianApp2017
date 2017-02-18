@@ -31,7 +31,7 @@ namespace VitruvianApp2017
 			HorizontalOptions = LayoutOptions.Fill;
 			Orientation = StackOrientation.Horizontal;
 			BackgroundColor = Color.Green;
-			Padding = 5;
+			//Padding = 5;
 
 			arrayOfBtn = array;
 			//Back Button
