@@ -43,7 +43,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\TeamNumberAutoCompleteEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\ScouterNameAutoCompleteEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Global.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Lists\ScouterName.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataAnalysis\DataAnalysisPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchListCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\ScouterName.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Lists\MatchHeaderList.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />

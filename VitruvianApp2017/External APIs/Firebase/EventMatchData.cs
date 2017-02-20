@@ -6,7 +6,7 @@ namespace VitruvianApp2017
 		public string matchNumber { get; set; }
 		public int[] Blue { get; set; }
 		public int[] Red { get; set; }
-		public int matchTime { get; set; }
+		public long matchTime { get; set; }
 
 		// Pit Data
 

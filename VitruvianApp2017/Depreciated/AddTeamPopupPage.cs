@@ -51,9 +51,9 @@ namespace VitruvianApp2017
 					Margin = new Thickness(0, 0, 0, 0),
 
 					Children = {
-					teamNo,
-					teamNa,
-					navigationBtns
+						teamNo,
+						teamNa,
+						navigationBtns
 					}
 				}
 			};

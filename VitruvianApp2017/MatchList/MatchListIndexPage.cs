@@ -13,25 +13,14 @@ namespace VitruvianApp2017
 {
 	public class MatchListIndexPage : ContentPage
 	{
-		ScrollView matchIndex;
-		StackLayout listStack;
-		StackLayout matchStack = new StackLayout() {
-			Spacing = 1,
-			BackgroundColor = Color.Silver
-		};
-		StackLayout pastMatchStack = new StackLayout() {
-			Spacing = 1,
-			BackgroundColor = Color.Silver
-		};
-
 		ActivityIndicator busyIcon = new ActivityIndicator();
-
+		MatchHeaderLists lists;
 		public MatchListIndexPage() {
 			Title = "Match List";
 
-			matchIndex = new ScrollView() {
-				Content = matchStack
-			};
+			lists = new MatchHeaderLists();
+
+			UpdateMatchList();
 
 			var navigationBtns = new NavigationButtons(true);
 			navigationBtns.refreshBtn.Clicked += (object sender, EventArgs e) => {
@@ -44,57 +33,38 @@ namespace VitruvianApp2017
 
 			this.Content = new StackLayout() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				VerticalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.End,
 
 				Children = {
 					busyIcon,
-					matchIndex,
-					navigationBtns
+					new StackLayout(){
+						VerticalOptions = LayoutOptions.Start,
+
+						Children = {
+							lists
+						}
+					},
+					new StackLayout(){
+						HorizontalOptions = LayoutOptions.FillAndExpand,
+						VerticalOptions = LayoutOptions.End,
+
+						Children = {
+							navigationBtns
+						}
+					}
 				}
 			};
-
 			BackgroundColor = Color.White;
 		}
 
 		public async Task UpdateMatchList() {
-			if (CheckInternetConnectivity.InternetStatus()) {
-				busyIcon.IsVisible = true;
-				busyIcon.IsRunning = true;
+			busyIcon.IsVisible = true;
+			busyIcon.IsRunning = true;
 
-				var db = new FirebaseClient(GlobalVariables.firebaseURL);
-				//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
-				var fbMatches = await db
-						.Child(GlobalVariables.regionalPointer)
-						.Child("matchList")
-						.OnceAsync<EventMatchData>();
-				//var sorted = fbTeams.OrderByDescending((arg) => arg.Key("team_number"));
+			lists.updateMatchLists();
 
-				matchStack.Children.Clear();
-
-				foreach (var match in fbMatches) {
-					
-					MatchListCell cell = new MatchListCell();
-					cell.matchNumber.Text = "Q" + match.Object.matchNumber.Remove(0, 2);
-					matchStack.Children.Add(cell);
-					TapGestureRecognizer tap = new TapGestureRecognizer();
-
-
-					if (match != null) {
-						tap.Tapped += (object sender, EventArgs e) => {
-							Navigation.PushPopupAsync(new MatchInfoPopupPage(match.Object));
-						};
-					} else {
-						tap.Tapped += (object sender, EventArgs e) => {
-							DisplayAlert("Error:", "No Match Data found!", "OK");
-						};
-					}
-					cell.GestureRecognizers.Add(tap);
-
-				}
-
-				busyIcon.IsVisible = false;
-				busyIcon.IsRunning = false;
-			}
+			busyIcon.IsVisible = false;
+			busyIcon.IsRunning = false;
 		}
 	}
 }

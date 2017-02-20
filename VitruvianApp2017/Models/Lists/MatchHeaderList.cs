@@ -1,0 +1,198 @@
+﻿using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Rg.Plugins.Popup.Pages;
+using Rg.Plugins.Popup.Extensions;
+using Firebase.Xamarin.Database;
+using Firebase.Xamarin.Database.Query;
+using Xamarin.Forms;
+
+
+namespace VitruvianApp2017 
+{
+	
+	public class MatchHeaderLists:ContentView
+	{
+		ListView upcomingMatchView = new ListView();
+		List<EventMatchData> upcomingMatchList = new List<EventMatchData>();
+		ListView pastMatchView = new ListView();
+		List<EventMatchData> pastMatchList = new List<EventMatchData>();
+		double height;
+
+		public MatchHeaderLists() {
+			//updateMatchLists();
+			var upcomingMatchHeader = new ContentView() {
+				Content = new Frame() {
+					OutlineColor = Color.Gray,
+					Padding = new Thickness(5),
+
+					Content = new Label() {
+						Text = "Upcoming Matches",
+						FontSize = GlobalVariables.sizeMedium,
+						FontAttributes = FontAttributes.Bold,
+						TextColor = Color.Black
+					}
+				}
+			};
+			var upcomingMatchHeaderTap = new TapGestureRecognizer();
+			upcomingMatchHeaderTap.Tapped += (sender, e) => {
+				if (!pastMatchView.IsEnabled) {
+					upcomingMatchView.IsEnabled = !upcomingMatchView.IsEnabled;
+					setListHieght();
+				}
+				AppSettings.SaveSettings("UpcomingMatchListEn", upcomingMatchView.IsEnabled.ToString());
+			};
+			upcomingMatchHeader.GestureRecognizers.Add(upcomingMatchHeaderTap);
+
+			upcomingMatchView.ItemTemplate = new DataTemplate(() => {
+				var matchLbl = new Label() {
+					
+				};
+				matchLbl.SetBinding(Label.TextProperty, "matchNumber");
+				var cell = new ViewCell() {
+					View = new StackLayout() {
+						Children = {
+							matchLbl
+						}
+					}
+				};
+
+				return cell;
+			});
+
+			upcomingMatchView.ItemSelected += (sender, e) => {
+				((ListView)sender).SelectedItem = null;
+			};
+
+			upcomingMatchView.ItemTapped += (sender, e) => {
+				Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)upcomingMatchView.SelectedItem));
+			};
+
+			var pastMatchHeader = new ContentView() {
+				Content = new Frame() {
+					OutlineColor = Color.Gray,
+					Padding = new Thickness(5),
+
+					Content = new Label() {
+						Text = "Past Matches",
+						FontSize = GlobalVariables.sizeMedium,
+						FontAttributes = FontAttributes.Bold,
+						TextColor = Color.Black
+					}
+				}
+			};
+			var pastMatchHeaderTap = new TapGestureRecognizer();
+			pastMatchHeaderTap.Tapped += (sender, e) => {
+				if (!upcomingMatchView.IsEnabled) {
+					pastMatchView.IsEnabled = !pastMatchView.IsEnabled;
+					setListHieght();
+				}
+				AppSettings.SaveSettings("PastMatchListEn", pastMatchView.IsEnabled.ToString());
+			};
+			pastMatchHeader.GestureRecognizers.Add(pastMatchHeaderTap);
+
+			pastMatchView.ItemTemplate = new DataTemplate(() => {
+				var matchLbl = new Label() {
+
+				};
+				matchLbl.SetBinding(Label.TextProperty, "matchNumber");
+				var cell = new ViewCell() {
+					View = new StackLayout() {
+						Children = {
+							matchLbl
+						}
+					}
+				};
+
+				return cell;
+			});
+
+			pastMatchView.ItemSelected += (sender, e) => {
+				((ListView)sender).SelectedItem = null;
+			};
+			pastMatchView.ItemTapped += (sender, e) => {
+				Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
+			};
+
+			height = Height;
+
+			Content = new StackLayout() {
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.FillAndExpand,
+
+				Children = {
+					upcomingMatchHeader,
+					upcomingMatchView,
+					pastMatchHeader,
+					pastMatchView,
+				}
+			};
+		}
+
+		void setListHieght() {
+			if (upcomingMatchView.IsEnabled && pastMatchView.IsEnabled) {
+				upcomingMatchView.HeightRequest = height;
+                pastMatchView.HeightRequest = height;
+			} else if (upcomingMatchView.IsEnabled && !pastMatchView.IsEnabled) {
+				upcomingMatchView.HeightRequest = height;
+				pastMatchView.HeightRequest = 0;
+			} else if (!upcomingMatchView.IsEnabled && pastMatchView.IsEnabled) {
+				upcomingMatchView.HeightRequest = 0;
+				pastMatchView.HeightRequest = height;
+			} else if (!upcomingMatchView.IsEnabled && !pastMatchView.IsEnabled) {
+				upcomingMatchView.HeightRequest = 0;
+				pastMatchView.HeightRequest = 0;
+			}
+
+			Console.WriteLine("Hieght: " + height);
+			Console.WriteLine("Hieght: " + upcomingMatchView.Height);
+			Console.WriteLine("Hieght: " + upcomingMatchView.HeightRequest);
+			Console.WriteLine("Hieght: " + pastMatchView.Height);
+			Console.WriteLine("Hieght: " + pastMatchView.HeightRequest);
+			Console.WriteLine(upcomingMatchView.IsEnabled);
+			Console.WriteLine(pastMatchView.IsEnabled);
+		}
+
+		public async Task updateMatchLists() {
+			await Task.Run(() => getMatchList());
+
+			upcomingMatchView.ItemsSource = upcomingMatchList;
+			pastMatchView.ItemsSource = pastMatchList;
+			Console.WriteLine("test done");
+		}
+
+		async Task getMatchList() {
+			var s1 = AppSettings.RetrieveSettings("UpcomingMatchListEn");
+			if (s1 == "false")
+				upcomingMatchView.IsEnabled = false;
+			var s2 = AppSettings.RetrieveSettings("PastMatchListEn");
+			if (s2 == "false")
+				pastMatchView.IsEnabled = false;
+			
+			var l1 = new List<EventMatchData>();
+			var l2 = new List<EventMatchData>();
+			var currentTime = 1457731740;
+			//var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+
+			var db = new FirebaseClient(GlobalVariables.firebaseURL);
+			var matches = await db
+				.Child(GlobalVariables.regionalPointer)
+				.Child("matchList")
+				.OnceAsync<EventMatchData>();
+
+			foreach (var match in matches) {
+				if (match.Object.matchTime >= currentTime)
+					l1.Add(match.Object);
+				else
+					l2.Add(match.Object);
+			}
+
+			// Needed to avoid Java.lang.IllegalStateException
+			upcomingMatchList = l1;
+			pastMatchList = l2;
+
+			Console.WriteLine("test get");
+		}
+	}
+}

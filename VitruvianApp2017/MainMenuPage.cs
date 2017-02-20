@@ -10,27 +10,13 @@ namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
-<<<<<<< HEAD
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new AdminPage() };//, new AutoCompleteTest()};
-		String[] mainMenuPageTitles = { "Robot Info", "Match Scouting", "Admin Page" };//, "AutoComplete"};
-=======
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new AdminPage(), new MatchListIndexPage(), new DataAnalysisPage()};
-		String[] mainMenuPageTitles = { "Robot Info", "Match Scouting", "Admin Page", "Match List", "Data Analysis"};
->>>>>>> origin/MatchOverview
+		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new MatchListIndexPage(), new DataAnalysisPage(), new AdminPage()};
+		String[] mainMenuPageTitles = { "Robot Info", "Match Scouting", "Match List", "Data Analysis", "Admin Page"};
 
 		public MainMenuPage()
 		{
 			Title = "Team 4201 Scouting App";
-			/*
-			Label titleLbl = new Label(){
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Text = "Team 4201 Scouting App",
-				TextColor = Color.White,
-				BackgroundColor = Color.FromHex("1B5E20"),
-				FontSize = GlobalVariables.sizeTitle,
-				FontAttributes = FontAttributes.Bold
-			};
-			*/
+
 			Label regionalLbl = new Label()
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,

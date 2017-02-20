@@ -29,21 +29,18 @@ namespace VitruvianApp2017
 			}
 		};
 
-		static EventMatchData matchData;
-		static TeamData[] teams = new TeamData[6];
+		EventMatchData matchData;
+		TeamData[] teams = new TeamData[6];
 		TeamData[] blue = new TeamData[3];
 		TeamData[] red = new TeamData[3];
 
 		public MatchInfoPopupPage(EventMatchData data) {
 			matchData = data;
 
-			var getTeams = Task.Run(()=>FetchTeamData());
-			getTeams.Wait();
-
 			// Add Side Data
 
 			// Add Top Data (?)
-
+			/*
 			for (int i = 0; i < 6; i++) {
 				var layout = populateTeamData(teams[i]);
 				displayGrid.Children.Add(layout, i + 1, i + 2, 1, 2);
@@ -78,6 +75,7 @@ namespace VitruvianApp2017
 					}
 				}
 			};
+			*/
 		}
 
 		StackLayout populateTeamData(TeamData tData) {
@@ -106,28 +104,56 @@ namespace VitruvianApp2017
 			};
 		}
 
-		static async Task FetchTeamData() {
+		protected override void OnAppearing() {
+			base.OnAppearing();
+			FetchTeamData();
+
+		}
+		async Task awaitTeamData() {
+			//teams = await FetchTeamData();
+			var task = Task.Factory.StartNew(() => FetchTeamData());
+			task.Wait();
+
+			/*
+			for (int i = 0; i < 3; i++){
+				// var task =  Task.Factory.StartNew(() => FetchTeamData(matchData.Red[i]));
+				// teams[i] = await task.Result;
+				teams[i] = await FetchTeamData(matchData.Red[i]);
+			} 
+			for (int i = 0; i < 3; i++) {
+				//var task = Task.Factory.StartNew(() => FetchTeamData(matchData.Blue[i]));
+				// teams[i + 3] = await task.Result;
+				teams[i + 3] = await FetchTeamData(matchData.Blue[i]);
+			}
+			*/
+			Console.WriteLine("Stop");
+		}
+
+		async Task FetchTeamData() {
+			Console.WriteLine("Start");
+
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
-
-			for (int i = 0; i < 3; i++) {
-				var team = await db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.Child(matchData.Red[i].ToString())
-							.OnceSingleAsync<TeamData>();
-				teams[i] = team;
-				Console.WriteLine("Team Fetch: " + team.teamNumber);
+			var fbTeams = await db
+						.Child(GlobalVariables.regionalPointer)
+						.Child("teamData")
+						.OnceAsync<TeamData>();
+			
+			foreach (var fbTeam in fbTeams) {
+				if (fbTeam.Object.teamNumber == red[0].teamNumber)
+					teams[0] = fbTeam.Object;
+				else if (fbTeam.Object.teamNumber == red[1].teamNumber)
+					teams[1] = fbTeam.Object;
+				else if (fbTeam.Object.teamNumber == red[2].teamNumber)
+					teams[2] = fbTeam.Object;
+				else if (fbTeam.Object.teamNumber == blue[0].teamNumber)
+					teams[3] = fbTeam.Object;
+				else if (fbTeam.Object.teamNumber == blue[1].teamNumber)
+					teams[4] = fbTeam.Object;
+				else if (fbTeam.Object.teamNumber == blue[2].teamNumber)
+					teams[5] = fbTeam.Object;
 			}
-
-			for (int i = 0; i < 3; i++) {
-				var team = await db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.Child(matchData.Blue[i].ToString())
-							.OnceSingleAsync<TeamData>();
-				teams[i + 3] = team;
-				Console.WriteLine("Team Fetch: " + team.teamNumber);
-			}
+			foreach (var team in teams)
+				Console.WriteLine("Team: " + team.teamNumber);
 		}
 	}
 }
