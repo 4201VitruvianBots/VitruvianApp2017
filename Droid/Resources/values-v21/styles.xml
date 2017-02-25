@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<style name="VitruvianMaterial" parent="android:Theme.Material.Light">
+			<item name="android:colorPrimary">#008000</item>
+			<!--
+			<item name="android:colorPrimaryDark">#008000</item>
+			<item name="android:colorAccent">#008000</item>
+			-->
+			<item name="android:textColorPrimary">#FFFFFF</item>
+	</style>
+</resources>
