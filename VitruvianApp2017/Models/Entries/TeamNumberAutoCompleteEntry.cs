@@ -21,11 +21,6 @@ namespace VitruvianApp2017
 			getTeamList();
 			initialHieght = Height;
 
-			var entryLbl = new Label() {
-				Text = "Team Number:",
-				FontAttributes = FontAttributes.Bold
-			};
-
 			list.ItemTemplate = new DataTemplate(() => {
 				var teamNumber = new Label();
 				teamNumber.SetBinding(Label.TextProperty, "teamNumber");
@@ -50,6 +45,7 @@ namespace VitruvianApp2017
 					autoCompleteOptions();
 				else
 					semaphore = true;
+				if(lien
 			};
 
 			listScroll.Content = list;
@@ -91,10 +87,12 @@ namespace VitruvianApp2017
 
 		void autoCompleteOptions() {
 			var filtered = new List<TeamData>();
-
+			int height = 0;
 			foreach (var item in teamData)
-				if (item.teamNumber.ToString().StartsWith(lineEntry.Text))
+				if (item.teamNumber.ToString().StartsWith(lineEntry.Text)) {
 					filtered.Add(item);
+					height += 40;
+				}
 			
 			list.ItemsSource = filtered;
 			listScroll.IsVisible = true;

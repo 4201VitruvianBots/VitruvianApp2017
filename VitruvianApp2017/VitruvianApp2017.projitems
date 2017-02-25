@@ -48,12 +48,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\SingleCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\LineEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\ScouterNameAutoCompleteEntry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\TeamNumberAutoCompleteEntry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Lists\MatchHeaderList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\RobotInfoIndexPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupEditPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\PitDataCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchHeaderList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Functions\FirebaseStorage.manifest" />
@@ -72,5 +71,9 @@
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AppSettingsTest.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AutoCompleteTest.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Models\Entries\TeamNumberAutoCompleteEntry.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Models\Lists\" />
   </ItemGroup>
 </Project>

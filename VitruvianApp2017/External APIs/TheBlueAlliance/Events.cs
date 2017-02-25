@@ -80,6 +80,8 @@ namespace TheBlueAlliance
 						
 					// Sort match in descending order
 					dataList.Sort((x, y) => x.time.CompareTo(y.time));
+					foreach (var match in dataList)
+						Console.WriteLine("TBA Match Fetch: " + match.match_number);
 					 
 				}
 			} catch (Exception webError) {

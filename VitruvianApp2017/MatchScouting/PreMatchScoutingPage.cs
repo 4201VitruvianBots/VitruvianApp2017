@@ -15,7 +15,6 @@ namespace VitruvianApp2017
 		Picker alliancePicker = new Picker();
 		Picker teamNoPicker = new Picker();
 		Picker positionPicker = new Picker();
-		TeamNumberAutoComplete teamNo = new TeamNumberAutoComplete();
 		int teamNumber;
 
 		TeamMatchData matchData = new TeamMatchData();

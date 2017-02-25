@@ -11,71 +11,116 @@ namespace VitruvianApp2017
 {
 	public class RobotInfoIndexPage : ContentPage
 	{
-		ListView teamListView;
-		List<TeamData> teamList;
-		ScrollView teamIndex;
-		StackLayout teamStack = new StackLayout()
-		{
-			Spacing = 1,
-			BackgroundColor = Color.Silver
-		};
+		ListView teamListView = new ListView();
+		List<TeamData> teamList = new List<TeamData>();
+
+		Grid searchBar;
+		Entry searchEntry;
+		Label searchCancel;
 
 		ActivityIndicator busyIcon = new ActivityIndicator();
 
 		public RobotInfoIndexPage() {
 			Title = "Robot Info";
 
-			teamListView = new ListView() {
-				ItemsSource = teamList,
-				ItemTemplate = new DataTemplate(() => {
+			searchBar = new Grid() {
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				VerticalOptions = LayoutOptions.CenterAndExpand,
+				ColumnSpacing = 0,
+				RowSpacing = 0,
 
-					var teamNumber = new Label();
-					teamNumber.SetBinding(Label.TextProperty, new Binding( "teamNumber", BindingMode.Default, null, null, "Team {0}"));
-					teamNumber.TextColor = Color.Black;
-					teamNumber.VerticalOptions = LayoutOptions.CenterAndExpand;
-
-					return new ViewCell() {
-						View = new StackLayout() {
-							BackgroundColor = Color.White,
-
-							Children = {
-								teamNumber
-							}
-						}
-					};
-				})
+				ColumnDefinitions = {
+					new ColumnDefinition() { Width = GridLength.Auto },
+					new ColumnDefinition() { Width = GridLength.Star },
+					new ColumnDefinition() { Width = GridLength.Auto },
+					new ColumnDefinition() { Width = 5 },
+				},
+				RowDefinitions = {
+					new RowDefinition() { Height = GridLength.Auto }
+				}
 			};
+			searchEntry = new Entry() {
+				Placeholder = "Search team",
+				MinimumWidthRequest = Width
+			};
+			searchEntry.TextChanged += (sender, e) => {
+				autoCompleteOptions();
+				searchCancel.IsVisible = true;
+				searchCancel.IsEnabled = true;
+
+				if (string.IsNullOrEmpty(searchEntry.Text)){
+					searchEntry.Text = "";
+					searchEntry.Placeholder = "Search team";
+					searchCancel.IsVisible = false;
+					searchCancel.IsEnabled = false;
+				}
+			};
+			searchCancel = new Label() {
+				VerticalOptions = LayoutOptions.CenterAndExpand,
+				Text = "x",
+				FontSize = GlobalVariables.sizeTitle,
+				TextColor = searchEntry.PlaceholderColor,
+				IsVisible = false,
+				IsEnabled = false,
+			};
+			var tap = new TapGestureRecognizer();
+			tap.Tapped += (sender, e) => {
+				searchEntry.Text = "";
+			};
+			var searchCell = new ContentView() {
+				Content = searchCancel
+			};
+			searchCell.GestureRecognizers.Add(tap);
+			searchBar.Children.Add(searchEntry, 1, 0);
+			searchBar.Children.Add(searchCell, 2, 0);
+
+			teamListView.MinimumHeightRequest = Height;
+			teamListView.ItemTemplate = new DataTemplate(() => {
+				var teamNumber = new Label();
+				teamNumber.SetBinding(Label.TextProperty, "teamNumber");
+				teamNumber.FontSize = GlobalVariables.sizeMedium;
+				//teamNumber.TextColor = Color.Black;
+				teamNumber.VerticalOptions = LayoutOptions.CenterAndExpand;
+
+				var cell = new ViewCell() {
+					View = new StackLayout() {
+						BackgroundColor = Color.White,
+
+						Children = {
+							teamNumber
+						}
+					}
+				};
+
+				return cell;
+			});
 			teamListView.ItemSelected += (sender, e) => {
 				((ListView)sender).SelectedItem = null;
 			};
 			teamListView.ItemTapped += (sender, e) => {
-				Navigation.PushPopupAsync(new TeamCardPopupPage((TeamData)sender));
-			};
-
-			teamIndex = new ScrollView() {
-				//Content = teamList
-				Content = teamStack
+				Navigation.PushPopupAsync(new TeamCardPopupPage((TeamData)e.Item));
 			};
 
 			var navigationBtns = new NavigationButtons(true);
 			navigationBtns.refreshBtn.Clicked += (object sender, EventArgs e) =>
 			{
-				UpdateTeamList();
+				updateMatchLists();
 			};
 
 			this.Appearing += (object sender, EventArgs e) =>
 			{
-				UpdateTeamList();
+				updateMatchLists();
 			};
 
 			this.Content = new StackLayout()
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-
+				Spacing = 1,
 				Children = {
 					busyIcon,
-					teamIndex,
+					searchBar,
+					teamListView,
 					navigationBtns
 				}
 			};
@@ -83,11 +128,23 @@ namespace VitruvianApp2017
 			BackgroundColor = Color.White;
 		}
 
-		public async Task UpdateTeamList()
+		public async Task updateMatchLists() {
+			busyIcon.IsVisible = true;
+			busyIcon.IsRunning = true;
+			await Task.Run(() => getTeamList());
+
+			Console.WriteLine("Continue");
+			teamListView.ItemsSource = teamList;
+
+			busyIcon.IsVisible = false;
+			busyIcon.IsRunning = false;
+		}
+
+		async Task getTeamList()
 		{
+			Console.WriteLine("Begin");
 			if (CheckInternetConnectivity.InternetStatus()) {
-				busyIcon.IsVisible = true;
-				busyIcon.IsRunning = true;
+				var list = new List<TeamData>();
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 				//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
@@ -95,35 +152,26 @@ namespace VitruvianApp2017
 						.Child(GlobalVariables.regionalPointer)
 						.Child("teamData")
 						.OnceAsync<TeamData>();
-				//var sorted = fbTeams.OrderByDescending((arg) => arg.Key("team_number"));
-
-				teamStack.Children.Clear();
 
 				foreach (var team in fbTeams) {
 					Console.WriteLine("TeamNo: " + team.Object.teamNumber);
-
-					//teamList.Add(team.Object);
-					TeamListCell cell = new TeamListCell();
-					cell.teamName.Text = "Team " + team.Object.teamNumber.ToString();
-					teamStack.Children.Add(cell);
-
-					TapGestureRecognizer tap = new TapGestureRecognizer();
-
-					if (team != null) {
-						tap.Tapped += (object sender, EventArgs e) => {
-							Navigation.PushPopupAsync(new TeamCardPopupPage(team.Object));
-						};
-					} else {
-						tap.Tapped += (object sender, EventArgs e) => {
-							DisplayAlert("Error:", "No Team Data found!", "OK");
-						};
-					}
-					cell.GestureRecognizers.Add(tap);
+					teamList.Add(team.Object);
+					list.Add(team.Object);
 				}
-
-				busyIcon.IsVisible = false;
-				busyIcon.IsRunning = false;
+				teamList = list;
 			}
+			Console.WriteLine("End");
+		}
+
+		void autoCompleteOptions() {
+			var temp = teamList;
+			var filtered = new List<TeamData>();
+
+			foreach (var team in temp)
+				if (team.teamNumber.ToString().StartsWith(searchEntry.Text.ToLower()))
+					filtered.Add(team);
+
+			teamListView.ItemsSource = filtered;
 		}
 	}
 }

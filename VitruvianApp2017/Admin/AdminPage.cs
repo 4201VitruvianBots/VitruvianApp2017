@@ -118,12 +118,14 @@ namespace VitruvianApp2017
 			if (CheckInternetConnectivity.InternetStatus()) {
 				busyIcon.IsRunning = true;
 				busyIcon.IsVisible = true;
+
 				var matchList = await EventsHttp.GetEventMatchesHttp(GlobalVariables.regionalPointer);
 				var sorted = from Match in matchList orderby Match.time select Match;
 
+
 				foreach (var match in sorted)
 					Console.WriteLine("Match: " + match.match_number);
-
+				
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
  
 				foreach (var match in sorted) {

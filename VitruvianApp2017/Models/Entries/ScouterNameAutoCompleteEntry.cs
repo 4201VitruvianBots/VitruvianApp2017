@@ -13,7 +13,6 @@ namespace VitruvianApp2017
 		ListView list = new ListView();
 		List<ScouterName> scouterNames = new List<ScouterName>();
 		ScrollView listScroll = new ScrollView();
-		bool semaphore = true;
 		public string scouterName;
 		double initialHieght;
 
@@ -87,14 +86,15 @@ namespace VitruvianApp2017
 
 		void autoCompleteOptions() {
 			var filtered = new List<ScouterName>();
-			int height = 20;
+			int height = 0;
 
 			foreach (var name in scouterNames)
 				if (name.scouterName.ToLower().Contains(lineEntry.Text.ToLower())) {
 					filtered.Add(name);
 					height += 40;
 				}
-			
+			height = height > 0 ? height += 20 : height = 0;
+
 			list.HeightRequest = height;
 			listScroll.HeightRequest = height;
 			list.ItemsSource = filtered;

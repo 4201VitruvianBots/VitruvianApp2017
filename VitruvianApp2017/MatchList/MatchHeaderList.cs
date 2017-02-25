@@ -21,6 +21,7 @@ namespace VitruvianApp2017
 
 		public MatchHeaderLists() {
 			//updateMatchLists();
+
 			var upcomingMatchHeader = new ContentView() {
 				Content = new Frame() {
 					OutlineColor = Color.Gray,
@@ -45,10 +46,9 @@ namespace VitruvianApp2017
 			upcomingMatchHeader.GestureRecognizers.Add(upcomingMatchHeaderTap);
 
 			upcomingMatchView.ItemTemplate = new DataTemplate(() => {
-				var matchLbl = new Label() {
-					
-				};
+				var matchLbl = new Label();
 				matchLbl.SetBinding(Label.TextProperty, "matchNumber");
+
 				var cell = new ViewCell() {
 					View = new StackLayout() {
 						Children = {
@@ -65,7 +65,7 @@ namespace VitruvianApp2017
 			};
 
 			upcomingMatchView.ItemTapped += (sender, e) => {
-				Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)upcomingMatchView.SelectedItem));
+				Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
 			};
 
 			var pastMatchHeader = new ContentView() {
@@ -171,6 +171,8 @@ namespace VitruvianApp2017
 			
 			var l1 = new List<EventMatchData>();
 			var l2 = new List<EventMatchData>();
+
+			// change on release
 			var currentTime = 1457731740;
 			//var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
