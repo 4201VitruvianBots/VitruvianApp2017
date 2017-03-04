@@ -65,12 +65,22 @@ namespace VitruvianApp2017
 
 			teamNoPicker.SelectedIndexChanged += (sender, e) => {
 				teamNoPicker.Title = teamNoPicker.Items[teamNoPicker.SelectedIndex];
-				teamNumber = Convert.ToInt32(teamNoPicker.Title);
+				if(teamNoPicker.IsEnabled)
+					teamNumber = Convert.ToInt32(teamNoPicker.Title);
 			};
 
 			Label positionLabel = new Label {
 				Text = "Starting Position:",
 				FontAttributes = FontAttributes.Bold
+			};
+
+			// Temp for practice matches
+			var teamNoEntry = new Entry() {
+
+			};
+			teamNoEntry.TextChanged += (sender, e) => {
+				if (teamNoEntry.IsEnabled)
+					teamNumber = Convert.ToInt32(teamNoEntry.Text);
 			};
 
 			positionPicker = new Picker();
@@ -197,22 +207,20 @@ namespace VitruvianApp2017
 								.Child(matchData.matchNumber)
 								.OnceSingleAsync<TeamMatchData>();
 
-				// [Uncomment this for release]
-				//if (dataCheck != null)
-				//	await DisplayAlert("Error", "Match Data already exists for this team", "OK");
-				//else {
+				if (await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel")) {
+
 					var db2 = new FirebaseClient(GlobalVariables.firebaseURL);
 
-					var send = db2
+					var send = db
 							.Child(GlobalVariables.regionalPointer)
 							.Child("teamData")
 							.Child(matchData.teamNumber.ToString())
 							.Child("Matches")
 							.Child(matchData.matchNumber)
 							.PutAsync(matchData);
-				
+
 					await Navigation.PushAsync(new AutoMatchScoutingPage(matchData));
-				//}
+				}
 			} 
 			busyIcon.IsVisible = false;
 			busyIcon.IsRunning = false;

@@ -113,6 +113,11 @@ namespace VitruvianApp2017 {
 			highGoalAcc.PropertyChanged += (sender, e) => {
 				calcScore();
 			};
+			var lowGoalDumpBtn = new Button() {
+				Text = "Low Goal Dump",
+				BackgroundColor = Color.Yellow,
+				FontAttributes = FontAttributes.Bold
+			};
 
 			gearsScored = new SingleCounter("Gears Scored");
 			gearsDropped = new SingleCounter("Gears Dropped");
@@ -153,9 +158,10 @@ namespace VitruvianApp2017 {
 
 			pageLayout.Children.Add(hopperCapacity, 1, 2, 0, 5);
 			pageLayout.Children.Add(highGoalAcc, 2, 3, 0, 5);
-			pageLayout.Children.Add(gearsScored, 3, 4, 0, 2);
-			pageLayout.Children.Add(gearsDropped, 3, 4, 2, 4);
-			pageLayout.Children.Add(finishBtn, 0, 4, 5, 6);
+			pageLayout.Children.Add(lowGoalDumpBtn, 2, 3, 5, 6);
+			pageLayout.Children.Add(gearsScored, 3, 4, 0, 3);
+			pageLayout.Children.Add(gearsDropped, 3, 4, 3, 5);
+			pageLayout.Children.Add(finishBtn, 0, 4, 7, 8);
 
 			Content = new StackLayout() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -194,11 +200,11 @@ namespace VitruvianApp2017 {
 			calcScore();
 
 			matchData.autoCross = inputs[0].on;
-			matchData.gearDeposit = inputs[1].on;
-			matchData.droppedGears = inputs[2].on ? 1 : 0;
+			matchData.teleopGearsDeposit = gearsScored.value();
+			matchData.teleOpLowScore = inputs[2].on ? 1 : 0;
 			//matchData.autoLowHit = lowGoalHits.value();
 			//matchData.autoHighHit = highGoalHits.value();
-			matchData.teleOpScore = teleOpScore;
+			matchData.teleOptotalScore = teleOpScore;
 
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
 

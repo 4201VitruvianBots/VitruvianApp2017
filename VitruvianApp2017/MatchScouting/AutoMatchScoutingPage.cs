@@ -69,6 +69,7 @@ namespace VitruvianApp2017
 			inputs[0] = new ColorButton("Crossed");
 			inputs[1] = new ColorButton("Gear Delivered");
 			inputs[2] = new ColorButton("Gear Dropped");
+			inputs[2].MinimumWidthRequest = inputs[1].Width;
 
 			foreach (var input in inputs) 
 				input.Clicked += (sender, e) => { calcScore(); };
@@ -133,6 +134,10 @@ namespace VitruvianApp2017
 			};
 		}
 
+		void noramlizeBtnSize() {
+
+		}
+
 		void calcScore() {
 			autoScore = 0;
 			if (inputs[1].on)
@@ -148,10 +153,10 @@ namespace VitruvianApp2017
 			calcScore();
 
 			matchData.autoCross = inputs[0].on;
-			matchData.gearDeposit = inputs[1].on;
-			matchData.droppedGears = inputs[2].on ? 1 : 0;
-			matchData.autoLowHit = lowGoalHits.value();
-			matchData.autoHighHit = highGoalHits.value();
+			matchData.autoGearDeposit = inputs[1].on;
+			matchData.autoGearDropped = inputs[2].on;
+			matchData.autoLowHits = lowGoalHits.value();
+			matchData.autoHighHits = highGoalHits.value();
 			matchData.autoScore = autoScore;
 
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);

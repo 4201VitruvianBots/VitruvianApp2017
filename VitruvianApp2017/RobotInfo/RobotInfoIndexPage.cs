@@ -76,12 +76,13 @@ namespace VitruvianApp2017
 
 			teamListView.MinimumHeightRequest = Height;
 			teamListView.ItemTemplate = new DataTemplate(() => {
-				var teamNumber = new Label();
+				var teamNumber = new Label() { 
+					TextColor = Color.Black,
+					FontSize = GlobalVariables.sizeMedium,
+					VerticalOptions = LayoutOptions.CenterAndExpand
+				};
 				teamNumber.SetBinding(Label.TextProperty, "teamNumber");
-				teamNumber.FontSize = GlobalVariables.sizeMedium;
-				//teamNumber.TextColor = Color.Black;
-				teamNumber.VerticalOptions = LayoutOptions.CenterAndExpand;
-
+				 
 				var cell = new ViewCell() {
 					View = new StackLayout() {
 						BackgroundColor = Color.White,
@@ -164,10 +165,9 @@ namespace VitruvianApp2017
 		}
 
 		void autoCompleteOptions() {
-			var temp = teamList;
 			var filtered = new List<TeamData>();
 
-			foreach (var team in temp)
+			foreach (var team in teamList)
 				if (team.teamNumber.ToString().StartsWith(searchEntry.Text.ToLower()))
 					filtered.Add(team);
 

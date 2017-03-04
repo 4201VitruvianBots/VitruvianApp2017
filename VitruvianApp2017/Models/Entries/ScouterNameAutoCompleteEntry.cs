@@ -47,7 +47,11 @@ namespace VitruvianApp2017
 				listScroll.IsEnabled = false;
 			};
 			lineEntry.TextChanged += (sender, e) => {
-				autoCompleteOptions();
+				if (string.IsNullOrEmpty(lineEntry.Text)) {
+					listScroll.IsVisible = false;
+					listScroll.IsEnabled = false;
+				} else
+					autoCompleteOptions();
 			};
 
 			listScroll.Content = list;

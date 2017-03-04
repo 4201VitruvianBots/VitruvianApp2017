@@ -19,8 +19,44 @@ namespace VitruvianApp2017
 		List<EventMatchData> pastMatchList = new List<EventMatchData>();
 		double height;
 
+		Grid searchBar;
+		Entry searchEntry;
+
 		public MatchHeaderLists() {
 			//updateMatchLists();
+			searchBar = new Grid() {
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				VerticalOptions = LayoutOptions.CenterAndExpand,
+				ColumnSpacing = 0,
+				RowSpacing = 0,
+
+				ColumnDefinitions = {
+					new ColumnDefinition() { Width = GridLength.Auto },
+					new ColumnDefinition() { Width = GridLength.Star },
+					new ColumnDefinition() { Width = GridLength.Auto },
+					new ColumnDefinition() { Width = 5 },
+				},
+				RowDefinitions = {
+					new RowDefinition() { Height = GridLength.Auto }
+				}
+			};
+			searchEntry = new Entry() {
+				Placeholder = "Search matches by team",
+				Keyboard = Keyboard.Numeric,
+
+				MinimumWidthRequest = Width
+			};
+			var filterBtn = new Button() {
+				Text = "Search",
+				TextColor = Color.White,
+				FontSize = GlobalVariables.sizeMedium,
+				BackgroundColor = Color.Green,
+			};
+			filterBtn.Clicked += (sender, e) => {
+				autoCompleteOptions();
+			};
+			searchBar.Children.Add(searchEntry, 1, 0);
+			searchBar.Children.Add(filterBtn, 2, 0);
 
 			var upcomingMatchHeader = new ContentView() {
 				Content = new Frame() {
@@ -37,7 +73,8 @@ namespace VitruvianApp2017
 			};
 			var upcomingMatchHeaderTap = new TapGestureRecognizer();
 			upcomingMatchHeaderTap.Tapped += (sender, e) => {
-				if (!pastMatchView.IsEnabled) {
+				Console.WriteLine("test");
+				if (pastMatchView.IsEnabled) {
 					upcomingMatchView.IsEnabled = !upcomingMatchView.IsEnabled;
 					setListHieght();
 				}
@@ -83,7 +120,7 @@ namespace VitruvianApp2017
 			};
 			var pastMatchHeaderTap = new TapGestureRecognizer();
 			pastMatchHeaderTap.Tapped += (sender, e) => {
-				if (!upcomingMatchView.IsEnabled) {
+				if (upcomingMatchView.IsEnabled) {
 					pastMatchView.IsEnabled = !pastMatchView.IsEnabled;
 					setListHieght();
 				}
@@ -93,7 +130,7 @@ namespace VitruvianApp2017
 
 			pastMatchView.ItemTemplate = new DataTemplate(() => {
 				var matchLbl = new Label() {
-
+					TextColor = Color.Black
 				};
 				matchLbl.SetBinding(Label.TextProperty, "matchNumber");
 				var cell = new ViewCell() {
@@ -121,6 +158,7 @@ namespace VitruvianApp2017
 				VerticalOptions = LayoutOptions.FillAndExpand,
 
 				Children = {
+					searchBar,
 					upcomingMatchHeader,
 					upcomingMatchView,
 					pastMatchHeader,
@@ -154,6 +192,8 @@ namespace VitruvianApp2017
 		}
 
 		public async Task updateMatchLists() {
+			searchEntry.Text = null;
+			searchEntry.Placeholder = "Search matches by team";
 			await Task.Run(() => getMatchList());
 
 			upcomingMatchView.ItemsSource = upcomingMatchList;
@@ -172,9 +212,7 @@ namespace VitruvianApp2017
 			var l1 = new List<EventMatchData>();
 			var l2 = new List<EventMatchData>();
 
-			// change on release
-			var currentTime = 1457731740;
-			//var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+			var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
@@ -195,6 +233,39 @@ namespace VitruvianApp2017
 			pastMatchList = l2;
 
 			Console.WriteLine("test get");
+		}
+
+		void autoCompleteOptions() {
+			var oldMatchFilter = new List<EventMatchData>();
+			var newMatchFilter = new List<EventMatchData>();
+
+			foreach (var match in upcomingMatchList) {
+				foreach (var blue in match.Blue)
+					if (blue.ToString() == searchEntry.Text) {
+						newMatchFilter.Add(match);
+						break;
+					}
+				foreach (var red in match.Red)
+					if (red.ToString() == searchEntry.Text) {
+						newMatchFilter.Add(match);
+						break;
+					}
+			}
+			foreach (var match in pastMatchList) {
+				foreach (var blue in match.Blue)
+					if (blue.ToString() == searchEntry.Text) {
+						oldMatchFilter.Add(match);
+						break;
+					}
+				foreach (var red in match.Red)
+					if (red.ToString() == searchEntry.Text) {
+						oldMatchFilter.Add(match);
+						break;
+					}
+			}
+
+			upcomingMatchView.ItemsSource = newMatchFilter;
+			pastMatchView.ItemsSource = oldMatchFilter;
 		}
 	}
 }

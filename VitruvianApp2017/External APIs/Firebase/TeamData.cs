@@ -13,7 +13,7 @@ namespace VitruvianApp2017
 		//public bool cheesecake { get; set; }
 
 		// Match Data
-		public TeamMatchData[] matchData { get; set; }
+		public TeamMatchData[] Matches { get; set; }
 		public double tbaOPR { get; set; }
 		public int matchCount { get; set; }
 		public double avgEstScore { get; set; }

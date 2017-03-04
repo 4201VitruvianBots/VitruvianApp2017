@@ -30,8 +30,6 @@ namespace VitruvianApp2017
 				HorizontalTextAlignment = TextAlignment.Center
 			};
 
-
-
 			for (int i = 0; i < buttons; i++) {
 				btnArray[i] = new Button() {
 					HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -40,6 +38,9 @@ namespace VitruvianApp2017
 					BackgroundColor = Color.Red
 				};
 			}
+
+			normalizeBtnSize();
+
 			foreach (var btn in btnArray)
 				btn.Clicked += (sender, e) => {
 					setButtonBackground(btn);
@@ -48,6 +49,20 @@ namespace VitruvianApp2017
 			Children.Add(titleLbl);
 			foreach (var btn in btnArray)
 				Children.Add(btn);
+		}
+
+		void normalizeBtnSize() {
+			double h = 0, w = 0;
+			foreach (var btn in btnArray) {
+				if (btn.Height > h)
+					h = btn.Height;
+				if (btn.Width > w)
+					w = btn.Width;
+			}
+			foreach (var btn in btnArray) {
+				btn.MinimumHeightRequest = h;
+				btn.MinimumWidthRequest = w;
+			}	
 		}
 
 		void setButtonBackground(Button btn) {
