@@ -50,12 +50,12 @@ namespace VitruvianApp2017
 				int index = Array.IndexOf(mainMenuPageTitles, pageTitle);
 				var btn = new Button(){
 					Text = mainMenuPageTitles[index],
+					FontSize = GlobalVariables.sizeMedium,
 					BackgroundColor = Color.Green,
 					TextColor = Color.White
 				};
 
 				btn.Clicked	+= (object sender, EventArgs e) => {
-					/*
 					if (mainMenuLinks[index].GetType().ToString() == "VitruvianApp2017.AdminLoginPopup") {
 						var setting = AppSettings.RetrieveSettings("AdminLogin");
 
@@ -65,8 +65,7 @@ namespace VitruvianApp2017
 							Navigation.PushPopupAsync((PopupPage)mainMenuLinks[index]);
 					}
 					else
-					*/
-					Navigation.PushAsync(mainMenuLinks[index]);
+						Navigation.PushAsync(mainMenuLinks[index]);
 				};
 				pageStack.Children.Add(btn);
 			}

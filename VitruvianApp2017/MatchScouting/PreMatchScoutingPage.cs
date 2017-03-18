@@ -16,6 +16,7 @@ namespace VitruvianApp2017
 		Picker teamNoPicker = new Picker();
 		Picker positionPicker = new Picker();
 		int teamNumber;
+		string matchType = "QM";
 
 		TeamMatchData matchData = new TeamMatchData();
 
@@ -191,35 +192,46 @@ namespace VitruvianApp2017
 			busyIcon.IsRunning = true;
 			
 			matchData.scouterName = scouts.lineEntry.Text;;
-			matchData.matchNumber = "QM" + matchNo.inputEntry.Text;
+			matchData.matchNumber = matchType + matchNo.inputEntry.Text;
 			matchData.teamNumber = teamNumber;
 			matchData.alliance = alliancePicker.Title;
 			matchData.startPos = positionPicker.Title;
 
 			if (CheckInternetConnectivity.InternetStatus()) {
-				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				try {
+					bool test = false, check = false;
+					var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-				var dataCheck = await db
+					var dataCheck = await db
+									.Child(GlobalVariables.regionalPointer)
+									.Child("teamData")
+									.Child(matchData.teamNumber.ToString())
+									.Child("Matches")
+									.OnceAsync<TeamMatchData>();
+
+					foreach (var match in dataCheck)
+						if (match.Object.matchNumber == matchType + matchNo.inputEntry.Text) {
+							test = true;
+							break;
+						}
+					Console.WriteLine("Test: " + test);
+					if (test) {
+						check = await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel");
+					}
+
+					if (check == true || test == false) {
+						var send = db
 								.Child(GlobalVariables.regionalPointer)
 								.Child("teamData")
 								.Child(matchData.teamNumber.ToString())
 								.Child("Matches")
-								.Child(matchData.matchNumber)
-								.OnceSingleAsync<TeamMatchData>();
+								.Child(dataCheck.Count.ToString())
+								.PutAsync(matchData);
 
-				if (await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel")) {
-
-					var db2 = new FirebaseClient(GlobalVariables.firebaseURL);
-
-					var send = db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.Child(matchData.teamNumber.ToString())
-							.Child("Matches")
-							.Child(matchData.matchNumber)
-							.PutAsync(matchData);
-
-					await Navigation.PushAsync(new AutoMatchScoutingPage(matchData));
+						await Navigation.PushAsync(new AutoMatchScoutingPage(matchData));
+					}
+				} catch (Exception ex) {
+					Console.WriteLine("Error: " + ex.Message);
 				}
 			} 
 			busyIcon.IsVisible = false;

@@ -133,6 +133,7 @@ namespace VitruvianApp2017
 			busyIcon.IsVisible = true;
 			busyIcon.IsRunning = true;
 			await Task.Run(() => getTeamList());
+			//getTeamList();
 
 			Console.WriteLine("Continue");
 			teamListView.ItemsSource = teamList;
@@ -145,21 +146,24 @@ namespace VitruvianApp2017
 		{
 			Console.WriteLine("Begin");
 			if (CheckInternetConnectivity.InternetStatus()) {
-				var list = new List<TeamData>();
+				try {
+					var list = new List<TeamData>();
 
-				var db = new FirebaseClient(GlobalVariables.firebaseURL);
-				//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
-				var fbTeams = await db
-						.Child(GlobalVariables.regionalPointer)
-						.Child("teamData")
-						.OnceAsync<TeamData>();
+					var db = new FirebaseClient(GlobalVariables.firebaseURL);
+					//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
+					var fbTeams = await db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamData")
+							.OnceAsync<TeamData>();
 
-				foreach (var team in fbTeams) {
-					Console.WriteLine("TeamNo: " + team.Object.teamNumber);
-					teamList.Add(team.Object);
-					list.Add(team.Object);
-				}
-				teamList = list;
+					foreach (var team in fbTeams) {
+						Console.WriteLine("TeamNo: " + team.Object.teamNumber);
+						list.Add(team.Object);
+					}
+					teamList = list;
+				} catch (Exception ex) {
+					Console.WriteLine("Error: " + ex.Message);
+				}	
 			}
 			Console.WriteLine("End");
 		}

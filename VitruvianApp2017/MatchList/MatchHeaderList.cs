@@ -214,7 +214,6 @@ namespace VitruvianApp2017
 
 			var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
 			var matches = await db
 				.Child(GlobalVariables.regionalPointer)
