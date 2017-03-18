@@ -24,14 +24,16 @@ namespace VitruvianApp2017
 				Text = title,
 				TextColor = Color.Black,
 				FontAttributes = FontAttributes.Bold,
-				FontSize = GlobalVariables.sizeMedium,
+				FontSize = GlobalVariables.sizeSmall,
 				HorizontalTextAlignment = TextAlignment.Center
 			};
 
 			var valueLbl = new Label()
 			{
 				Text = i.ToString(),
-				HorizontalTextAlignment = TextAlignment.Center
+				FontSize = GlobalVariables.sizeSmall,
+				HorizontalTextAlignment = TextAlignment.Center,
+				VerticalTextAlignment = TextAlignment.Center
 			};
 
 			var decrement = new Button()

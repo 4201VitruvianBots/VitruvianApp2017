@@ -5,8 +5,9 @@ namespace VitruvianApp2017
 {
 	public class ColorButtonStackArray:StackLayout
 	{
-		Button[] btnArray;
-		bool[] on;
+		public event PropertyChangingEventHandler valueChanged;	
+		public Button[] btnArray;
+		public bool[] on;
 		double divisions;
 		double halfDivision;
 		int buttonCount;
@@ -26,7 +27,7 @@ namespace VitruvianApp2017
 				Text = title,
 				TextColor = Color.Black,
 				FontAttributes = FontAttributes.Bold,
-				FontSize = GlobalVariables.sizeMedium,
+				FontSize = GlobalVariables.sizeSmall,
 				HorizontalTextAlignment = TextAlignment.Center
 			};
 
@@ -39,11 +40,10 @@ namespace VitruvianApp2017
 				};
 			}
 
-			normalizeBtnSize();
-
 			foreach (var btn in btnArray)
 				btn.Clicked += (sender, e) => {
 					setButtonBackground(btn);
+					this.OnValueChanged("t");
 				};
 
 			Children.Add(titleLbl);
@@ -51,18 +51,8 @@ namespace VitruvianApp2017
 				Children.Add(btn);
 		}
 
-		void normalizeBtnSize() {
-			double h = 0, w = 0;
-			foreach (var btn in btnArray) {
-				if (btn.Height > h)
-					h = btn.Height;
-				if (btn.Width > w)
-					w = btn.Width;
-			}
-			foreach (var btn in btnArray) {
-				btn.MinimumHeightRequest = h;
-				btn.MinimumWidthRequest = w;
-			}	
+		public void setAllFalse(){
+			setButtonBackground(null);
 		}
 
 		void setButtonBackground(Button btn) {
@@ -85,6 +75,14 @@ namespace VitruvianApp2017
 					index = i;
 
 			return index * divisions + halfDivision;
+		}
+
+		protected void OnValueChanged(string i) {
+			PropertyChangingEventHandler c = this.valueChanged;
+
+			if (c != null) {
+				c(this, new PropertyChangingEventArgs(i));
+			}
 		}
 	}
 }

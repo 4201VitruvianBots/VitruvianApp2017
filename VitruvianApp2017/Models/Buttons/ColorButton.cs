@@ -9,7 +9,8 @@ namespace VitruvianApp2017
 
 		public ColorButton(string title) {
 			HorizontalOptions = LayoutOptions.CenterAndExpand;
-			VerticalOptions = LayoutOptions.CenterAndExpand;
+			VerticalOptions = LayoutOptions.Center;
+
 			Text = title;
 			BackgroundColor = Color.Red;
 

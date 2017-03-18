@@ -10,7 +10,7 @@ namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new MatchListIndexPage(), new DataAnalysisPage(), new AdminPage(), new MatchInfoTest()};
+		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new MatchListIndexPage(), new DataAnalysisPage(), new AdminPage(), new AutoMatchScoutingPage(new TeamMatchData())};
 		String[] mainMenuPageTitles = { "Robot Info", "Match Scouting", "Match List", "Data Analysis", "Admin Page", "Test"};
 
 		public MainMenuPage()
@@ -23,7 +23,7 @@ namespace VitruvianApp2017
 				Text = "Current Regional: " + GlobalVariables.regionalPointer,
 				TextColor = Color.White,
 				BackgroundColor = Color.Green,
-				FontSize = GlobalVariables.sizeTitle,
+				FontSize = GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold
 			};
 
