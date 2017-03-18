@@ -20,10 +20,10 @@ namespace VitruvianApp2017
 
 			}
 		};
-		ColorButton[] inputs = new ColorButton[3];
+		ColorButton[] inputs = new ColorButton[4];
 		SingleCounter highGoalHits, lowGoalHits;
-		Label autoScoreLbl;
-		int autoScore = 0;
+		Label autoGearLbl, autoPressureLbl;
+		int autoGears = 0, autoPressure = 0;
 
 		TeamMatchData matchData;
 
@@ -37,22 +37,39 @@ namespace VitruvianApp2017
 				Text = "Team: " + matchData.teamNumber.ToString(),
 				TextColor = Color.White,
 				BackgroundColor = Color.Green,
-				FontSize = GlobalVariables.sizeTitle,
+				FontSize = GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold
 			};
 
-			autoScoreLbl = new Label() {
-				HorizontalOptions = LayoutOptions.EndAndExpand,
-				Text = "Est. Score: " + autoScore,
+			autoPressureLbl = new Label() {
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				Text = "Pressure: " + autoPressure,
 				TextColor = Color.White,
 				BackgroundColor = Color.Green,
-				FontSize = GlobalVariables.sizeTitle,
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold
+			};
+
+			autoGearLbl = new Label() {
+				HorizontalOptions = LayoutOptions.EndAndExpand,
+				Text = "Gears: " + autoGears,
+				TextColor = Color.White,
+				BackgroundColor = Color.Green,
+				FontSize = GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold
 			};
 
 			Label crossingLbl = new Label() {
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				Text = "Crossing",
+				TextColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium,
+				FontAttributes = FontAttributes.Bold
+			};
+
+			Label fuelLbl = new Label() {
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				Text = "Fuel",
 				TextColor = Color.Black,
 				FontSize = GlobalVariables.sizeMedium,
 				FontAttributes = FontAttributes.Bold
@@ -67,9 +84,28 @@ namespace VitruvianApp2017
 			};
 
 			inputs[0] = new ColorButton("Crossed");
-			inputs[1] = new ColorButton("Gear Delivered");
-			inputs[2] = new ColorButton("Gear Dropped");
-			inputs[2].MinimumWidthRequest = inputs[1].Width;
+			inputs[1] = new ColorButton("Gear Scored");
+			inputs[2] = new ColorButton("Gear Delivered");
+			inputs[3] = new ColorButton("Gear Dropped");
+			
+			inputs[1].Clicked += (sender, e) => {
+				inputs[2].on = false;
+				inputs[2].BackgroundColor = Color.Red;
+				inputs[3].on = false;
+				inputs[3].BackgroundColor = Color.Red;
+			};
+			inputs[2].Clicked += (sender, e) => {
+				inputs[1].on = false;
+				inputs[1].BackgroundColor = Color.Red;
+				inputs[3].on = false;
+				inputs[3].BackgroundColor = Color.Red;
+			};
+			inputs[3].Clicked += (sender, e) => {
+				inputs[1].on = false;
+				inputs[1].BackgroundColor = Color.Red;
+				inputs[2].on = false;
+				inputs[2].BackgroundColor = Color.Red;
+			};
 
 			foreach (var input in inputs) 
 				input.Clicked += (sender, e) => { calcScore(); };
@@ -78,14 +114,15 @@ namespace VitruvianApp2017
 			highGoalHits.PropertyChanged += (sender, e) => {
 				calcScore();
 			};
+
 			lowGoalHits = new SingleCounter("Low Goal Hits");
-			lowGoalHits.upperLimit = 3;
 			lowGoalHits.PropertyChanged += (sender, e) => {
 				calcScore();
 			};
 
 			var teleOpBtn = new Button() {
 				Text = "TELEOP",
+				FontAttributes = FontAttributes.Bold,
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				VerticalOptions = LayoutOptions.CenterAndExpand,
 				BackgroundColor = Color.Yellow
@@ -104,16 +141,19 @@ namespace VitruvianApp2017
 				Spacing = 0,
 			};
 			topBar.Children.Add(teamNumberLbl);
-			topBar.Children.Add(autoScoreLbl);
+			topBar.Children.Add(autoPressureLbl);
+			topBar.Children.Add(autoGearLbl);
 
 			pageLayout.Children.Add(crossingLbl, 0, 0);
 			pageLayout.Children.Add(inputs[0], 0, 1);
-			pageLayout.Children.Add(highGoalHits, 1, 2, 0, 2);
-			pageLayout.Children.Add(lowGoalHits, 1, 2, 2, 4);
+			pageLayout.Children.Add(fuelLbl, 1, 0);
+			pageLayout.Children.Add(highGoalHits, 1, 2, 1, 3);
+			pageLayout.Children.Add(lowGoalHits, 1, 2, 3, 5);
 			pageLayout.Children.Add(gearsLbl, 2, 0);
 			pageLayout.Children.Add(inputs[1], 2, 1);
 			pageLayout.Children.Add(inputs[2], 2, 2);
-			pageLayout.Children.Add(teleOpBtn, 0, 3, 5, 6);
+			pageLayout.Children.Add(inputs[3], 2, 3);
+			pageLayout.Children.Add(teleOpBtn, 0, 3, 6, 7);
 
 			BackgroundColor = Color.Teal;
 
@@ -134,30 +174,35 @@ namespace VitruvianApp2017
 			};
 		}
 
-		void noramlizeBtnSize() {
-
+		protected override void OnAppearing() {
+			base.OnAppearing();
+			inputs[1].WidthRequest = inputs[2].Width;
+			inputs[3].WidthRequest = inputs[2].Width;
 		}
 
 		void calcScore() {
-			autoScore = 0;
+			autoGears = 0;
+			autoPressure = 0;
 			if (inputs[1].on)
-				autoScore += 60;
+				autoGears = 1;
 
-			autoScore += highGoalHits.value();
-			autoScore += lowGoalHits.value();
+			autoPressure += highGoalHits.value();
+			autoPressure += lowGoalHits.value();
 
-			autoScoreLbl.Text = "Est. Score: " + autoScore;
+			autoGearLbl.Text = "Gears: " + autoGears;
+			autoPressureLbl.Text = "Pressure: " + autoPressure;
 		}
 
 		async Task saveData() {
 			calcScore();
 
 			matchData.autoCross = inputs[0].on;
-			matchData.autoGearDeposit = inputs[1].on;
-			matchData.autoGearDropped = inputs[2].on;
+			matchData.autoGearScored = inputs[1].on;
+			matchData.autoGearDelivered = inputs[2].on;
+			matchData.autoGearDropped = inputs[3].on;
 			matchData.autoLowHits = lowGoalHits.value();
 			matchData.autoHighHits = highGoalHits.value();
-			matchData.autoScore = autoScore;
+			matchData.autoPressure = lowGoalHits.value() + highGoalHits.value();
 
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
 

@@ -31,7 +31,7 @@ namespace VitruvianApp2017
 				//Console.WriteLine("Nav Count: " + Navigation.NavigationStack.Count);
 				//Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
 				//Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
-				
+
 				Navigation.PushAsync(new PreMatchScoutingPage(matchData.scouterName));
 				//Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
 				//Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);

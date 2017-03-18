@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
 using Xamarin.Forms;
+using XLabs.Forms.Controls;
 
 namespace VitruvianApp2017
 {
 	public class PreMatchScoutingPage : ContentPage
 	{
-		enum startPos { Far, Center, Near };
+		enum startPos { Loading_Side, Center, Boiler_Side };
 		enum alliances { Blue, Red };
 		ScouterNameAutoComplete scouts = new ScouterNameAutoComplete();
 		LineEntry matchNo = new LineEntry("Match Number:");
@@ -16,7 +17,10 @@ namespace VitruvianApp2017
 		Picker teamNoPicker = new Picker();
 		Picker positionPicker = new Picker();
 		int teamNumber;
-		string matchType = "QM";
+		enum matchPhase { P, QM, QF, SF, F };
+		int checkValue;
+		CheckBox[] matchPhaseCheckboxes = new CheckBox[5];
+		bool semaphore = false;
 
 		TeamMatchData matchData = new TeamMatchData();
 
@@ -41,6 +45,24 @@ namespace VitruvianApp2017
 			matchNo.inputEntry.TextChanged += (sender, e) => {
 				getTeamNoPickerOptions();
 			};
+			var checkBoxLayout = new StackLayout() {
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				Orientation = StackOrientation.Horizontal
+			};
+
+			for (int i = 0; i < 5; i++)
+				matchPhaseCheckboxes[i] = new CheckBox() {
+					DefaultText = Enum.GetName(typeof(matchPhase), i)
+				};
+
+			foreach (var box in matchPhaseCheckboxes) {
+				box.CheckedChanged += (sender, e) => {
+					if(!semaphore)
+						checkBoxChanged(box);
+				};
+				checkBoxLayout.Children.Add(box);
+			}
+			setDefaultMatchType();
 
 			Label allianceLabel = new Label {
 				Text = "Alliance:",
@@ -66,7 +88,7 @@ namespace VitruvianApp2017
 
 			teamNoPicker.SelectedIndexChanged += (sender, e) => {
 				teamNoPicker.Title = teamNoPicker.Items[teamNoPicker.SelectedIndex];
-				if(teamNoPicker.IsEnabled)
+				if (teamNoPicker.IsEnabled)
 					teamNumber = Convert.ToInt32(teamNoPicker.Title);
 			};
 
@@ -122,7 +144,19 @@ namespace VitruvianApp2017
 
 			var pageLayout = new StackLayout() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				VerticalOptions = LayoutOptions.FillAndExpand
+				VerticalOptions = LayoutOptions.FillAndExpand,
+
+				Children = {
+					busyIcon,
+					scouts,
+					matchNo,
+					checkBoxLayout,
+					allianceLabel,
+					alliancePicker,
+					teamNoLbl,
+					teamNoPicker,
+					positionLabel,
+				}
 			};
 
 			pageLayout.Children.Add(busyIcon);
@@ -132,8 +166,8 @@ namespace VitruvianApp2017
 			pageLayout.Children.Add(alliancePicker);
 			pageLayout.Children.Add(teamNoLbl);
 			pageLayout.Children.Add(teamNoPicker);
-        	pageLayout.Children.Add(positionLabel);
-          	pageLayout.Children.Add(positionPicker);
+			pageLayout.Children.Add(positionLabel);
+			pageLayout.Children.Add(positionPicker);
 
 			var dataScroll = new ScrollView() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -155,6 +189,36 @@ namespace VitruvianApp2017
 			grid.Children.Add(navigationBtns, 0, 1);
 
 			Content = grid;
+		}
+
+		async Task setDefaultMatchType() {
+			int index = 0;
+			var db = new FirebaseClient(GlobalVariables.firebaseURL);
+
+			var phaseGet = await db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("competitionPhase")
+							.OnceSingleAsync<string>();
+
+			for (int i = 0; i < 5; i++) {
+				if (Enum.GetName(typeof(matchPhase), i) == phaseGet)
+					index = i;
+			}
+
+			checkBoxChanged(matchPhaseCheckboxes[index]);
+		}
+
+		void checkBoxChanged(CheckBox c) {
+			semaphore = true;
+			for (int i = 0; i < 5; i++) {
+				if (matchPhaseCheckboxes[i] != c)
+					matchPhaseCheckboxes[i].Checked = false;
+				else {
+					matchPhaseCheckboxes[i].Checked = true;
+					checkValue = i;
+				}
+			}
+			semaphore = false;
 		}
 
 		async Task getTeamNoPickerOptions() {
@@ -192,46 +256,36 @@ namespace VitruvianApp2017
 			busyIcon.IsRunning = true;
 			
 			matchData.scouterName = scouts.lineEntry.Text;;
-			matchData.matchNumber = matchType + matchNo.inputEntry.Text;
+			matchData.matchNumber = "QM" + matchNo.inputEntry.Text;
 			matchData.teamNumber = teamNumber;
 			matchData.alliance = alliancePicker.Title;
 			matchData.startPos = positionPicker.Title;
 
 			if (CheckInternetConnectivity.InternetStatus()) {
-				try {
-					bool test = false, check = false;
-					var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-					var dataCheck = await db
-									.Child(GlobalVariables.regionalPointer)
-									.Child("teamData")
-									.Child(matchData.teamNumber.ToString())
-									.Child("Matches")
-									.OnceAsync<TeamMatchData>();
-
-					foreach (var match in dataCheck)
-						if (match.Object.matchNumber == matchType + matchNo.inputEntry.Text) {
-							test = true;
-							break;
-						}
-					Console.WriteLine("Test: " + test);
-					if (test) {
-						check = await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel");
-					}
-
-					if (check == true || test == false) {
-						var send = db
+				var dataCheck = await db
 								.Child(GlobalVariables.regionalPointer)
 								.Child("teamData")
 								.Child(matchData.teamNumber.ToString())
 								.Child("Matches")
-								.Child(dataCheck.Count.ToString())
-								.PutAsync(matchData);
+								.Child(Enum.GetName(typeof(matchPhase), checkValue)) //checkbox
+								.Child(matchData.matchNumber)
+								.OnceSingleAsync<TeamMatchData>();
 
-						await Navigation.PushAsync(new AutoMatchScoutingPage(matchData));
-					}
-				} catch (Exception ex) {
-					Console.WriteLine("Error: " + ex.Message);
+				if (await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel")) {
+
+					var db2 = new FirebaseClient(GlobalVariables.firebaseURL);
+
+					var send = db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamData")
+							.Child(matchData.teamNumber.ToString())
+							.Child("Matches")
+							.Child(matchData.matchNumber)
+							.PutAsync(matchData);
+
+					await Navigation.PushAsync(new AutoMatchScoutingPage(matchData));
 				}
 			} 
 			busyIcon.IsVisible = false;
