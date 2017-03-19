@@ -16,8 +16,24 @@ namespace VitruvianApp2017
 			matchData = data;
 
 			var goodCheck = new CheckBox() {
-				DefaultText = "Did this team perform well?"
+				DefaultText = "Did this team perform well?",
+				FontSize = GlobalVariables.sizeSmall
 			};
+
+			var disabledBtn = new ColorButton("Disabled");
+			var climbingLbl = new Label() {
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				Text = "Climbing",
+				TextColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium,
+				FontAttributes = FontAttributes.Bold
+
+			};
+			var climbAttemptBtn = new ColorButton("Attempt");
+			var climbSuccessBtn = new ColorButton("Success");
+			var foulCounter = new SingleCounter("Fouls");
+
+
 
 			var finishMatchBtn = new Button() {
 				Text = "Save Match Data",
@@ -38,11 +54,24 @@ namespace VitruvianApp2017
 			};
 
 			Content = new StackLayout() {
-				VerticalOptions = LayoutOptions.EndAndExpand,
+				VerticalOptions = LayoutOptions.FillAndExpand,
 
 				Children = {
-					goodCheck,
+					new ScrollView(){
+						Content = new StackLayout(){
+							HorizontalOptions = LayoutOptions.FillAndExpand,
+							VerticalOptions = LayoutOptions.Start,
 
+							Children = {
+								disabledBtn,
+								climbingLbl,
+								climbAttemptBtn,
+								climbSuccessBtn,
+								foulCounter,
+								goodCheck
+							}
+						}
+					},
 					finishMatchBtn
 				}
 			};

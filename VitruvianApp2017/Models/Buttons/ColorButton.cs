@@ -8,11 +8,12 @@ namespace VitruvianApp2017
 		public bool on = false;
 
 		public ColorButton(string title) {
-			HorizontalOptions = LayoutOptions.CenterAndExpand;
-			VerticalOptions = LayoutOptions.Center;
+			HorizontalOptions = LayoutOptions.FillAndExpand;
+			VerticalOptions = LayoutOptions.FillAndExpand;
 
 			Text = title;
 			BackgroundColor = Color.Red;
+			FontSize = GlobalVariables.sizeSmall;
 
 			Clicked += (sender, e) => {
 				if (!on) {

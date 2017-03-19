@@ -12,14 +12,16 @@ namespace VitruvianApp2017
 		enum startPos { Loading_Side, Center, Boiler_Side };
 		enum alliances { Blue, Red };
 		ScouterNameAutoComplete scouts = new ScouterNameAutoComplete();
-		LineEntry matchNo = new LineEntry("Match Number:");
+		LineEntry matchNo = new LineEntry("Match Number:"), teamNoEntry;
 		Picker alliancePicker = new Picker();
 		Picker teamNoPicker = new Picker();
+		StackLayout teamNoPickerLayout;
+		ContentView teamNoView;
 		Picker positionPicker = new Picker();
 		int teamNumber;
-		enum matchPhase { P, QM, QF, SF, F };
+		enum matchPhase { P, QM }; //, QF, SF, F };
 		int checkValue;
-		CheckBox[] matchPhaseCheckboxes = new CheckBox[5];
+		CheckBox[] matchPhaseCheckboxes = new CheckBox[2];
 		bool semaphore = false;
 
 		TeamMatchData matchData = new TeamMatchData();
@@ -50,9 +52,10 @@ namespace VitruvianApp2017
 				Orientation = StackOrientation.Horizontal
 			};
 
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 2; i++)
 				matchPhaseCheckboxes[i] = new CheckBox() {
-					DefaultText = Enum.GetName(typeof(matchPhase), i)
+					DefaultText = Enum.GetName(typeof(matchPhase), i),
+					FontSize = GlobalVariables.sizeSmall
 				};
 
 			foreach (var box in matchPhaseCheckboxes) {
@@ -66,6 +69,7 @@ namespace VitruvianApp2017
 
 			Label allianceLabel = new Label {
 				Text = "Alliance:",
+				FontSize =GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold
 			};
 
@@ -80,6 +84,7 @@ namespace VitruvianApp2017
 
 			Label teamNoLbl = new Label {
 				Text = "Team Number:",
+				FontSize = GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold
 			};
 
@@ -91,19 +96,30 @@ namespace VitruvianApp2017
 				if (teamNoPicker.IsEnabled)
 					teamNumber = Convert.ToInt32(teamNoPicker.Title);
 			};
+			teamNoPickerLayout = new StackLayout() {
+				Children = {
+					teamNoLbl,
+					teamNoPicker
+				}
+			};
+			teamNoView = new ContentView() {
+				Content = teamNoPickerLayout
+			};
+
+			teamNoEntry = new LineEntry("Team Number:");
+			teamNoEntry.inputEntry.Placeholder = "[Enter Team Number]";
+			teamNoEntry.inputEntry.Keyboard = Keyboard.Numeric;
+			teamNoEntry.inputEntry.TextChanged += (sender, e) => {
+				if (!string.IsNullOrEmpty(teamNoEntry.inputEntry.Text))
+					teamNumber = Convert.ToInt32(teamNoEntry.data);
+				else
+					teamNumber = 0;
+			};
 
 			Label positionLabel = new Label {
 				Text = "Starting Position:",
+				FontSize = GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold
-			};
-
-			// Temp for practice matches
-			var teamNoEntry = new Entry() {
-
-			};
-			teamNoEntry.TextChanged += (sender, e) => {
-				if (teamNoEntry.IsEnabled)
-					teamNumber = Convert.ToInt32(teamNoEntry.Text);
 			};
 
 			positionPicker = new Picker();
@@ -149,16 +165,17 @@ namespace VitruvianApp2017
 				Children = {
 					busyIcon,
 					scouts,
-					matchNo,
 					checkBoxLayout,
+					matchNo,
 					allianceLabel,
 					alliancePicker,
-					teamNoLbl,
-					teamNoPicker,
+					teamNoView,
 					positionLabel,
+					positionPicker
 				}
 			};
 
+			/*
 			pageLayout.Children.Add(busyIcon);
 			pageLayout.Children.Add(scouts);
 			pageLayout.Children.Add(matchNo);
@@ -168,6 +185,7 @@ namespace VitruvianApp2017
 			pageLayout.Children.Add(teamNoPicker);
 			pageLayout.Children.Add(positionLabel);
 			pageLayout.Children.Add(positionPicker);
+			*/
 
 			var dataScroll = new ScrollView() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -200,7 +218,7 @@ namespace VitruvianApp2017
 							.Child("competitionPhase")
 							.OnceSingleAsync<string>();
 
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < 2; i++) {
 				if (Enum.GetName(typeof(matchPhase), i) == phaseGet)
 					index = i;
 			}
@@ -210,7 +228,7 @@ namespace VitruvianApp2017
 
 		void checkBoxChanged(CheckBox c) {
 			semaphore = true;
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < 2; i++) {
 				if (matchPhaseCheckboxes[i] != c)
 					matchPhaseCheckboxes[i].Checked = false;
 				else {
@@ -218,6 +236,10 @@ namespace VitruvianApp2017
 					checkValue = i;
 				}
 			}
+			if (checkValue == 0)
+				teamNoView.Content = teamNoEntry;
+			else
+				teamNoView.Content = teamNoPickerLayout;
 			semaphore = false;
 		}
 
@@ -230,7 +252,7 @@ namespace VitruvianApp2017
 			var matchGet = await db
 							.Child(GlobalVariables.regionalPointer)
 							.Child("matchList")
-							.Child("QM" + (matchNo.inputEntry.Text.Length < 2 ? "0" + matchNo.inputEntry.Text : matchNo.inputEntry.Text))
+							.Child(matchData.matchNumber)
 							.OnceSingleAsync<EventMatchData>();
 			Console.WriteLine("Match: " + matchNo.inputEntry.Text + " , Alliance: " + alliancePicker.Title);
 			Console.WriteLine("MatchGet: " + matchGet.matchNumber + " " + matchGet.Blue[0]);
@@ -256,7 +278,7 @@ namespace VitruvianApp2017
 			busyIcon.IsRunning = true;
 			
 			matchData.scouterName = scouts.lineEntry.Text;;
-			matchData.matchNumber = "QM" + matchNo.inputEntry.Text;
+			matchData.matchNumber = Enum.GetName(typeof(matchPhase), checkValue) + matchNo.inputEntry.Text;
 			matchData.teamNumber = teamNumber;
 			matchData.alliance = alliancePicker.Title;
 			matchData.startPos = positionPicker.Title;
@@ -264,29 +286,34 @@ namespace VitruvianApp2017
 			if (CheckInternetConnectivity.InternetStatus()) {
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-				var dataCheck = await db
+				if (checkValue == 1) {
+					var dataCheck = await db
+									.Child(GlobalVariables.regionalPointer)
+									.Child("teamData")
+									.Child(matchData.teamNumber.ToString())
+									.Child("Matches")
+									.Child(matchData.matchNumber)
+									.OnceSingleAsync<TeamMatchData>();
+
+					if (await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel")) {
+						var send = db
 								.Child(GlobalVariables.regionalPointer)
 								.Child("teamData")
 								.Child(matchData.teamNumber.ToString())
 								.Child("Matches")
-								.Child(Enum.GetName(typeof(matchPhase), checkValue)) //checkbox
 								.Child(matchData.matchNumber)
-								.OnceSingleAsync<TeamMatchData>();
-
-				if (await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel")) {
-
-					var db2 = new FirebaseClient(GlobalVariables.firebaseURL);
-
+								.Child(matchNo.inputEntry.Text)
+								.PutAsync(matchData);
+					}
+				} else {
 					var send = db
 							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.Child(matchData.teamNumber.ToString())
-							.Child("Matches")
-							.Child(matchData.matchNumber)
+							.Child("PracticeMatches")
+							.Child(matchNo.inputEntry.Text)
 							.PutAsync(matchData);
-
-					await Navigation.PushAsync(new AutoMatchScoutingPage(matchData));
 				}
+
+				await Navigation.PushAsync(new AutoMatchScoutingPage(matchData));
 			} 
 			busyIcon.IsVisible = false;
 			busyIcon.IsRunning = false;

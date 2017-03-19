@@ -33,9 +33,10 @@ namespace VitruvianApp2017
 
 			for (int i = 0; i < buttons; i++) {
 				btnArray[i] = new Button() {
-					HorizontalOptions = LayoutOptions.CenterAndExpand,
-					VerticalOptions = LayoutOptions.CenterAndExpand,
+					HorizontalOptions = LayoutOptions.FillAndExpand,
+					VerticalOptions = LayoutOptions.FillAndExpand,
 					Text = string.Format("{0:0%} - {1:0%}", i * divisions, i * divisions + divisions),
+					FontSize = GlobalVariables.sizeSmall,
 					BackgroundColor = Color.Red
 				};
 			}

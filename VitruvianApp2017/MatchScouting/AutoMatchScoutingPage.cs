@@ -123,8 +123,9 @@ namespace VitruvianApp2017
 			var teleOpBtn = new Button() {
 				Text = "TELEOP",
 				FontAttributes = FontAttributes.Bold,
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				VerticalOptions = LayoutOptions.CenterAndExpand,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.FillAndExpand,
+				FontSize = GlobalVariables.sizeTitle,
 				BackgroundColor = Color.Yellow
 			};
 
@@ -153,7 +154,7 @@ namespace VitruvianApp2017
 			pageLayout.Children.Add(inputs[1], 2, 1);
 			pageLayout.Children.Add(inputs[2], 2, 2);
 			pageLayout.Children.Add(inputs[3], 2, 3);
-			pageLayout.Children.Add(teleOpBtn, 0, 3, 6, 7);
+			pageLayout.Children.Add(teleOpBtn, 1, 2, 6, 7);
 
 			BackgroundColor = Color.Teal;
 
@@ -167,6 +168,7 @@ namespace VitruvianApp2017
 					new ScrollView(){
 						HorizontalOptions = LayoutOptions.FillAndExpand,
 						VerticalOptions = LayoutOptions.FillAndExpand,
+						IsClippedToBounds = true,
 
 						Content = pageLayout
 					}
@@ -186,8 +188,8 @@ namespace VitruvianApp2017
 			if (inputs[1].on)
 				autoGears = 1;
 
-			autoPressure += highGoalHits.value();
-			autoPressure += lowGoalHits.value();
+			autoPressure += highGoalHits.getValue();
+			autoPressure += lowGoalHits.getValue();
 
 			autoGearLbl.Text = "Gears: " + autoGears;
 			autoPressureLbl.Text = "Pressure: " + autoPressure;
@@ -200,9 +202,9 @@ namespace VitruvianApp2017
 			matchData.autoGearScored = inputs[1].on;
 			matchData.autoGearDelivered = inputs[2].on;
 			matchData.autoGearDropped = inputs[3].on;
-			matchData.autoLowHits = lowGoalHits.value();
-			matchData.autoHighHits = highGoalHits.value();
-			matchData.autoPressure = lowGoalHits.value() + highGoalHits.value();
+			matchData.autoLowHits = lowGoalHits.getValue();
+			matchData.autoHighHits = highGoalHits.getValue();
+			matchData.autoPressure = lowGoalHits.getValue() + highGoalHits.getValue();
 
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
 

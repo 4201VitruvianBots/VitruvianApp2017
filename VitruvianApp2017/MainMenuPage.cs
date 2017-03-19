@@ -37,11 +37,7 @@ namespace VitruvianApp2017
 					new StackLayout(){
 						//HorizontalOptions = LayoutOptions.FillAndExpand,
 						//VerticalOptions = LayoutOptions.FillAndExpand,
-						Spacing = 0,
-
-						Children = {
-							regionalLbl
-						}
+						Spacing = 0
 					}
 				}
 			};
@@ -70,8 +66,15 @@ namespace VitruvianApp2017
 				pageStack.Children.Add(btn);
 			}
 
-			this.Content = new ScrollView(){
-				Content = pageStack
+			this.Content = new StackLayout(){
+				Children = {
+					regionalLbl,
+					new ScrollView(){
+						IsClippedToBounds = true,
+
+						Content = pageStack
+					}
+				}
 			};
 
 			BackgroundColor = Color.White;

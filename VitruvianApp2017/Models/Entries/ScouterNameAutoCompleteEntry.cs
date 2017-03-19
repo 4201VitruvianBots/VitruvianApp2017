@@ -22,8 +22,10 @@ namespace VitruvianApp2017
 
 			var entryLbl = new Label() {
 				Text = "Scouter Name:",
+				FontSize = GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold
 			};
+			lineEntry.FontSize = GlobalVariables.sizeSmall;
 
 			list.ItemTemplate = new DataTemplate(() => {
 				var name = new Label();

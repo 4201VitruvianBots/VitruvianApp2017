@@ -9,7 +9,7 @@ namespace VitruvianApp2017
 		int i;
 		public int lowerLimit = 0;
 		public int upperLimit = 9001;
-
+		Label valueLbl;
 		public SingleCounter(String title): this(title, 0){
 
 		}
@@ -28,7 +28,7 @@ namespace VitruvianApp2017
 				HorizontalTextAlignment = TextAlignment.Center
 			};
 
-			var valueLbl = new Label()
+			valueLbl = new Label()
 			{
 				Text = i.ToString(),
 				FontSize = GlobalVariables.sizeSmall,
@@ -71,9 +71,14 @@ namespace VitruvianApp2017
 			this.Children.Add(increment, 2, 1);
 		}
 
-		public int value()
+		public int getValue()
 		{
 			return i;
+		}
+
+		public void setValue(int v) {
+			i = v;
+			valueLbl.Text = i.ToString();
 		}
 
 		protected void OnValueChanged(string i) {
