@@ -10,15 +10,15 @@ namespace VitruvianApp2017
 	public class PreMatchScoutingPage : ContentPage
 	{
 		enum startPos { Loading_Side, Center, Boiler_Side };
-		enum alliances { Blue, Red };
+		enum alliances { Red, Blue };
 		ScouterNameAutoComplete scouts = new ScouterNameAutoComplete();
-		LineEntry matchNo = new LineEntry("Match Number:"), teamNoEntry;
+		LineEntry matchNoEntry = new LineEntry("Match Number:"), teamNoEntry;
 		Picker alliancePicker = new Picker();
 		Picker teamNoPicker = new Picker();
 		StackLayout teamNoPickerLayout;
 		ContentView teamNoView;
 		Picker positionPicker = new Picker();
-		int teamNumber;
+		int teamNumber, matchNumber;
 		enum matchPhase { P, QM }; //, QF, SF, F };
 		int checkValue;
 		CheckBox[] matchPhaseCheckboxes = new CheckBox[2];
@@ -41,17 +41,11 @@ namespace VitruvianApp2017
 
 			if (!string.IsNullOrEmpty(scouts.scouterName))
 				scouts.lineEntry.Text = scouterName;
-
-			matchNo = new LineEntry("Match Number:");
-			matchNo.inputEntry.Keyboard = Keyboard.Numeric;
-			matchNo.inputEntry.TextChanged += (sender, e) => {
-				getTeamNoPickerOptions();
-			};
+			
 			var checkBoxLayout = new StackLayout() {
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				Orientation = StackOrientation.Horizontal
 			};
-
 			for (int i = 0; i < 2; i++)
 				matchPhaseCheckboxes[i] = new CheckBox() {
 					DefaultText = Enum.GetName(typeof(matchPhase), i),
@@ -60,12 +54,20 @@ namespace VitruvianApp2017
 
 			foreach (var box in matchPhaseCheckboxes) {
 				box.CheckedChanged += (sender, e) => {
-					if(!semaphore)
+					if (!semaphore)
 						checkBoxChanged(box);
 				};
 				checkBoxLayout.Children.Add(box);
 			}
 			setDefaultMatchType();
+
+			matchNoEntry = new LineEntry("Match Number:");
+			matchNoEntry.inputEntry.Keyboard = Keyboard.Numeric;
+			matchNoEntry.inputEntry.TextChanged += (sender, e) => {
+				matchNumber = Convert.ToInt32(matchNoEntry.inputEntry.Text);
+				if(!matchPhaseCheckboxes[0].Checked)
+					getTeamNoPickerOptions();
+			};
 
 			Label allianceLabel = new Label {
 				Text = "Alliance:",
@@ -78,8 +80,8 @@ namespace VitruvianApp2017
 			foreach (var item in Enum.GetValues(typeof(alliances)))
 				alliancePicker.Items.Add(item.ToString());
 			alliancePicker.SelectedIndexChanged += (sender, e) => {
-				alliancePicker.Title = alliancePicker.Items[alliancePicker.SelectedIndex];
-				getTeamNoPickerOptions();
+				if (!matchPhaseCheckboxes[0].Checked)
+					getTeamNoPickerOptions();
 			};
 
 			Label teamNoLbl = new Label {
@@ -92,9 +94,8 @@ namespace VitruvianApp2017
 			teamNoPicker.Title = "[Select Match No. and Alliance first]";
 
 			teamNoPicker.SelectedIndexChanged += (sender, e) => {
-				teamNoPicker.Title = teamNoPicker.Items[teamNoPicker.SelectedIndex];
 				if (teamNoPicker.IsEnabled)
-					teamNumber = Convert.ToInt32(teamNoPicker.Title);
+					teamNumber = Convert.ToInt32(teamNoPicker.Items[teamNoPicker.SelectedIndex]);
 			};
 			teamNoPickerLayout = new StackLayout() {
 				Children = {
@@ -141,12 +142,14 @@ namespace VitruvianApp2017
 			};
 			beginMatchBtn.Clicked += (sender, e) => {
 				bool inputFlag = false;
-				if (string.IsNullOrEmpty(matchNo.inputEntry.Text))
-					inputFlag = true;
 				if (string.IsNullOrEmpty(scouts.lineEntry.Text))
 					inputFlag = true;
+				if (string.IsNullOrEmpty(matchNoEntry.inputEntry.Text))
+					inputFlag = true;
+				if(teamNoPicker.SelectedIndex == -1 && string.IsNullOrEmpty(teamNoEntry.inputEntry.Text))
+					inputFlag = true;
 
-				if (positionPicker.Title == "Choose an Option" || alliancePicker.Title == "Choose an Option" || teamNoPicker.Title == "Choose an Option" || string.IsNullOrEmpty(teamNoPicker.Title) || inputFlag) {
+				if (positionPicker.SelectedIndex == -1 || alliancePicker.SelectedIndex == -1 || inputFlag) {
 					DisplayAlert("Error", "Fill out all inputs", "OK");
 				} else {
 					initializeTeamData();
@@ -166,7 +169,7 @@ namespace VitruvianApp2017
 					busyIcon,
 					scouts,
 					checkBoxLayout,
-					matchNo,
+					matchNoEntry,
 					allianceLabel,
 					alliancePicker,
 					teamNoView,
@@ -252,20 +255,20 @@ namespace VitruvianApp2017
 			var matchGet = await db
 							.Child(GlobalVariables.regionalPointer)
 							.Child("matchList")
-							.Child(matchData.matchNumber)
+							.Child(((matchNumber < 10) ? "0" + matchNumber.ToString() : matchNumber.ToString()))
 							.OnceSingleAsync<EventMatchData>();
-			Console.WriteLine("Match: " + matchNo.inputEntry.Text + " , Alliance: " + alliancePicker.Title);
-			Console.WriteLine("MatchGet: " + matchGet.matchNumber + " " + matchGet.Blue[0]);
+			Console.WriteLine("Match: " + matchNoEntry.inputEntry.Text + " , Alliance: " + alliancePicker.Items[alliancePicker.SelectedIndex]);
 
 			if (matchGet == null)
 				teamNoPicker.Title = "[Select Match No. and Alliance first]";
 			else {
+				teamNoPicker.Title = "[Select A Team]";
 				teamNoPicker.Items.Clear();
-				if(alliancePicker.Title == "Blue")
-					foreach (var item in matchGet.Blue)
-						teamNoPicker.Items.Add(item.ToString());
-				else if(alliancePicker.Title == "Red")
+				if(alliancePicker.SelectedIndex == 0)
 					foreach (var item in matchGet.Red)
+						teamNoPicker.Items.Add(item.ToString());
+				else if(alliancePicker.SelectedIndex == 1)
+					foreach (var item in matchGet.Blue)
 						teamNoPicker.Items.Add(item.ToString());
 			}
 
@@ -276,44 +279,66 @@ namespace VitruvianApp2017
 		async Task initializeTeamData() {
 			busyIcon.IsVisible = true;
 			busyIcon.IsRunning = true;
-			
+			int matchType = 0;
 			matchData.scouterName = scouts.lineEntry.Text;;
-			matchData.matchNumber = Enum.GetName(typeof(matchPhase), checkValue) + matchNo.inputEntry.Text;
+			matchData.matchNumber = Convert.ToInt32(matchNoEntry.inputEntry.Text);
 			matchData.teamNumber = teamNumber;
 			matchData.alliance = alliancePicker.Title;
 			matchData.startPos = positionPicker.Title;
 
 			if (CheckInternetConnectivity.InternetStatus()) {
+				bool test = true;
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
 				if (checkValue == 1) {
 					var dataCheck = await db
 									.Child(GlobalVariables.regionalPointer)
-									.Child("teamData")
+									.Child("teamMatchData")
 									.Child(matchData.teamNumber.ToString())
-									.Child("Matches")
-									.Child(matchData.matchNumber)
+									.Child(matchData.matchNumber.ToString())
 									.OnceSingleAsync<TeamMatchData>();
 
-					if (await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel")) {
+					if (dataCheck != null)
+						if (!await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel"))
+							test = false;
+
+					if(test){
 						var send = db
 								.Child(GlobalVariables.regionalPointer)
-								.Child("teamData")
+								.Child("teamMatchData")
 								.Child(matchData.teamNumber.ToString())
-								.Child("Matches")
-								.Child(matchData.matchNumber)
-								.Child(matchNo.inputEntry.Text)
+								.Child(matchData.matchNumber.ToString())
 								.PutAsync(matchData);
+						
+						matchType = 0;
+
+						await Navigation.PushAsync(new AutoMatchScoutingPage(matchData, matchType));
 					}
 				} else {
-					var send = db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("PracticeMatches")
-							.Child(matchNo.inputEntry.Text)
-							.PutAsync(matchData);
-				}
+					var dataCheck = await db
+									.Child(GlobalVariables.regionalPointer)
+									.Child("PracticeMatches")
+									.Child(matchData.teamNumber.ToString())
+									.Child(matchData.matchNumber.ToString())
+									.OnceSingleAsync<TeamMatchData>();
 
-				await Navigation.PushAsync(new AutoMatchScoutingPage(matchData));
+					if (dataCheck != null)
+						if (!await DisplayAlert("Error", "Match Data already exists for this team. Do you want to overwrite it?", "OK", "Cancel"))
+							test = false;
+					
+					if(test) {
+						var send = db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("PracticeMatches")
+								.Child(matchData.teamNumber.ToString())
+								.Child(matchData.matchNumber.ToString())
+								.PutAsync(matchData);
+
+						matchType = -1;
+
+						await Navigation.PushAsync(new AutoMatchScoutingPage(matchData, matchType));
+					}
+				}
 			} 
 			busyIcon.IsVisible = false;
 			busyIcon.IsRunning = false;

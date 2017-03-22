@@ -27,7 +27,7 @@ namespace VitruvianApp2017 {
 			}
 		};
 		ColorButton[] inputs = new ColorButton[3];
-		ColorButton gearScored, climbSuccessBtn, climbAttemptBtn;
+		ColorButton gearScoredBtn, climbSuccessBtn, climbAttemptBtn;
 		Button cycleUndo, lowGoalDumpBtn, clearInputsBtn;
 		SingleCounter cycleCounter, gearsStationDropped, gearsTransitDropped;
 		ColorButtonStackArray hopperCapacity, goalAccuracy;
@@ -35,13 +35,15 @@ namespace VitruvianApp2017 {
 		Label teleOpPressureLbl, teleOpGearLbl, actionCounter;
 		int teleOpGears = 0, teleOpPressure = 0, cPressure = 0;
 		int robotMaxCapacity = 0;
-		ActionData[] matchActions = new ActionData[999];
-		int actionCount = 0;
+		ActionData[] mActions = new ActionData[999];
+		int aCount = 0;
 		Label[] lastActionLabels = new Label[7];
 		ContentView emptyWidth;
 		TeamMatchData matchData;
+		int mType;
 
-		public TeleOpMatchScoutingPage(TeamMatchData data) {
+		public TeleOpMatchScoutingPage(TeamMatchData data, int matchType) {
+			mType = matchType;
 			matchData = data;
 			getMaxCapacity();
 
@@ -113,7 +115,7 @@ namespace VitruvianApp2017 {
 				FontSize = GlobalVariables.sizeMedium
 			};
 			cycleUndo.Clicked += (sender, e) => {
-				if (actionCount > 0) {
+				if (aCount > 0) {
 					undoAction();
 					cycleUndo.BackgroundColor = Color.Orange;
 				}
@@ -162,8 +164,8 @@ namespace VitruvianApp2017 {
 				addAction(1);
 			};
 
-			gearScored = new ColorButton("Gear Scored");
-			gearScored.Clicked += (sender, e) => {
+			gearScoredBtn = new ColorButton("Gear Scored");
+			gearScoredBtn.Clicked += (sender, e) => {
 				addAction(0);
 			};
 
@@ -189,7 +191,7 @@ namespace VitruvianApp2017 {
 
 			finishBtn.Clicked += (sender, e) => {
 				saveData();
-				Navigation.PushAsync(new PostMatchScoutingPage(matchData));
+				Navigation.PushAsync(new PostMatchScoutingPage(matchData, mType));
 			};
 
 
@@ -227,7 +229,7 @@ namespace VitruvianApp2017 {
 			pageLayout.Children.Add(lowGoalDumpBtn, 2, 3, 6, 7);
 			pageLayout.Children.Add(highScoreBtn, 2, 3, 7, 8);
 
-			pageLayout.Children.Add(gearScored, 3, 4, 0, 1);
+			pageLayout.Children.Add(gearScoredBtn, 3, 4, 0, 1);
 			pageLayout.Children.Add(droppedLbl, 3, 4, 1, 2);
 			pageLayout.Children.Add(gearsStationDropped, 3, 4, 2, 4);
 			pageLayout.Children.Add(gearsTransitDropped, 3, 4, 4, 6);
@@ -267,7 +269,7 @@ namespace VitruvianApp2017 {
 
 		void addAction(int v) {
 			bool t = false;
-			matchActions[actionCount] = new ActionData();
+			mActions[aCount] = new ActionData();
 			try {
 				foreach (var hopper in hopperCapacity.on)
 					if (hopper == true) {
@@ -275,60 +277,60 @@ namespace VitruvianApp2017 {
 						break;
 					}
 				if (t)
-					matchActions[actionCount].hopperCapacity = hopperCapacity.getAvgPercentage() * robotMaxCapacity;
+					mActions[aCount].hopperCapacity = hopperCapacity.getAvgPercentage() * robotMaxCapacity;
 				else
-					matchActions[actionCount].hopperCapacity = 0;
+					mActions[aCount].hopperCapacity = 0;
 			}
 			catch{
-				matchActions[actionCount].hopperCapacity = 0;
+				mActions[aCount].hopperCapacity = 0;
 			}
 
 			if (v == 0)
-				matchActions[actionCount].cyclePressure = 0;
+				mActions[aCount].cyclePressure = 0;
 
 			if (v == 1)
-				matchActions[actionCount].cyclePressure = (int)Math.Floor((robotMaxCapacity * hopperCapacity.getAvgPercentage() * goalAccuracy.getAvgPercentage()) / 3);
+				mActions[aCount].cyclePressure = (int)Math.Floor((robotMaxCapacity * hopperCapacity.getAvgPercentage() * goalAccuracy.getAvgPercentage()) / 3);
 			
 			if (v == 2) {
-				matchActions[actionCount].lowGoalDump = true;
-				matchActions[actionCount].cyclePressure = (int)Math.Floor((robotMaxCapacity * hopperCapacity.getAvgPercentage()) / 9);
+				mActions[aCount].lowGoalDump = true;
+				mActions[aCount].cyclePressure = (int)Math.Floor((robotMaxCapacity * hopperCapacity.getAvgPercentage()) / 9);
 			}
 			else
-				matchActions[actionCount].lowGoalDump = false;
+				mActions[aCount].lowGoalDump = false;
 
-			matchActions[actionCount].gearsStationDrop = gearsStationDropped.getValue();
-			matchActions[actionCount].gearsTransitDrop = gearsTransitDropped.getValue();
-			matchActions[actionCount].gearSet = gearScored.on;
+			mActions[aCount].gearsStationDrop = gearsStationDropped.getValue();
+			mActions[aCount].gearsTransitDrop = gearsTransitDropped.getValue();
+			mActions[aCount].gearSet = gearScoredBtn.on;
 
-			if (gearScored.on) {
-				gearScored.on = false;
-				gearScored.BackgroundColor = Color.Red;
+			if (gearScoredBtn.on) {
+				gearScoredBtn.on = false;
+				gearScoredBtn.BackgroundColor = Color.Red;
 			}
 
-			lastActionLabels[0].Text = "Hopper Capacity: " + matchActions[actionCount].hopperCapacity;
-			lastActionLabels[1].Text = "High Accuracy: " + matchActions[actionCount].highGoalAccuracy;
-			lastActionLabels[2].Text = "Low Goal Dump: " + matchActions[actionCount].lowGoalDump;
-			lastActionLabels[3].Text = "Cycle Pressure: " + matchActions[actionCount].cyclePressure;
-			lastActionLabels[4].Text = "Gear Set: " + matchActions[actionCount].gearSet;
-			lastActionLabels[5].Text = "Gear Station Drops: " + matchActions[actionCount].gearsStationDrop;
-			lastActionLabels[6].Text = "Gear Transit Drops: " + matchActions[actionCount].gearsTransitDrop;
+			lastActionLabels[0].Text = "Hopper Capacity: " + mActions[aCount].hopperCapacity;
+			lastActionLabels[1].Text = "High Accuracy: " + mActions[aCount].highGoalAccuracy;
+			lastActionLabels[2].Text = "Low Goal Dump: " + mActions[aCount].lowGoalDump;
+			lastActionLabels[3].Text = "Cycle Pressure: " + mActions[aCount].cyclePressure;
+			lastActionLabels[4].Text = "Gear Set: " + mActions[aCount].gearSet;
+			lastActionLabels[5].Text = "Gear Station Drops: " + mActions[aCount].gearsStationDrop;
+			lastActionLabels[6].Text = "Gear Transit Drops: " + mActions[aCount].gearsTransitDrop;
 			clearValues();
 
-			actionCount++;
-			actionCounter.Text = actionCount.ToString();
+			aCount++;
+			actionCounter.Text = aCount.ToString();
 			actionCounter.BackgroundColor = Color.Transparent;
 			cycleUndo.BackgroundColor = Color.Yellow;
 		}
 
 		void undoAction() {
-			if (actionCount > 1) {
-				lastActionLabels[0].Text = "Hopper Capacity: " + matchActions[actionCount - 1].hopperCapacity;
-				lastActionLabels[1].Text = "High Accuracy: " + matchActions[actionCount - 1].highGoalAccuracy;
-				lastActionLabels[2].Text = "Low Goal Dump: " + matchActions[actionCount - 1].lowGoalDump;
-				lastActionLabels[3].Text = "Cycle Pressure: " + matchActions[actionCount - 1].cyclePressure;
-				lastActionLabels[4].Text = "Gear Set: " + matchActions[actionCount - 1].gearSet;
-				lastActionLabels[5].Text = "Gear Station Drops: " + matchActions[actionCount - 1].gearsStationDrop;
-				lastActionLabels[6].Text = "Gear Transit Drops: " + matchActions[actionCount - 1].gearsTransitDrop;
+			if (aCount > 1) {
+				lastActionLabels[0].Text = "Hopper Capacity: " + mActions[aCount - 1].hopperCapacity;
+				lastActionLabels[1].Text = "High Accuracy: " + mActions[aCount - 1].highGoalAccuracy;
+				lastActionLabels[2].Text = "Low Goal Dump: " + mActions[aCount - 1].lowGoalDump;
+				lastActionLabels[3].Text = "Cycle Pressure: " + mActions[aCount - 1].cyclePressure;
+				lastActionLabels[4].Text = "Gear Set: " + mActions[aCount - 1].gearSet;
+				lastActionLabels[5].Text = "Gear Station Drops: " + mActions[aCount - 1].gearsStationDrop;
+				lastActionLabels[6].Text = "Gear Transit Drops: " + mActions[aCount - 1].gearsTransitDrop;
 			} else {
 				lastActionLabels[0].Text = "Hopper Capacity: " + 0;
 				lastActionLabels[1].Text = "High Accuracy: " + 0;
@@ -339,8 +341,8 @@ namespace VitruvianApp2017 {
 				lastActionLabels[6].Text = "Gear Transit Drops: " + 0;
 			}
 
-			actionCount--;
-			actionCounter.Text = actionCount.ToString();
+			aCount--;
+			actionCounter.Text = aCount.ToString();
 			actionCounter.BackgroundColor = Color.Orange;
 		}
 
@@ -358,13 +360,13 @@ namespace VitruvianApp2017 {
 
 		}
 
-		void calcScore() {
+		void calcObjects() {
 			teleOpGears = matchData.autoGearScored ? 1 : 0;
 			teleOpPressure = matchData.autoPressure;
 
-			for (int i = 0; i < actionCount; i++) {
-				teleOpGears += matchActions[i].gearSet ? 1 : 0;
-				teleOpPressure = matchActions[i].cyclePressure;
+			for (int i = 0; i < aCount; i++) {
+				teleOpGears += mActions[i].gearSet ? 1 : 0;
+				teleOpPressure = mActions[i].cyclePressure;
 			}
 			if (lowDumpOn)
 				cPressure += (int)Math.Floor(hopperCapacity.getAvgPercentage() * robotMaxCapacity);
@@ -372,7 +374,7 @@ namespace VitruvianApp2017 {
 				cPressure += (int)Math.Floor((hopperCapacity.getAvgPercentage() * robotMaxCapacity * goalAccuracy.getAvgPercentage()) / 3);
 
 			teleOpPressureLbl.Text = "Pressure: " + teleOpPressure + cPressure;
-			teleOpGearLbl.Text = "Gears: " + teleOpGears;
+			teleOpGearLbl.Text = "Gears: " + ((matchData.autoGearScored ? 1 : 0) + teleOpGears);
 		}
 
 		async Task getMaxCapacity() {
@@ -388,36 +390,48 @@ namespace VitruvianApp2017 {
 		}
 
 		async Task saveData() {
-			calcScore();
+			calcObjects();
 
-			/*
-			matchData.autoCross = inputs[0].on;
-			matchData.teleopGearsDeposit = gearsScored.value();
-			matchData.teleOpLowScore = inputs[2].on ? 1 : 0;
-			//matchData.autoLowHit = lowGoalHits.value();
-			//matchData.autoHighHit = highGoalHits.value();
-			matchData.teleOptotalScore = teleOpScore;
-			*/
+			matchData.actionCount = aCount;
+			matchData.teleOpTotalPressure = teleOpPressure - matchData.autoPressure;
+			matchData.teleOpGearsDeposit = teleOpGears;
+
+			int stationDropped = 0, transitDropped = 0;
+			double hAcc = 0;
+			for (int i = 0; i < aCount; i++) {
+				hAcc += mActions[i].highGoalAccuracy;
+				stationDropped += mActions[i].gearsStationDrop;
+				transitDropped += mActions[i].gearsTransitDrop;
+			}
+			matchData.teleOpHighAcc = hAcc / aCount;
+			matchData.teleOpGearsStationDropped = stationDropped;
+			matchData.teleOpGearsTransitDropped = transitDropped;
+
 
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-			var fbTeam = db
-					.Child(GlobalVariables.regionalPointer)
-					.Child("teamData")
-					.Child(matchData.teamNumber.ToString())
-					.Child("Matches")
-					.Child(matchData.matchNumber)
-					.PutAsync(matchData);
+			if (mType == -1) {
+				var send = db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("PracticeMatches")
+							.Child(matchData.teamNumber.ToString())
+							.Child(matchData.matchNumber.ToString())
+							.PutAsync(matchData);
+			} else {
+				var matchBreakDown = db
+									.Child(GlobalVariables.regionalPointer)
+									.Child("teamMatchActionData")
+									.Child(matchData.teamNumber.ToString())
+									.Child(matchData.matchNumber.ToString())
+									.PutAsync(mActions);
+				
+				var fbTeam = db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamMatchData")
+							.Child(matchData.teamNumber.ToString())
+							.Child(matchData.matchNumber.ToString())
+							.PutAsync(matchData);
+			}
 		}
-	}
-
-	public class ActionData{
-		public double hopperCapacity { get; set; }
-		public double highGoalAccuracy { get; set; }
-		public bool lowGoalDump { get; set; }
-		public int cyclePressure { get; set; }
-		public bool gearSet { get; set; }
-		public int gearsStationDrop { get; set; }
-		public int gearsTransitDrop { get; set; }
 	}
 }

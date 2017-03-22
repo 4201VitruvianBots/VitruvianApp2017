@@ -53,10 +53,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\PitDataCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchHeaderList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventStats.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\RobotImageLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Functions\FirebaseStorage.manifest" />
-    <None Include="$(MSBuildThisFileDirectory)Images\Images\icon.png" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Placeholder_image_placeholder.png" />
     <None Include="$(MSBuildThisFileDirectory)TestPage.cs" />
@@ -64,14 +67,12 @@
     <None Include="$(MSBuildThisFileDirectory)AutoCompleteTest.cs" />
     <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FBApp.cs" />
     <None Include="$(MSBuildThisFileDirectory)Functions\Listeners\Listeners.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Images\RobotImageLayout.cs" />
     <None Include="$(MSBuildThisFileDirectory)Depreciated\AddTeamPopupPage.cs" />
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AppSettingsTest.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AutoCompleteTest.cs" />
     <None Include="$(MSBuildThisFileDirectory)Models\Entries\TeamNumberAutoCompleteEntry.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Images\Images\icon.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Models\Lists\" />

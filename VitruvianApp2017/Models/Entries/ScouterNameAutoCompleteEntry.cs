@@ -22,7 +22,7 @@ namespace VitruvianApp2017
 
 			var entryLbl = new Label() {
 				Text = "Scouter Name:",
-				FontSize = GlobalVariables.sizeSmall,
+				FontSize = GlobalVariables.sizeMedium,
 				FontAttributes = FontAttributes.Bold
 			};
 			lineEntry.FontSize = GlobalVariables.sizeSmall;
@@ -30,7 +30,7 @@ namespace VitruvianApp2017
 			list.ItemTemplate = new DataTemplate(() => {
 				var name = new Label();
 				name.SetBinding(Label.TextProperty, "scouterName");
-
+				name.FontSize = GlobalVariables.sizeSmall;
 				return new ViewCell() {
 					View = new StackLayout() {
 						Children = {

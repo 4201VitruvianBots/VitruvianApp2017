@@ -83,7 +83,10 @@ namespace VitruvianApp2017
 			upcomingMatchHeader.GestureRecognizers.Add(upcomingMatchHeaderTap);
 
 			upcomingMatchView.ItemTemplate = new DataTemplate(() => {
-				var matchLbl = new Label();
+				var matchLbl = new Label() {
+					TextColor = Color.Black,
+					FontSize = GlobalVariables.sizeMedium
+				};
 				matchLbl.SetBinding(Label.TextProperty, "matchNumber");
 
 				var cell = new ViewCell() {
@@ -130,7 +133,8 @@ namespace VitruvianApp2017
 
 			pastMatchView.ItemTemplate = new DataTemplate(() => {
 				var matchLbl = new Label() {
-					TextColor = Color.Black
+					TextColor = Color.Black,
+					FontSize = GlobalVariables.sizeMedium
 				};
 				matchLbl.SetBinding(Label.TextProperty, "matchNumber");
 				var cell = new ViewCell() {

@@ -41,7 +41,8 @@ namespace VitruvianApp2017
 			};
 			searchEntry = new Entry() {
 				Placeholder = "Search team",
-				MinimumWidthRequest = Width
+				MinimumWidthRequest = Width,
+				FontSize = GlobalVariables.sizeMedium
 			};
 			searchEntry.TextChanged += (sender, e) => {
 				autoCompleteOptions();

@@ -6,12 +6,14 @@ using Xamarin.Forms;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
 using FFImageLoading.Forms;
+using TheBlueAlliance;
+using TheBlueAlliance.Models;
 
 namespace VitruvianApp2017
 {
 	public class TeamCardPopupPage:PopupPage
 	{
-		Grid teamGrid = new Grid()
+		Grid topGrid = new Grid()
 		{
 			HorizontalOptions = LayoutOptions.FillAndExpand,
 			VerticalOptions = LayoutOptions.FillAndExpand,
@@ -19,15 +21,13 @@ namespace VitruvianApp2017
 			Padding = 0,
 
 			RowDefinitions ={
-				new RowDefinition {Height = GridLength.Auto},
-				new RowDefinition {Height = GridLength.Auto},
-				new RowDefinition {Height = new GridLength(1, GridUnitType.Star)},
-				new RowDefinition {Height = new GridLength(1, GridUnitType.Star)},
-				new RowDefinition {Height = GridLength.Auto}
+				new RowDefinition { Height = GridLength.Auto },
+				new RowDefinition { Height = GridLength.Star },
 			},
 			ColumnDefinitions = {
-				new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
-				new ColumnDefinition {Width = GridLength.Auto}
+				//new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
+				//new ColumnDefinition {Width = GridLength.Auto},
+				//new ColumnDefinition {Width = GridLength.Auto}
 			}
 		};
 
@@ -42,14 +42,14 @@ namespace VitruvianApp2017
 			var teamNo = new Label()
 			{
 				Text = data.teamNumber.ToString(),
-				FontSize = 22,
+				FontSize = GlobalVariables.sizeMedium,
 				FontAttributes = FontAttributes.Bold
 			};
 
 			var teamNa = new Label()
 			{
 				Text = data.teamName,
-				FontSize = 18
+				FontSize = GlobalVariables.sizeMedium
 			};
 
 			var teamOPR = new Label() {
@@ -74,28 +74,43 @@ namespace VitruvianApp2017
 			var navigationBtns = new PopupNavigationButtons(true, btnArray);
 
 			int gridYIndex = 0;
-			//teamGrid.Children.Add(new RobotImageLayout(data), 0, 2, gridYIndex, gridYIndex + 2);
-			teamGrid.Children.Add(teamNo, 1, gridYIndex++);
-			teamGrid.Children.Add(teamNa, 1, gridYIndex++);
-			teamGrid.Children.Add(teamOPR, 1, gridYIndex++);
+			topGrid.Children.Add(new RobotImageLayout(data), 0, 1, 0, 2);
+			topGrid.Children.Add(teamNo, 1, 0);
+			topGrid.Children.Add(teamNa, 1, 1);
 
 			//teamGrid.Children.Add(teamOPR, 0, 2, gridYIndex, gridYIndex++ + 1);
 			//teamGrid.Children.Add(teamOPR, 0, 2, gridYIndex, gridYIndex++ + 1);
 
 			//
-			teamGrid.Children.Add(navigationBtns, 0, 2, gridYIndex, gridYIndex++ + 1);
+			topGrid.Children.Add(navigationBtns, 0, 2, gridYIndex, gridYIndex++ + 1);
 
 			Content = new Frame()
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				Margin = new Thickness(50, 80),
+				Margin = new Thickness(50, 50),
 				Padding = new Thickness(5),
 
 				BackgroundColor = Color.Gray,
 				HasShadow = true,
 
-				Content = teamGrid
+				Content = new StackLayout() {
+
+					Children = {
+						topGrid,
+						new ScrollView(){
+							HorizontalOptions = LayoutOptions.FillAndExpand,
+							VerticalOptions = LayoutOptions.FillAndExpand,
+
+							Content = new StackLayout(){
+								HorizontalOptions = LayoutOptions.FillAndExpand,
+								VerticalOptions = LayoutOptions.FillAndExpand,
+								// data
+							}
+						},
+						navigationBtns
+					}
+				}
 			};
 		}
 
@@ -122,6 +137,19 @@ namespace VitruvianApp2017
 					.OnceSingleAsync<TeamData>();
 
 			data = fbTeam;
+		}
+
+		async Task getTBARatingData() {
+			/*
+			var opr = await TheBlueAlliance.Teams.GetTeamInformation(
+			var fbTeam = await db
+					.Child(GlobalVariables.regionalPointer)
+					.Child("teamData")
+					.Child(data.teamNumber.ToString())
+					.OnceSingleAsync<TeamData>();
+
+			data = fbTeam;
+			*/
 		}
 
 		void setPitData() {

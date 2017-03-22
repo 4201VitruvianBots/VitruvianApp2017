@@ -17,7 +17,7 @@ namespace VitruvianApp2017
 		}
 
 		public PopupNavigationButtons(bool toggleRefreshBtn, Button[] array):base(toggleRefreshBtn, array){
-			Margin = new Thickness(-5, 0, -5, -12);
+			Margin = new Thickness(-5, 0, -5, -5);
 		}
 
 		public override async void returnPage()

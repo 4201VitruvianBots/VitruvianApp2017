@@ -24,11 +24,12 @@ namespace VitruvianApp2017
 		SingleCounter highGoalHits, lowGoalHits;
 		Label autoGearLbl, autoPressureLbl;
 		int autoGears = 0, autoPressure = 0;
-
+		int mType;
 		TeamMatchData matchData;
 
-		public AutoMatchScoutingPage(TeamMatchData data) {
+		public AutoMatchScoutingPage(TeamMatchData data, int matchType) {
 			matchData = data;
+			mType = matchType;
 
 			Title = "Autonomous Mode";
 
@@ -131,7 +132,7 @@ namespace VitruvianApp2017
 
 			teleOpBtn.Clicked += (sender, e) => {
 				saveData();
-				Navigation.PushAsync(new TeleOpMatchScoutingPage(matchData));
+				Navigation.PushAsync(new TeleOpMatchScoutingPage(matchData, mType));
 			};
 
 
@@ -207,14 +208,21 @@ namespace VitruvianApp2017
 			matchData.autoPressure = lowGoalHits.getValue() + highGoalHits.getValue();
 
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
-
-			var fbTeam = db
-					.Child(GlobalVariables.regionalPointer)
-					.Child("teamData")
-					.Child(matchData.teamNumber.ToString())
-					.Child("Matches")
-					.Child(matchData.matchNumber)
-					.PutAsync(matchData);
+			if (mType == -1) {
+				var send = db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("PracticeMatches")
+							.Child(matchData.teamNumber.ToString())
+							.Child(matchData.matchNumber.ToString())
+							.PutAsync(matchData);
+			} else {
+				var fbTeam = db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamMatchData")
+							.Child(matchData.teamNumber.ToString())
+							.Child(matchData.matchNumber.ToString())
+							.PutAsync(matchData);
+			}
 		}
 	}
 }

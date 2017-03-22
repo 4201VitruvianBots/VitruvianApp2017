@@ -188,6 +188,9 @@
     <Reference Include="FFImageLoading.Forms.Droid">
       <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.2.9\lib\MonoAndroid10\FFImageLoading.Forms.Droid.dll</HintPath>
     </Reference>
+    <Reference Include="Firebase.Storage">
+      <HintPath>..\packages\FirebaseStorage.net.1.0.0-alpha5\lib\portable45-net45+win8+wpa81\Firebase.Storage.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -204,16 +207,30 @@
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
     <AndroidResource Include="Resources\layout\Toolbar.axml" />
     <AndroidResource Include="Resources\values\styles.xml" />
-    <AndroidResource Include="Resources\drawable\icon.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\icon.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
+    <AndroidResource Include="..\VitruvianApp2017\Images\Images\Placeholder_image_placeholder.png">
+      <Link>Resources\drawable\Placeholder_image_placeholder.png</Link>
+    </AndroidResource>
+    <AndroidResource Include="..\VitruvianApp2017\Images\Images\icon.jpg">
+      <Link>Resources\drawable\icon.jpg</Link>
+    </AndroidResource>
+    <AndroidResource Include="..\VitruvianApp2017\Images\Images\icon.jpg">
+      <Link>Resources\drawable-hdpi\icon.jpg</Link>
+    </AndroidResource>
+    <AndroidResource Include="..\VitruvianApp2017\Images\Images\icon.jpg">
+      <Link>Resources\drawable-xhdpi\icon.jpg</Link>
+    </AndroidResource>
+    <AndroidResource Include="..\VitruvianApp2017\Images\Images\icon.jpg">
+      <Link>Resources\drawable-xxhdpi\icon.jpg</Link>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamarin.mobile">
       <Version>0.7.7</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\drawable-xxhdpi\" />
   </ItemGroup>
   <Import Project="..\VitruvianApp2017\VitruvianApp2017.projitems" Label="Shared" Condition="Exists('..\VitruvianApp2017\VitruvianApp2017.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

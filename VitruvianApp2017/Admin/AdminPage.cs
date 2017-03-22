@@ -50,6 +50,19 @@ namespace VitruvianApp2017
 				UpdateTeamList();
 			};
 
+			var eventStatTestBtn = new Button() {
+				VerticalOptions = LayoutOptions.Fill,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Text = "Test OPR Grab",
+				TextColor = Color.Green,
+				BackgroundColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium
+			};
+
+			eventStatTestBtn.Clicked += (sender, e) => {
+				getEventStats();
+			};
+
 			var logoutBtn = new Button() {
 				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -67,12 +80,24 @@ namespace VitruvianApp2017
 			Content = new StackLayout() {
 				Children = {
 					busyIcon,
-					updateTeamListBtn,
-					updateMatchListBtn,
+					new ScrollView(){
+						HorizontalOptions = LayoutOptions.FillAndExpand,
+						VerticalOptions = LayoutOptions.FillAndExpand,
+
+						Content = new StackLayout(){
+							HorizontalOptions = LayoutOptions.FillAndExpand,
+							VerticalOptions = LayoutOptions.FillAndExpand,
+
+							Children = {
+								updateTeamListBtn,
+								updateMatchListBtn,
+								//eventStatTestBtn,
+							}
+						}
+					},
 					navigationBtns
 				}
 			};
-			Console.WriteLine("Regional Pointer: " + GlobalVariables.regionalPointer);
 		}
 
 		void logout() {
@@ -152,9 +177,9 @@ namespace VitruvianApp2017
 					var send = db
 						.Child(GlobalVariables.regionalPointer)
 						.Child("matchList")
-						.Child("QM" + ((match.match_number < 10) ? "0" + match.match_number.ToString() : match.match_number.ToString()))
+						.Child(((match.match_number < 10) ? "0" + match.match_number.ToString() : match.match_number.ToString()))
 						.PutAsync(new EventMatchData() {
-							matchNumber = "QM" + ((match.match_number < 10)? "0" + match.match_number.ToString():match.match_number.ToString()),
+							matchNumber = ((match.match_number < 10)? "0" + match.match_number.ToString():match.match_number.ToString()),
 							Blue = blueA,
 							Red = redA,
 							matchTime = match.time
@@ -166,6 +191,10 @@ namespace VitruvianApp2017
 				busyIcon.IsRunning = false;
 				busyIcon.IsVisible = false;
 			}
+		}
+
+		public async Task getEventStats() {
+			var test = await EventsHttp.GetEventStatsHttp(GlobalVariables.regionalPointer);
 		}
 	}
 }
