@@ -162,7 +162,7 @@ namespace VitruvianApp2017
 								});
 			} catch (Exception ex) {
 				Console.WriteLine("ImageStack Error: " + ex.Message);
-				img.Source = "Placeholder_image_placeholder.png";
+				//img.Source = "Placeholder_image_placeholder.png";
 			}
 		}
 

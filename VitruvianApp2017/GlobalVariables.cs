@@ -8,7 +8,7 @@ namespace VitruvianApp2017
 		public static string regionalPointer { get; set; } = "NULL";
 		public static string firebaseApplicationID = "1:222280551868:android:051a820459657e45\n";
 		public static string firebaseAPIKey = "AIzaSyDeNEa_Dgr7AfDfUyBWX6D5Le80H9t26es";
-		public static string firebaseURL = "x";
+		public static string firebaseURL = "https://vitruvianapptest.firebaseio.com/";
 		public static string firebaseStorageURL = "vitruvianapptest.appspot.com";
 
 		// Don't modify these

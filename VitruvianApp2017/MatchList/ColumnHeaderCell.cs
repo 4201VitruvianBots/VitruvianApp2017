@@ -9,7 +9,7 @@ namespace VitruvianApp2017
 
 		public ColumnHeaderCell() {
 			HeightRequest = 10;
-			header.FontSize = GlobalVariables.sizeSmall;
+			header.FontSize = GlobalVariables.sizeTiny;
 			header.BackgroundColor = Color.Black;
 			header.TextColor = Color.White;
 			header.FontAttributes = FontAttributes.Bold;

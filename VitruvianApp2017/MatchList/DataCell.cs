@@ -12,7 +12,7 @@ namespace VitruvianApp2017
 			HeightRequest = 10;
 			BackgroundColor = Color.White;
 			data.TextColor = Color.Black;
-			data.FontSize = GlobalVariables.sizeSmall;
+			data.FontSize = GlobalVariables.sizeTiny;
 			data.HorizontalTextAlignment = TextAlignment.End;
 
 			Content = data;
