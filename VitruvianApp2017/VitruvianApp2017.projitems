@@ -15,7 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MatchInfoTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\AdminLoginPopup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\AdminPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAnalysis\DataAnalysisPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\EventMatchData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Global.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\ScouterName.cs" />
@@ -57,6 +56,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Images\RobotImageLayout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\DataCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\ColumnHeaderCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Functions\FirebaseStorage.manifest" />
@@ -65,7 +66,6 @@
     <None Include="$(MSBuildThisFileDirectory)TestPage.cs" />
     <None Include="$(MSBuildThisFileDirectory)TestPage2.cs" />
     <None Include="$(MSBuildThisFileDirectory)AutoCompleteTest.cs" />
-    <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FBApp.cs" />
     <None Include="$(MSBuildThisFileDirectory)Functions\Listeners\Listeners.cs" />
     <None Include="$(MSBuildThisFileDirectory)Depreciated\AddTeamPopupPage.cs" />
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
@@ -73,6 +73,8 @@
     <None Include="$(MSBuildThisFileDirectory)Examples\AutoCompleteTest.cs" />
     <None Include="$(MSBuildThisFileDirectory)Models\Entries\TeamNumberAutoCompleteEntry.cs" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\icon.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FBApp.cs" />
+    <None Include="$(MSBuildThisFileDirectory)DataAnalysis\DataAnalysisPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Models\Lists\" />

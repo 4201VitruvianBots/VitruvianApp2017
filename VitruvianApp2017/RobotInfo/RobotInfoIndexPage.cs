@@ -109,11 +109,6 @@ namespace VitruvianApp2017
 				updateMatchLists();
 			};
 
-			this.Appearing += (object sender, EventArgs e) =>
-			{
-				updateMatchLists();
-			};
-
 			this.Content = new StackLayout()
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -128,6 +123,11 @@ namespace VitruvianApp2017
 			};
 
 			BackgroundColor = Color.White;
+		}
+
+		protected override void OnAppearing() {
+			base.OnAppearing();
+			updateMatchLists();
 		}
 
 		public async Task updateMatchLists() {
@@ -153,9 +153,9 @@ namespace VitruvianApp2017
 					var db = new FirebaseClient(GlobalVariables.firebaseURL);
 					//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
 					var fbTeams = await db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.OnceAsync<TeamData>();
+									.Child(GlobalVariables.regionalPointer)
+									.Child("teamData")
+									.OnceAsync<TeamData>();
 
 					foreach (var team in fbTeams) {
 						Console.WriteLine("TeamNo: " + team.Object.teamNumber);

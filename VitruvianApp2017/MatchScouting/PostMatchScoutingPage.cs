@@ -135,11 +135,16 @@ namespace VitruvianApp2017
 								.OnceSingleAsync<TeamData>();
 
 			int mCount = 0, successfulClimbs = 0, attemptedClimbs = 0, totalFouls = 0, totalGood = 0;
+			int autoCrosses = 0;
 			double autoGearsScored = 0, autoGearsDelivered = 0, autoGearsDropped = 0, autoHighHits = 0, autoPressure = 0;
 			double teleopActions = 0, teleOpPressure = 0, teleOpHighAcc = 0, teleOpGearsScored = 0, 
 				teleOpGearsTransitDropped = 0, teleOpGearsStationDropped = 0;
+			int autoPressureHigh = 0, teleOpActionsHigh = 0, teleOpGearsScoredHigh = 0, teleOpGearsStationDroppedHigh = 0,
+				teleOpGearsTransitDroppedHigh = 0;
+			double teleOpPressureHigh = 0;
 
 			foreach (var match in fbMatches) {
+				autoCrosses += match.Object.autoCross ? 1 : 0;
 				autoGearsScored += match.Object.autoGearScored ? 1 : 0;
 				autoGearsDelivered += match.Object.autoGearDelivered ? 1 : 0;
 				autoGearsDropped += match.Object.autoGearDropped ? 1 : 0;
@@ -158,9 +163,30 @@ namespace VitruvianApp2017
 				totalFouls += match.Object.fouls;
 				totalGood += match.Object.good ? 1 : 0;
 
+				if (match.Object.autoPressure > autoPressureHigh)
+					autoPressureHigh = match.Object.autoPressure;
+				if (match.Object.actionCount > teleOpActionsHigh)
+					teleOpActionsHigh = match.Object.actionCount;
+				if (match.Object.teleOpGearsDeposit > teleOpGearsScoredHigh)
+					teleOpGearsScoredHigh = match.Object.teleOpGearsDeposit;
+				if (match.Object.teleOpGearsTransitDropped > teleOpGearsTransitDroppedHigh)
+					teleOpGearsTransitDroppedHigh = match.Object.teleOpGearsTransitDropped;
+				if (match.Object.teleOpGearsStationDropped > teleOpGearsStationDroppedHigh)
+					teleOpGearsStationDroppedHigh = match.Object.teleOpGearsStationDropped;
+				if (match.Object.teleOpTotalPressure > teleOpPressureHigh)
+					teleOpPressureHigh = match.Object.teleOpTotalPressure;
+
 				mCount++;
 			}
 
+			fbTeamData.autoPressureHigh = autoPressureHigh;
+			fbTeamData.teleOpActionsHigh = teleOpActionsHigh;
+			fbTeamData.teleOpGearsScoredHigh = teleOpGearsScoredHigh;
+			fbTeamData.teleOpGearsTransitDroppedHigh = teleOpGearsTransitDroppedHigh;
+			fbTeamData.teleOpGearsStationDroppedHigh = teleOpGearsStationDroppedHigh;
+			fbTeamData.teleOpPressureHigh = teleOpPressureHigh;
+
+			fbTeamData.totalAutoCrossSuccesses = autoCrosses;
 			fbTeamData.avgAutoPressure = autoPressure / mCount;
 			fbTeamData.avgAutoHighHits = autoHighHits / mCount;
 			fbTeamData.avgAutoGearScored = autoGearsScored / mCount;

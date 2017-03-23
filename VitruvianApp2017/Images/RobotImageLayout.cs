@@ -3,9 +3,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Media;
+using Firebase.Storage;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
-
 using FFImageLoading;
 using FFImageLoading.Forms;
 using Rg.Plugins.Popup.Extensions;
@@ -33,10 +33,11 @@ namespace VitruvianApp2017
 			robotImage = new CachedImage() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				//HeightRequest = 120,
+				HeightRequest = 120,
 				//WidthRequest = 120,
 				DownsampleToViewSize = true,
-				Aspect = Aspect.AspectFit
+				Aspect = Aspect.AspectFit,
+				LoadingPlaceholder = "Loading_image_placeholder.png",
 				//ErrorPlaceholder = "Placeholder_image_placeholder.png"
 			};
 

@@ -29,7 +29,7 @@ namespace VitruvianApp2017
 			}, TaskScheduler.FromCurrentSynchronizationContext());
 			//*/
 			await robotImagePicker.TakePhotoAsync(new StoreCameraMediaOptions {
-				Name = data.teamNumber.ToString() + "_" + DateTime.Now.ToString(@"MMddyyyy_hmmtt") + ".jpg",
+				Name = data.teamNumber + "_IMG" + imageInt + ".jpg",
 				Directory = "Robot Images"
 			}).ContinueWith(t => {
 				fileName = data.teamNumber.ToString() + "_IMG" + imageInt + ".jpg";
@@ -40,8 +40,8 @@ namespace VitruvianApp2017
 			}, TaskScheduler.FromCurrentSynchronizationContext());
 
 			try {
-				fileName = data.teamNumber.ToString() + "_IMG" + imageInt + ".jpg";
-				var stream = File.Open(filePath, FileMode.Open);
+				fileName = data.teamNumber + "_IMG" + imageInt + ".jpg";
+				var stream = new MemoryStream(ImageToBinary(filePath));
 
 				var storage = new FirebaseStorage(GlobalVariables.firebaseStorageURL);
 
@@ -64,8 +64,16 @@ namespace VitruvianApp2017
 							.PutAsync(downloadURL);
 				*/
 			} catch (Exception ex) {
-				Console.WriteLine("Error: " + ex);
+				Console.WriteLine("Image Upload Image: " + ex);
 			}
+		}
+
+		private static byte[] ImageToBinary(string imagePath) {
+			FileStream fileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
+			byte[] buffer = new byte[fileStream.Length];
+			fileStream.Read(buffer, 0, (int)fileStream.Length);
+			fileStream.Close();
+			return buffer;
 		}
 
 		/*
@@ -86,15 +94,6 @@ namespace VitruvianApp2017
 			//var filePath = ;
 			//UploadTask upload = backupImageRef.PutBytes(ImageToBinary(filePath));
 		}
-
-		private static byte[] ImageToBinary(string imagePath) {
-			FileStream fileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
-			byte[] buffer = new byte[fileStream.Length];
-			fileStream.Read(buffer, 0, (int)fileStream.Length);
-			fileStream.Close();
-			return buffer;
-		}
-
 
 		public static async Task<string> getImageURL(TeamData data) {
 			// Temporary workaround until Xamarin.Firebase.Storage implements an easier way to get image URLs

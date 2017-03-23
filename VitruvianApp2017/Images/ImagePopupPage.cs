@@ -40,7 +40,7 @@ namespace VitruvianApp2017
 				WidthRequest = 120,
 				DownsampleToViewSize = true,
 				Aspect = Aspect.AspectFit,
-				//ErrorPlaceholder = "Placeholder_image_placeholder.png"
+				LoadingPlaceholder = "Loading_image_placeholder.png",
 			};
 			try {
 				robotImage.Source = new Uri(data.imageURL);
@@ -122,6 +122,7 @@ namespace VitruvianApp2017
 					HeightRequest = 100,
 					//WidthRequest = 120,
 					DownsampleToViewSize = true,
+					LoadingPlaceholder	= "Loading_image_placeholder.png",
 					ErrorPlaceholder = "Placeholder_image_placeholder.png",
 					Aspect = Aspect.AspectFit
 				};
@@ -151,19 +152,18 @@ namespace VitruvianApp2017
 			var storage = new FirebaseStorage(GlobalVariables.firebaseStorageURL);
 
 			try {
-				var retrieve = await storage
+				var retrieve = storage
 								.Child(GlobalVariables.regionalPointer)
 								.Child(data.teamNumber.ToString())
 								.Child(fileName)
-								.GetDownloadUrlAsync();
-
-				img.Source = new Uri(retrieve);
-				selectImage(img);
+								.GetDownloadUrlAsync().ContinueWith((arg) => {
+									img.Source = new Uri(arg.Result);
+									//selectImage(img);
+								});
 			} catch (Exception ex) {
 				Console.WriteLine("ImageStack Error: " + ex.Message);
 				img.Source = "Placeholder_image_placeholder.png";
 			}
-
 		}
 
 		void selectImage(CachedImage img) {
@@ -171,6 +171,7 @@ namespace VitruvianApp2017
 				if (robotImages[i] == img) {
 					imageFrame[i].BackgroundColor = Color.Red;
 					imageIndex = i;
+					robotImage.Source = robotImages[i].Source;
 				} else {
 					imageFrame[i].BackgroundColor = Color.Transparent;
 				}
@@ -182,11 +183,17 @@ namespace VitruvianApp2017
 			
 			var storage = new FirebaseStorage(GlobalVariables.firebaseStorageURL);
 
-			var getURL = storage.Child(GlobalVariables.regionalPointer)
+			var getURL = await storage.Child(GlobalVariables.regionalPointer)
 						 .Child(data.teamNumber.ToString())
 						 .Child(fileName)
 		                 .GetDownloadUrlAsync();
-			
+
+			/*
+			robotImage.Source = new UriImageSource() {
+				Uri = new Uri(getURL)
+			};
+			*/
+
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
 			var saveURL = db
@@ -194,7 +201,10 @@ namespace VitruvianApp2017
 						.Child("teamData")
 						.Child(data.teamNumber.ToString())
 						.Child("imageURL")
-						.PutAsync(getURL.Result);
+						.PutAsync(getURL);
+
+			await DisplayAlert("Success", "Default Image Changed", "OK");
+			await Navigation.PopAllPopupAsync();
 		}
 	}
 }

@@ -15,10 +15,13 @@ namespace VitruvianApp2017
 		public bool groundIntake { get; set; }
 		//public bool cheesecake { get; set; }
 
+		public string notes { get; set; }
+
 		// Match Data
 		public int matchCount { get; set; }
 
 		// Auto
+		public int totalAutoCrossSuccesses { get; set; }
 		public double avgAutoGearScored { get; set; }
 		public double avgAutoGearsDelivered { get; set; }
 		public double avgAutoGearsDropped { get; set; }
@@ -33,6 +36,16 @@ namespace VitruvianApp2017
 		public double avgTeleOpGearsScored { get; set; }
 		public double avgTeleOpGearsTransitDropped { get; set; }
 		public double avgTeleOpGearsStationDropped { get; set; }
+
+
+		//High
+		public int autoPressureHigh { get; set; }
+		public int teleOpActionsHigh { get; set; }
+		public int teleOpGearsScoredHigh { get; set; } 
+		public int teleOpGearsStationDroppedHigh { get; set; }
+		public int teleOpGearsTransitDroppedHigh { get; set; }
+		public double teleOpPressureHigh { get; set; }
+
 
 		public int successfulClimbCount { get; set; }
 		public int attemptedClimbCount { get; set; }
