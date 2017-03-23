@@ -12,9 +12,10 @@ namespace VitruvianApp2017
 {
 	public class ImageCapture
 	{
-		public static async Task ImagePicker(TeamData data) {
+		public static async Task ImagePicker(TeamData data, int imageInt) {
 			MediaFile robotImageFile;
 			String filePath = null;
+			string fileName = null;
 			//It works? Don't use gallery
 			var robotImagePicker = new MediaPicker(Forms.Context);
 			/*
@@ -28,52 +29,54 @@ namespace VitruvianApp2017
 			}, TaskScheduler.FromCurrentSynchronizationContext());
 			//*/
 			await robotImagePicker.TakePhotoAsync(new StoreCameraMediaOptions {
-				Name = data.teamNumber.ToString() + ".jpg",
+				Name = data.teamNumber + "_IMG" + imageInt + ".jpg",
 				Directory = "Robot Images"
 			}).ContinueWith(t => {
+				fileName = data.teamNumber.ToString() + "_IMG" + imageInt + ".jpg";
+				Console.WriteLine("Filename: " + fileName);
 				robotImageFile = t.Result;
 				filePath = robotImageFile.Path;
 				Console.WriteLine("Robot Image Path: " + filePath);
 			}, TaskScheduler.FromCurrentSynchronizationContext());
 
 			try {
-				Console.WriteLine("Begin Firebase Initialization");
-				FBApp.InitializeFirebaseStorage();
+				fileName = data.teamNumber + "_IMG" + imageInt + ".jpg";
+				var stream = new MemoryStream(ImageToBinary(filePath));
 
-				var imageRefName = data.teamNumber.ToString() + ".jpg";
-				StorageReference imageRef = FBApp.robotImageStorageRef.Child(imageRefName);
+				var storage = new FirebaseStorage(GlobalVariables.firebaseStorageURL);
 
-				Console.WriteLine(imageRef.Path.ToString());
+				var send = storage.Child(GlobalVariables.regionalPointer)
+				             .Child(data.teamNumber.ToString())
+				             .Child(fileName)
+				             .PutAsync(stream);
 
-				// Attempt Image Backup -> Not pursuing due to complexity of implementation
-				//if (imageRef.Name.Equals(imageRefName))
-					//ImageBackup(imageRef, data);
+				var downloadURL = await send;
 
+				Console.WriteLine("URL: " + downloadURL);
+				/*
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-				var send = db.Child(GlobalVariables.regionalPointer)
-							 .Child("teamData")
-				             .Child(data.teamNumber.ToString())
-							 .Child("imageWrite")
-							 .PutAsync(false);
-
-				UploadTask upload = imageRef.PutBytes(ImageToBinary(filePath));
-				
-				/*
-				Task uploadWait = Task.Factory.StartNew(() => upload.IsSuccessful).ContinueWith(t =>
-				{
-					Console.WriteLine("Testing Cast");
-					//var test = JavaObjectCast.CastToUrl<UploadTask.TaskSnapshot>(upload.Snapshot);
-					Console.WriteLine("Download URL: " + imageref.DownloadUrl.ToString());
-				});
-				// Check if upload is successful?
-				//upload.AddOnCompleteListener(new Android.Gms.Tasks.IOnCompleteListener()<UploadTask.TaskSnapshot>{ });
+				var saveURL = db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamData")
+							.Child(data.teamNumber.ToString())
+							.Child("imageURL")
+							.PutAsync(downloadURL);
 				*/
 			} catch (Exception ex) {
-				Console.WriteLine("Error: " + ex);
+				Console.WriteLine("Image Upload Image: " + ex);
 			}
 		}
 
+		private static byte[] ImageToBinary(string imagePath) {
+			FileStream fileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
+			byte[] buffer = new byte[fileStream.Length];
+			fileStream.Read(buffer, 0, (int)fileStream.Length);
+			fileStream.Close();
+			return buffer;
+		}
+
+		/*
 		static void ImageBackup(StorageReference imageRef, TeamData data) {
 			string imageRefName = data.teamNumber.ToString() + ".jpg";
 			int counter = 1;
@@ -92,14 +95,6 @@ namespace VitruvianApp2017
 			//UploadTask upload = backupImageRef.PutBytes(ImageToBinary(filePath));
 		}
 
-		private static byte[] ImageToBinary(string imagePath) {
-			FileStream fileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
-			byte[] buffer = new byte[fileStream.Length];
-			fileStream.Read(buffer, 0, (int)fileStream.Length);
-			fileStream.Close();
-			return buffer;
-		}
-
 		public static async Task<string> getImageURL(TeamData data) {
 			// Temporary workaround until Xamarin.Firebase.Storage implements an easier way to get image URLs
 			FBApp.InitializeFirebaseStorage();
@@ -112,5 +107,6 @@ namespace VitruvianApp2017
 
 			return listen.data;
 		}
+		*/
 	}
 }

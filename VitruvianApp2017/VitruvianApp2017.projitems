@@ -3,77 +3,80 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <SharedGUID>{8CF8D6CC-B20C-4F31-B41B-F9D20D3FEC61}</SharedGUID>
+    <SharedGUID>{9AFE6DC9-AD2D-46E3-B41C-5AFD8625CC4A}</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>VitruvianApp2017</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)VitruvianApp2017.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MainMenuPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GlobalVariables.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\RobotInfoIndexPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Functions\CheckInternetConnectivity.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\BackButton.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\DoubleCounter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\SingleCounter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TestPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\NavigationButtons.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\LineEntry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\PopupNavigationButtons.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Functions\AppSettings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TestPage2.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\TeamData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Functions\Listeners\Listeners.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Images\RobotImageLayout.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FBApp.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Events.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Teams.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleListContainer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchListIndexPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchInfoPopupPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\Data\PitData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\PitDataCell.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Cells\TeamListCell.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\PreMatchScoutingPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\AutoMatchScoutingPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\TeleOpMatchScoutingPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\PostMatchScoutingPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MainMenuPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchInfoTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\AdminLoginPopup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\AdminPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\EventMatchData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Global.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\ScouterName.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\TeamData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\TeamMatchData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Events.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Teams.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventTeams.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\TeamInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Functions\AppSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Functions\CheckInternetConnectivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchInfoPopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchListCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchListIndexPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\AutoMatchScoutingPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\PostMatchScoutingPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\PreMatchScoutingPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchScouting\TeleOpMatchScoutingPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\BackButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\ColorButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\ColorButtonStackArray.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\NavigationButtons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\PopupNavigationButtons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Cells\TeamListCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Cells\TeamNumberCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\CollapsibleListContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\Data\PitData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\DoubleCounter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\SingleCounter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\LineEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Entries\ScouterNameAutoCompleteEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\RobotInfoIndexPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupEditPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\PitDataCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchHeaderList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventStats.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\RobotImageLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\DataCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MatchList\ColumnHeaderCell.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Models\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Models\Buttons\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Depreciated\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Models\Entries\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Images\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Examples\" />
-    <Folder Include="$(MSBuildThisFileDirectory)External APIs\" />
-    <Folder Include="$(MSBuildThisFileDirectory)External APIs\Firebase\" />
-    <Folder Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Functions\Listeners\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Admin\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Images\Images\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\" />
-    <Folder Include="$(MSBuildThisFileDirectory)MatchList\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Models\CollapsibleListView\Data\" />
-    <Folder Include="$(MSBuildThisFileDirectory)MatchScouting\" />
-    <Folder Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Models\Cells\" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Functions\FirebaseStorage.manifest" />
+    <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />
+    <None Include="$(MSBuildThisFileDirectory)Images\Images\Placeholder_image_placeholder.png" />
+    <None Include="$(MSBuildThisFileDirectory)TestPage.cs" />
+    <None Include="$(MSBuildThisFileDirectory)TestPage2.cs" />
+    <None Include="$(MSBuildThisFileDirectory)AutoCompleteTest.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Functions\Listeners\Listeners.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Depreciated\AddTeamPopupPage.cs" />
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AppSettingsTest.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Depreciated\AddTeamPopupPage.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Images\Images\AppIcon.png" />
-    <None Include="$(MSBuildThisFileDirectory)Images\Images\Placeholder_image_placeholder.png" />
-    <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />
-    <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\TeamDataGridModel.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Examples\AutoCompleteTest.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Models\Entries\TeamNumberAutoCompleteEntry.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Images\Images\icon.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FBApp.cs" />
+    <None Include="$(MSBuildThisFileDirectory)DataAnalysis\DataAnalysisPage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Models\Lists\" />
   </ItemGroup>
 </Project>

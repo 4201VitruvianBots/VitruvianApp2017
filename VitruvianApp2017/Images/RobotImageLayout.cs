@@ -3,12 +3,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Media;
+using Firebase.Storage;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
-using Firebase.Xamarin;
-
-using Firebase;
-using Firebase.Storage;
 using FFImageLoading;
 using FFImageLoading.Forms;
 using Rg.Plugins.Popup.Extensions;
@@ -22,7 +19,7 @@ namespace VitruvianApp2017
 		CachedImage robotImageFull = new CachedImage();
 		CachedImage robotImage;
 		string imageURL;
-
+		bool link;
 		ActivityIndicator busyIcon;
 
 		public RobotImageLayout(TeamData data)
@@ -33,14 +30,15 @@ namespace VitruvianApp2017
 				VerticalOptions = LayoutOptions.Center
 			};
 
-			robotImage = new CachedImage()
-			{
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				VerticalOptions = LayoutOptions.CenterAndExpand,
+			robotImage = new CachedImage() {
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.FillAndExpand,
 				HeightRequest = 120,
-				WidthRequest = 120,
+				//WidthRequest = 120,
 				DownsampleToViewSize = true,
-				// ErrorPlaceholder = 
+				Aspect = Aspect.AspectFit,
+				LoadingPlaceholder = "Loading_image_placeholder.png",
+				//ErrorPlaceholder = "Placeholder_image_placeholder.png"
 			};
 
 			addRobotImage(data);
@@ -55,19 +53,18 @@ namespace VitruvianApp2017
 			busyIcon.IsVisible = true;
 			try
 			{
-				imageURL = await ImageCapture.getImageURL(data);
+				imageURL = data.imageURL;
 
 				robotImage.Source = new Uri(imageURL);
 
 				robotImage.Success += (sender, ea) => {
 					Console.WriteLine("Image source: " + robotImage.Source);
 
-					robotImage.Aspect = Aspect.AspectFit;
 					robotImageFull.Source = robotImage.Source;
 
 					tap.Tapped += (s, e) => {
 						// Create a gesture recognizer to display the popup image
-						Navigation.PushPopupAsync(new ImagePopupPage(robotImageFull, data));
+						Navigation.PushPopupAsync(new ImagePopupPage(data));
 					};
 					GestureRecognizers.Add(tap);
 					busyIcon.IsRunning = false;
@@ -78,19 +75,18 @@ namespace VitruvianApp2017
 			}
 			catch(Exception ex) {
 				robotImage.Source = "Placeholder_image_placeholder.png";
-				robotImage.Aspect = Aspect.AspectFill;
 				Console.WriteLine("Error: " + ex.Message);
 
 				tap.Tapped += (object sender, EventArgs e) =>
 				{
-					Console.WriteLine("Taking Image...");
-					// Create a gesture recognizer to display the popup image
-					ImageCapture.ImagePicker(data);
+					Navigation.PushPopupAsync(new ImagePopupPage(data));
 				};
 				GestureRecognizers.Add(tap);
 				busyIcon.IsRunning = false;
 				busyIcon.IsVisible = false;
 			}
+			if(imageURL == null)
+				robotImage.Source = "Placeholder_image_placeholder.png";
 		}
 	}
 }

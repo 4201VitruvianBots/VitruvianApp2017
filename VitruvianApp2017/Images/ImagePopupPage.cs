@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xamarin.Media;
 using Xamarin.Forms;
-using System.Threading.Tasks;
+using Firebase.Storage;
+using Firebase.Xamarin.Database;
+using Firebase.Xamarin.Database.Query;
 using Rg.Plugins.Popup.Pages;
 using Rg.Plugins.Popup.Extensions;
 using FFImageLoading.Forms;
@@ -12,69 +16,195 @@ namespace VitruvianApp2017
 	public class ImagePopupPage:PopupPage
 	{
 		CachedImage robotImage = new CachedImage ();
+		CachedImage[] robotImages = new CachedImage[5];
+		Frame[] imageFrame = new Frame[5];
+		int imageIndex = 0;
+		bool[] imageSelect = new bool[5];
 		Button[] btnArray;
-		TeamData team;
+		TeamData data;
 
-		Grid layoutGrid = new Grid (){													// Creates a grid to organize how the page is arranged
+		StackLayout imageStack = new StackLayout() {
 			HorizontalOptions = LayoutOptions.CenterAndExpand,
-			VerticalOptions = LayoutOptions.CenterAndExpand,
-
-			ColumnDefinitions = {
-				new ColumnDefinition{ Width = GridLength.Star },
-			},
-			RowDefinitions = {		
-				new RowDefinition{ Height = new GridLength(1, GridUnitType.Star) },		// robotImage
-				new RowDefinition{ Height = GridLength.Auto },							// backBtn
-			}
+			VerticalOptions = LayoutOptions.FillAndExpand,
+			                                 
+			Orientation = StackOrientation.Horizontal,
 		};
 
-		public ImagePopupPage(CachedImage robotImage) : this(robotImage, null)			// Takes an image input to be displayed as a popup
+		public ImagePopupPage (TeamData tData)
 		{
-			
-		}
+			data = tData;
+			robotImage = new CachedImage() {
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.FillAndExpand,
+				HeightRequest = 120,
+				WidthRequest = 120,
+				DownsampleToViewSize = true,
+				Aspect = Aspect.AspectFit,
+				LoadingPlaceholder = "Loading_image_placeholder.png",
+			};
+			try {
+				robotImage.Source = new Uri(data.imageURL);
+			} catch {
+				robotImage.Source = "Placeholder_image_placeholder.png";
+			}
 
-		public ImagePopupPage (CachedImage robotImage, TeamData data)
-		{
-			team = data;
-			robotImage.Aspect = Aspect.Fill;
+			Task.Factory.StartNew(() => fillImageStack());
+
+			Button setImageDefaultBtn = new Button() {
+				VerticalOptions = LayoutOptions.Fill,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Text = "Set Default",
+				TextColor = Color.Green,
+				BackgroundColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium
+			};
+			setImageDefaultBtn.Clicked += (object sender, EventArgs e) => {
+				setDefaultImage();
+			};
+
 
 			Button retakeImageBtn = new Button()
 			{
 				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Text = "Retake Image",
+				Text = "Retake",
 				TextColor = Color.Green,
 				BackgroundColor = Color.Black,
 				FontSize = GlobalVariables.sizeMedium
 			};
 			retakeImageBtn.Clicked += (object sender, EventArgs e) =>
 			{
-				if(data.imageWrite != false)
-					OpenImagePicker();
+				OpenImagePicker();
 			};
 
-			btnArray = new Button[] { retakeImageBtn };
+			btnArray = new Button[] { setImageDefaultBtn, retakeImageBtn };
 			var navigationBtns = new PopupNavigationButtons(true, btnArray);
-
-			layoutGrid.Children.Add(robotImage, 0, 0);
-			layoutGrid.Children.Add(navigationBtns, 0, 1);
 
 			Content = new Frame(){
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				Margin = new Thickness(50, 80),
+				Margin = new Thickness(50, 50),
 				Padding = new Thickness(5),
 
 				BackgroundColor = Color.Gray,
 				HasShadow = true,
 
-				Content = layoutGrid
+				Content = new StackLayout() {
+					HorizontalOptions = LayoutOptions.FillAndExpand,
+					VerticalOptions = LayoutOptions.FillAndExpand,
+
+					Children = {
+						robotImage,
+						new ScrollView(){
+							HorizontalOptions = LayoutOptions.FillAndExpand,
+							Orientation = ScrollOrientation.Horizontal,
+
+							Content = imageStack
+						},
+						navigationBtns
+					}
+				}
 			};
 		}
 
 		async Task OpenImagePicker()
 		{
-			await ImageCapture.ImagePicker(team);
+			await ImageCapture.ImagePicker(data, imageIndex);
+		}
+
+		async Task fillImageStack() {
+			string fileName;
+
+			for (int i = 0; i < 5; i++) {
+				robotImages[i] = new CachedImage() {
+					HorizontalOptions = LayoutOptions.FillAndExpand,
+					VerticalOptions = LayoutOptions.FillAndExpand,
+					HeightRequest = 100,
+					//WidthRequest = 120,
+					DownsampleToViewSize = true,
+					LoadingPlaceholder	= "Loading_image_placeholder.png",
+					ErrorPlaceholder = "Placeholder_image_placeholder.png",
+					Aspect = Aspect.AspectFit
+				};
+				var imageTap = new TapGestureRecognizer();
+				imageTap.Tapped += (sender, e) => {
+					selectImage((CachedImage)sender);
+				};
+
+				robotImages[i].GestureRecognizers.Add(imageTap);
+				robotImages[i].Source = "Placeholder_image_placeholder.png";
+
+				imageFrame[i] = new Frame() {
+					BackgroundColor = Color.Transparent,
+					Padding = new Thickness(5),
+
+					Content = robotImages[i]
+				};
+				imageStack.Children.Add(imageFrame[i]);
+
+				fileName = data.teamNumber + "_IMG" + i + ".jpg";
+
+				getImage(robotImages[i], fileName);
+			}
+		}
+
+		async Task getImage(CachedImage img, string fileName) {
+			var storage = new FirebaseStorage(GlobalVariables.firebaseStorageURL);
+
+			try {
+				var retrieve = storage
+								.Child(GlobalVariables.regionalPointer)
+								.Child(data.teamNumber.ToString())
+								.Child(fileName)
+								.GetDownloadUrlAsync().ContinueWith((arg) => {
+									img.Source = new Uri(arg.Result);
+									//selectImage(img);
+								});
+			} catch (Exception ex) {
+				Console.WriteLine("ImageStack Error: " + ex.Message);
+				//img.Source = "Placeholder_image_placeholder.png";
+			}
+		}
+
+		void selectImage(CachedImage img) {
+			for (int i = 0; i < 5; i++) {
+				if (robotImages[i] == img) {
+					imageFrame[i].BackgroundColor = Color.Red;
+					imageIndex = i;
+					robotImage.Source = robotImages[i].Source;
+				} else {
+					imageFrame[i].BackgroundColor = Color.Transparent;
+				}
+			}
+		}
+
+		async Task setDefaultImage() {
+			string fileName =  data.teamNumber + "_IMG" + imageIndex + ".jpg";
+			
+			var storage = new FirebaseStorage(GlobalVariables.firebaseStorageURL);
+
+			var getURL = await storage.Child(GlobalVariables.regionalPointer)
+						 .Child(data.teamNumber.ToString())
+						 .Child(fileName)
+		                 .GetDownloadUrlAsync();
+
+			/*
+			robotImage.Source = new UriImageSource() {
+				Uri = new Uri(getURL)
+			};
+			*/
+
+			var db = new FirebaseClient(GlobalVariables.firebaseURL);
+
+			var saveURL = db
+						.Child(GlobalVariables.regionalPointer)
+						.Child("teamData")
+						.Child(data.teamNumber.ToString())
+						.Child("imageURL")
+						.PutAsync(getURL);
+
+			await DisplayAlert("Success", "Default Image Changed", "OK");
+			await Navigation.PopAllPopupAsync();
 		}
 	}
 }

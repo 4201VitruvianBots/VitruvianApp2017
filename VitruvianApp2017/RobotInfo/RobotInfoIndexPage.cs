@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Linq;
+using System.Collections.Generic;
 using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 using Firebase.Xamarin.Database;
@@ -11,54 +11,113 @@ namespace VitruvianApp2017
 {
 	public class RobotInfoIndexPage : ContentPage
 	{
-		ScrollView teamIndex;
-		StackLayout teamStack = new StackLayout()
-		{
-			Spacing = 1,
-			BackgroundColor = Color.Silver
-		};
+		ListView teamListView = new ListView();
+		List<TeamData> teamList = new List<TeamData>();
+
+		Grid searchBar;
+		Entry searchEntry;
+		Label searchCancel;
 
 		ActivityIndicator busyIcon = new ActivityIndicator();
 
-		public RobotInfoIndexPage()
-		{
+		public RobotInfoIndexPage() {
 			Title = "Robot Info";
-			Label titleLbl = new Label()
-			{
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Text = "Robot Info",
-				TextColor = Color.White,
-				BackgroundColor = Color.FromHex("1B5E20"),
-				FontSize = GlobalVariables.sizeTitle,
-				FontAttributes = FontAttributes.Bold
+
+			searchBar = new Grid() {
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				VerticalOptions = LayoutOptions.CenterAndExpand,
+				ColumnSpacing = 0,
+				RowSpacing = 0,
+
+				ColumnDefinitions = {
+					new ColumnDefinition() { Width = GridLength.Auto },
+					new ColumnDefinition() { Width = GridLength.Star },
+					new ColumnDefinition() { Width = GridLength.Auto },
+					new ColumnDefinition() { Width = 5 },
+				},
+				RowDefinitions = {
+					new RowDefinition() { Height = GridLength.Auto }
+				}
 			};
+			searchEntry = new Entry() {
+				Placeholder = "Search team",
+				MinimumWidthRequest = Width,
+				FontSize = GlobalVariables.sizeMedium
+			};
+			searchEntry.TextChanged += (sender, e) => {
+				autoCompleteOptions();
+				searchCancel.IsVisible = true;
+				searchCancel.IsEnabled = true;
 
+				if (string.IsNullOrEmpty(searchEntry.Text)){
+					searchEntry.Text = "";
+					searchEntry.Placeholder = "Search team";
+					searchCancel.IsVisible = false;
+					searchCancel.IsEnabled = false;
+				}
+			};
+			searchCancel = new Label() {
+				VerticalOptions = LayoutOptions.CenterAndExpand,
+				Text = "x",
+				FontSize = GlobalVariables.sizeTitle,
+				TextColor = searchEntry.PlaceholderColor,
+				IsVisible = false,
+				IsEnabled = false,
+			};
+			var tap = new TapGestureRecognizer();
+			tap.Tapped += (sender, e) => {
+				searchEntry.Text = "";
+			};
+			var searchCell = new ContentView() {
+				Content = searchCancel
+			};
+			searchCell.GestureRecognizers.Add(tap);
+			searchBar.Children.Add(searchEntry, 1, 0);
+			searchBar.Children.Add(searchCell, 2, 0);
 
-			teamIndex = new ScrollView()
-			{
-				Content = teamStack
+			teamListView.MinimumHeightRequest = Height;
+			teamListView.ItemTemplate = new DataTemplate(() => {
+				var teamNumber = new Label() { 
+					TextColor = Color.Black,
+					FontSize = GlobalVariables.sizeMedium,
+					VerticalOptions = LayoutOptions.CenterAndExpand
+				};
+				teamNumber.SetBinding(Label.TextProperty, "teamNumber");
+				 
+				var cell = new ViewCell() {
+					View = new StackLayout() {
+						BackgroundColor = Color.White,
+
+						Children = {
+							teamNumber
+						}
+					}
+				};
+
+				return cell;
+			});
+			teamListView.ItemSelected += (sender, e) => {
+				((ListView)sender).SelectedItem = null;
+			};
+			teamListView.ItemTapped += (sender, e) => {
+				Navigation.PushPopupAsync(new TeamCardPopupPage((TeamData)e.Item));
 			};
 
 			var navigationBtns = new NavigationButtons(true);
 			navigationBtns.refreshBtn.Clicked += (object sender, EventArgs e) =>
 			{
-				UpdateTeamList();
-			};
-
-			this.Appearing += (object sender, EventArgs e) =>
-			{
-				UpdateTeamList();
+				updateMatchLists();
 			};
 
 			this.Content = new StackLayout()
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-
+				Spacing = 1,
 				Children = {
-					titleLbl,
 					busyIcon,
-					teamIndex,
+					searchBar,
+					teamListView,
 					navigationBtns
 				}
 			};
@@ -66,70 +125,58 @@ namespace VitruvianApp2017
 			BackgroundColor = Color.White;
 		}
 
-		public async Task UpdateTeamList()
+		protected override void OnAppearing() {
+			base.OnAppearing();
+			updateMatchLists();
+		}
+
+		public async Task updateMatchLists() {
+			busyIcon.IsVisible = true;
+			busyIcon.IsRunning = true;
+			await Task.Run(() => getTeamList());
+			//getTeamList();
+
+			Console.WriteLine("Continue");
+			teamListView.ItemsSource = teamList;
+
+			busyIcon.IsVisible = false;
+			busyIcon.IsRunning = false;
+		}
+
+		async Task getTeamList()
 		{
+			Console.WriteLine("Begin");
 			if (CheckInternetConnectivity.InternetStatus()) {
-				busyIcon.IsVisible = true;
-				busyIcon.IsRunning = true;
+				try {
+					var list = new List<TeamData>();
 
-				var db = new FirebaseClient(GlobalVariables.firebaseURL);
-				//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
-				var fbTeams = await db
-						.Child(GlobalVariables.regionalPointer)
-						.Child("teamData")
-						.OnceAsync<TeamData>();
-				//var sorted = fbTeams.OrderByDescending((arg) => arg.Key("team_number"));
+					var db = new FirebaseClient(GlobalVariables.firebaseURL);
+					//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
+					var fbTeams = await db
+									.Child(GlobalVariables.regionalPointer)
+									.Child("teamData")
+									.OnceAsync<TeamData>();
 
-				teamStack.Children.Clear();
-
-				foreach (var team in fbTeams) {
-					TeamListCell cell = new TeamListCell();
-					cell.teamName.Text = "Team " + team.Object.teamNumber.ToString();
-					teamStack.Children.Add(cell);
-					TapGestureRecognizer tap = new TapGestureRecognizer();
-
-					/*
-					var data = await db
-						.Child(GlobalVariables.regionalPointer)
-						.Child("teamData")
-						.Child(team.team_number.ToString())
-						.OnceSingleAsync<TeamData>();
-
-					if (data == null)
-					{
-						var send = db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.Child(team.team_number.ToString())
-							.PutAsync(new TeamData()
-							{
-								teamName = team.nickname,
-								teamNumber = Convert.ToDouble(team.team_number)
-							});
-
-						data = await db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.Child(team.team_number.ToString())
-							.OnceSingleAsync<TeamData>();
+					foreach (var team in fbTeams) {
+						Console.WriteLine("TeamNo: " + team.Object.teamNumber);
+						list.Add(team.Object);
 					}
-					*/
-
-					if (team != null) {
-						tap.Tapped += (object sender, EventArgs e) => {
-							Navigation.PushPopupAsync(new TeamCardPopupPage(team.Object));
-						};
-					} else {
-						tap.Tapped += (object sender, EventArgs e) => {
-							DisplayAlert("Error:", "No Team Data found!", "OK");
-						};
-					}
-					cell.GestureRecognizers.Add(tap);
-				}
-
-				busyIcon.IsVisible = false;
-				busyIcon.IsRunning = false;
+					teamList = list;
+				} catch (Exception ex) {
+					Console.WriteLine("Error: " + ex.Message);
+				}	
 			}
+			Console.WriteLine("End");
+		}
+
+		void autoCompleteOptions() {
+			var filtered = new List<TeamData>();
+
+			foreach (var team in teamList)
+				if (team.teamNumber.ToString().StartsWith(searchEntry.Text.ToLower()))
+					filtered.Add(team);
+
+			teamListView.ItemsSource = filtered;
 		}
 	}
 }

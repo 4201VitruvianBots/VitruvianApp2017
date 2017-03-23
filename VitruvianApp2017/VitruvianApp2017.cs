@@ -11,10 +11,11 @@ namespace VitruvianApp2017
 		{
 			//ParseClient.Initialize("efyheG3BwD7TagqRBxCvq377InnwhThDxrzo5iNS","znyJSWdN3xaV3ifTZLjSrNCy10vkJzkm3sv0v25Q");
 
-			FBApp.Initialize();
+			//FBApp.Initialize();
 			getPtr();
 
-			MainPage = new MainMenuPage();
+			MainPage = new NavigationPage(new MainMenuPage());
+			//GlobalVariables.rootPage = MainPage;
 		}
 
 		void getPtr() {

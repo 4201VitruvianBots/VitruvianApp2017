@@ -10,6 +10,7 @@ namespace VitruvianApp2017
 	public class AdminLoginPopup:PopupPage
 	{
 		public AdminLoginPopup() {
+			Title = "Admin Page";
 
 			var pageGrid = new Grid() {
 
@@ -41,7 +42,7 @@ namespace VitruvianApp2017
 						
 					pw.inputEntry.Text = null;
 					Navigation.PopPopupAsync();
-					Navigation.PushModalAsync(new AdminPage());
+					Navigation.PushAsync(new AdminPage());
 				} else
 					DisplayAlert("Error", "Incorrect password", "OK");
 			};

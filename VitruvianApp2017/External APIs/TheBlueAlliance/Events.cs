@@ -58,5 +58,65 @@ namespace TheBlueAlliance
 			}
 			return teamList.ToArray();
 		}
+
+		public static async Task<EventMatches.Match[]> GetEventMatchesHttp(string eventKey) {
+			var dataList = new List<EventMatches.Match>();
+			var url = ("http://www.thebluealliance.com/api/v2/event/" + eventKey + "/matches");
+
+			try {
+				var client = new HttpClient(new NativeMessageHandler());
+				client.DefaultRequestHeaders.Add("X-TBA-App-Id", headerString);
+				using (client)
+				using (HttpResponseMessage response = await client.GetAsync(url))
+				using (HttpContent content = response.Content) {
+					var result = await content.ReadAsStreamAsync();
+					var jsonString = new StreamReader(result).ReadToEnd();
+					dataList = JsonConvert.DeserializeObject<List<EventMatches.Match>>(jsonString);
+
+					//Remove elimination matches
+					dataList.RemoveAll((obj) => obj.comp_level.Equals("qf"));
+					dataList.RemoveAll((obj) => obj.comp_level.Equals("sf"));
+					dataList.RemoveAll((obj) => obj.comp_level.Equals("f"));
+						
+					// Sort match in descending order
+					dataList.Sort((x, y) => x.time.CompareTo(y.time));
+					foreach (var match in dataList)
+						Console.WriteLine("TBA Match Fetch: " + match.match_number);
+					 
+				}
+			} catch (Exception webError) {
+				Console.WriteLine("Error Message: " + webError.Message);
+			}
+			
+			return dataList.ToArray();
+		}
+
+		public static async Task<EventStatsHttp[]> GetEventStatsHttp(string eventKey) {
+			var dataList = new List<EventStatsHttp>();
+			var url = ("http://www.thebluealliance.com/api/v2/event/" + eventKey + "/stats");
+
+			try {
+				var client = new HttpClient(new NativeMessageHandler());
+				client.DefaultRequestHeaders.Add("X-TBA-App-Id", headerString);
+				using (client)
+				using (HttpResponseMessage response = await client.GetAsync(url))
+				using (HttpContent content = response.Content) {
+					var result = await content.ReadAsStreamAsync();
+					var jsonString = new StreamReader(result).ReadToEnd();
+					Console.WriteLine("JSON String: " + jsonString);
+					dataList = JsonConvert.DeserializeObject<List<EventStatsHttp>>(jsonString);
+
+					// Sort match in descending order
+					foreach (var stats in dataList)
+						foreach(var opr in stats.oprs)
+							Console.WriteLine("TBA Stat Fetch - OPR: " + opr);
+
+				}
+			} catch (Exception webError) {
+				Console.WriteLine("Error Message: " + webError.Message);
+			}
+
+			return dataList.ToArray();
+		}
 	}
 }

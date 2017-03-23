@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Firebase.Xamarin.Database;
@@ -17,15 +18,24 @@ namespace VitruvianApp2017
 		}
 		*/
 
+		ActivityIndicator busyIcon = new ActivityIndicator() {
+			IsVisible = false,
+			IsRunning = false
+		};
+
 		public AdminPage() {
 			Title = "Admin Page";
-			var titleLbl = new Label() {
+
+			var updateMatchListBtn = new Button() {
+				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Text = "Admin Page",
-				TextColor = Color.White,
-				BackgroundColor = Color.FromHex("1B5E20"),
-				FontSize = GlobalVariables.sizeTitle,
-				FontAttributes = FontAttributes.Bold
+				Text = "Update Match List",
+				TextColor = Color.Green,
+				BackgroundColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium
+			};
+			updateMatchListBtn.Clicked += (sender, e) => {
+				UpdateMatchList();
 			};
 
 			var updateTeamListBtn = new Button() {
@@ -38,6 +48,19 @@ namespace VitruvianApp2017
 			};
 			updateTeamListBtn.Clicked += (sender, e) => {
 				UpdateTeamList();
+			};
+
+			var eventStatTestBtn = new Button() {
+				VerticalOptions = LayoutOptions.Fill,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Text = "Test OPR Grab",
+				TextColor = Color.Green,
+				BackgroundColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium
+			};
+
+			eventStatTestBtn.Clicked += (sender, e) => {
+				getEventStats();
 			};
 
 			var logoutBtn = new Button() {
@@ -56,8 +79,22 @@ namespace VitruvianApp2017
 
 			Content = new StackLayout() {
 				Children = {
-					titleLbl,
-					updateTeamListBtn,
+					busyIcon,
+					new ScrollView(){
+						HorizontalOptions = LayoutOptions.FillAndExpand,
+						VerticalOptions = LayoutOptions.FillAndExpand,
+
+						Content = new StackLayout(){
+							HorizontalOptions = LayoutOptions.FillAndExpand,
+							VerticalOptions = LayoutOptions.FillAndExpand,
+
+							Children = {
+								updateTeamListBtn,
+								updateMatchListBtn,
+								//eventStatTestBtn,
+							}
+						}
+					},
 					navigationBtns
 				}
 			};
@@ -66,40 +103,98 @@ namespace VitruvianApp2017
 		void logout() {
 			AppSettings.SaveSettings("AdminLogin", "false");
 
-			Navigation.PopModalAsync();
+			Navigation.PopToRootAsync();
 		}
 
 		public async Task UpdateTeamList() {
+			busyIcon.IsRunning = true;
+			busyIcon.IsVisible = true;
 			if (CheckInternetConnectivity.InternetStatus()) {
 				var teamList = await EventsHttp.GetEventTeamsListHttp(GlobalVariables.regionalPointer);
+				var sorted = from Teams in teamList orderby Teams.team_number select Teams;
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
-				//var tbaTeams = Events.GetEventTeamsListHttp("2017calb");
-				var fbTeams = await db
-						.Child(GlobalVariables.regionalPointer)
-						.Child("teamData")
-						.OnceAsync<TeamData>();
-				//var sorted = fbTeams.OrderByDescending((arg) => arg.Key("team_number"));
-
-				foreach (var team in teamList) {
-					foreach (var fbteam in fbTeams) {
-						Console.WriteLine("TBA: " + team.team_number + ", FB: " + (int)fbteam.Object.teamNumber);
-						if (team.team_number == (int)fbteam.Object.teamNumber)
-							break;
-						else {
-							var send = db
-								.Child(GlobalVariables.regionalPointer)
-								.Child("teamData")
-								.Child(team.team_number.ToString())
-								.PutAsync(new TeamData() {
-									teamName = team.nickname,
-									teamNumber = Convert.ToDouble(team.team_number)
-								});
-						}
+				
+				foreach (var team in sorted) {
+					var fbTeam = await db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamData")
+							.Child(team.team_number.ToString())
+							.OnceSingleAsync<TeamData>();
+					if (fbTeam == null) {
+						var send = db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("teamData")
+							.Child(team.team_number.ToString())
+							.PutAsync(new TeamData() {
+								teamName = team.nickname,
+								teamNumber = team.team_number
+							});
 					}
+					Console.WriteLine("Team Added: " + team.team_number);
 				}
-				DisplayAlert("Done", "Team List Successfully Updated", "OK");
+				await DisplayAlert("Done", "Team List Successfully Updated", "OK");
+				busyIcon.IsRunning = false;
+				busyIcon.IsVisible = false;
 			}
+		}
+
+		public async Task UpdateMatchList() {
+			if (CheckInternetConnectivity.InternetStatus()) {
+				busyIcon.IsRunning = true;
+				busyIcon.IsVisible = true;
+
+				var matchList = await EventsHttp.GetEventMatchesHttp(GlobalVariables.regionalPointer);
+				var sorted = from Match in matchList orderby Match.time select Match;
+
+
+				foreach (var match in sorted)
+					Console.WriteLine("Match: " + match.match_number);
+				
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+ 
+				foreach (var match in sorted) {
+					int n = 0, m = 0;
+					int[] blueA = new int[3], redA = new int[3];
+
+					foreach (var team in match.alliances.blue.teams) {
+						blueA[n] = Convert.ToInt32(match.alliances.blue.teams[n].Substring(3));
+						//Console.WriteLine("Blue: " + blueA[n]);
+						n++;
+					}
+					foreach (var team in match.alliances.red.teams) {
+						redA[m] = Convert.ToInt32(match.alliances.red.teams[m].Substring(3));
+						//Console.WriteLine("Red: " + redA[m]);
+						m++;;
+					}
+
+					var fbMatch = await db
+							.Child(GlobalVariables.regionalPointer)
+							.Child("matchList")
+							.Child(match.match_number.ToString())
+							.OnceSingleAsync<EventMatchData>();
+
+					var send = db
+						.Child(GlobalVariables.regionalPointer)
+						.Child("matchList")
+						.Child(((match.match_number < 10) ? "0" + match.match_number.ToString() : match.match_number.ToString()))
+						.PutAsync(new EventMatchData() {
+							matchNumber = ((match.match_number < 10)? "0" + match.match_number.ToString():match.match_number.ToString()),
+							Blue = blueA,
+							Red = redA,
+							matchTime = match.time
+						});
+
+					Console.WriteLine("Completed Match: " + match.match_number);
+				}
+				await DisplayAlert("Done", "Match List Successfully Updated", "OK");
+				busyIcon.IsRunning = false;
+				busyIcon.IsVisible = false;
+			}
+		}
+
+		public async Task getEventStats() {
+			var test = await EventsHttp.GetEventStatsHttp(GlobalVariables.regionalPointer);
 		}
 	}
 }

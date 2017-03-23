@@ -5,23 +5,35 @@ namespace VitruvianApp2017
 {
 	public class SingleCounter:Grid
 	{
+		public event PropertyChangingEventHandler ValueChanged;
 		int i;
+		public int lowerLimit = 0;
+		public int upperLimit = 9001;
+		Label valueLbl;
+		public SingleCounter(String title): this(title, 0){
+
+		}
 
 		public SingleCounter(String title, int counter)
 		{
+			lowerLimit = counter;
 			i = counter;
 
 			var titleLbl = new Label()
 			{
 				Text = title,
+				TextColor = Color.Black,
 				FontAttributes = FontAttributes.Bold,
+				FontSize = GlobalVariables.sizeSmall,
 				HorizontalTextAlignment = TextAlignment.Center
 			};
 
-			var valueLbl = new Label()
+			valueLbl = new Label()
 			{
 				Text = i.ToString(),
-				HorizontalTextAlignment = TextAlignment.Center
+				FontSize = GlobalVariables.sizeSmall,
+				HorizontalTextAlignment = TextAlignment.Center,
+				VerticalTextAlignment = TextAlignment.Center
 			};
 
 			var decrement = new Button()
@@ -31,10 +43,11 @@ namespace VitruvianApp2017
 			};
 			decrement.Clicked += (object sender, EventArgs e) =>
 			{
-				if (i > 0)
+				if (i > lowerLimit)
 				{
 					i--;
 					valueLbl.Text = i.ToString();
+					this.OnPropertyChanged();
 				}
 			};
 
@@ -45,8 +58,11 @@ namespace VitruvianApp2017
 			};
 			increment.Clicked += (object sender, EventArgs e) =>
 			{
-				i++;
-				valueLbl.Text = i.ToString();
+				if (i < upperLimit) {
+					i++;
+					valueLbl.Text = i.ToString();
+					this.OnPropertyChanged();
+				}
 			};
 
 			this.Children.Add(titleLbl, 0, 3, 0, 1);
@@ -55,9 +71,22 @@ namespace VitruvianApp2017
 			this.Children.Add(increment, 2, 1);
 		}
 
-		public int value()
+		public int getValue()
 		{
 			return i;
+		}
+
+		public void setValue(int v) {
+			i = v;
+			valueLbl.Text = i.ToString();
+		}
+
+		protected void OnValueChanged(string i) {
+			PropertyChangingEventHandler c = this.ValueChanged;
+
+			if (c != null) {
+				c(this, new PropertyChangingEventArgs(i));
+			}
 		}
 	}
 }

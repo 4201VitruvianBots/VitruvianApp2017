@@ -10,20 +10,12 @@ namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new AdminLoginPopup(), new TestPage(), new TestPage2()  };
-		String[] mainMenuPageTitles = { "Robot Information" , "Match Scouting", "Admin Page", "Test Page", "Test Page 2" };
+		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new MatchListIndexPage(), new AdminPage(), new AutoMatchScoutingPage(new TeamMatchData(), -1)};
+		String[] mainMenuPageTitles = { "Robot Info", "Match Scouting", "Match List", "Admin Page", "Test"};
 
 		public MainMenuPage()
 		{
 			Title = "Team 4201 Scouting App";
-			Label titleLbl = new Label(){
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Text = "Team 4201 Scouting App",
-				TextColor = Color.White,
-				BackgroundColor = Color.FromHex("1B5E20"),
-				FontSize = GlobalVariables.sizeTitle,
-				FontAttributes = FontAttributes.Bold
-			};
 
 			Label regionalLbl = new Label()
 			{
@@ -31,7 +23,7 @@ namespace VitruvianApp2017
 				Text = "Current Regional: " + GlobalVariables.regionalPointer,
 				TextColor = Color.White,
 				BackgroundColor = Color.Green,
-				FontSize = GlobalVariables.sizeTitle,
+				FontSize = GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold
 			};
 
@@ -45,12 +37,7 @@ namespace VitruvianApp2017
 					new StackLayout(){
 						//HorizontalOptions = LayoutOptions.FillAndExpand,
 						//VerticalOptions = LayoutOptions.FillAndExpand,
-						Spacing = 0,
-
-						Children = {
-							titleLbl,
-							regionalLbl
-						}
+						Spacing = 0
 					}
 				}
 			};
@@ -59,6 +46,7 @@ namespace VitruvianApp2017
 				int index = Array.IndexOf(mainMenuPageTitles, pageTitle);
 				var btn = new Button(){
 					Text = mainMenuPageTitles[index],
+					FontSize = GlobalVariables.sizeMedium,
 					BackgroundColor = Color.Green,
 					TextColor = Color.White
 				};
@@ -68,18 +56,25 @@ namespace VitruvianApp2017
 						var setting = AppSettings.RetrieveSettings("AdminLogin");
 
 						if (setting == "true")
-							Navigation.PushModalAsync(new AdminPage());
+							Navigation.PushAsync(new AdminPage());
 						else
 							Navigation.PushPopupAsync((PopupPage)mainMenuLinks[index]);
 					}
 					else
-						Navigation.PushModalAsync(mainMenuLinks[index]);
+						Navigation.PushAsync(mainMenuLinks[index]);
 				};
 				pageStack.Children.Add(btn);
 			}
 
-			this.Content = new ScrollView(){
-				Content = pageStack
+			this.Content = new StackLayout(){
+				Children = {
+					regionalLbl,
+					new ScrollView(){
+						IsClippedToBounds = true,
+
+						Content = pageStack
+					}
+				}
 			};
 
 			BackgroundColor = Color.White;
