@@ -12,8 +12,18 @@ namespace VitruvianApp2017
 		public double tbaDPR { get; set; }
 		public string volumeConfig { get; set; }
 		public int maxFuelCapacity { get; set; }
-		public bool groundIntake { get; set; }
+		public bool gearMechanism { get; set; }
+		public bool fuelLowMechanism { get; set; }
+		public bool fuelHighMechanism { get; set; }
+		public bool climbingMechanism { get; set; }
+		public bool gearGroundIntakeMechanism { get; set; }
+		public bool fuelGroundIntakeMechanism { get; set; }
 		//public bool cheesecake { get; set; }
+		// auto actions
+		public bool pitAutoCross { get; set; }
+		public bool pitAutoGear { get; set; }
+		public bool pitAutoFuelLow { get; set; }
+		public bool pitAutoFuelHigh { get; set; }
 
 		public string notes { get; set; }
 

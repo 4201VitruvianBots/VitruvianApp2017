@@ -197,6 +197,7 @@ namespace VitruvianApp2017
 		}
 
 		async Task saveData() {
+			if (CheckInternetConnectivity.InternetStatus()) {
 			calcScore();
 
 			matchData.autoCross = inputs[0].on;
@@ -207,21 +208,22 @@ namespace VitruvianApp2017
 			matchData.autoHighHits = highGoalHits.getValue();
 			matchData.autoPressure = lowGoalHits.getValue() + highGoalHits.getValue();
 
-			var db = new FirebaseClient(GlobalVariables.firebaseURL);
-			if (mType == -1) {
-				var send = db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("PracticeMatches")
-							.Child(matchData.teamNumber.ToString())
-							.Child(matchData.matchNumber.ToString())
-							.PutAsync(matchData);
-			} else {
-				var fbTeam = db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamMatchData")
-							.Child(matchData.teamNumber.ToString())
-							.Child(matchData.matchNumber.ToString())
-							.PutAsync(matchData);
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				if (mType == -1) {
+					var send = db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("PracticeMatches")
+								.Child(matchData.teamNumber.ToString())
+								.Child(matchData.matchNumber.ToString())
+								.PutAsync(matchData);
+				} else {
+					var fbTeam = db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("teamMatchData")
+								.Child(matchData.teamNumber.ToString())
+								.Child(matchData.matchNumber.ToString())
+								.PutAsync(matchData);
+				}
 			}
 		}
 	}

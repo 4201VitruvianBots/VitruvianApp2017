@@ -390,47 +390,49 @@ namespace VitruvianApp2017 {
 		}
 
 		async Task saveData() {
-			calcObjects();
+			if (CheckInternetConnectivity.InternetStatus()) {
+				calcObjects();
 
-			matchData.actionCount = aCount;
-			matchData.teleOpTotalPressure = teleOpPressure - matchData.autoPressure;
-			matchData.teleOpGearsDeposit = teleOpGears;
+				matchData.actionCount = aCount;
+				matchData.teleOpTotalPressure = teleOpPressure - matchData.autoPressure;
+				matchData.teleOpGearsDeposit = teleOpGears;
 
-			int stationDropped = 0, transitDropped = 0;
-			double hAcc = 0;
-			for (int i = 0; i < aCount; i++) {
-				hAcc += mActions[i].highGoalAccuracy;
-				stationDropped += mActions[i].gearsStationDrop;
-				transitDropped += mActions[i].gearsTransitDrop;
-			}
-			matchData.teleOpHighAcc = hAcc / aCount;
-			matchData.teleOpGearsStationDropped = stationDropped;
-			matchData.teleOpGearsTransitDropped = transitDropped;
+				int stationDropped = 0, transitDropped = 0;
+				double hAcc = 0;
+				for (int i = 0; i < aCount; i++) {
+					hAcc += mActions[i].highGoalAccuracy;
+					stationDropped += mActions[i].gearsStationDrop;
+					transitDropped += mActions[i].gearsTransitDrop;
+				}
+				matchData.teleOpHighAcc = hAcc / aCount;
+				matchData.teleOpGearsStationDropped = stationDropped;
+				matchData.teleOpGearsTransitDropped = transitDropped;
 
 
-			var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-			if (mType == -1) {
-				var send = db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("PracticeMatches")
-							.Child(matchData.teamNumber.ToString())
-							.Child(matchData.matchNumber.ToString())
-							.PutAsync(matchData);
-			} else {
-				var matchBreakDown = db
-									.Child(GlobalVariables.regionalPointer)
-									.Child("teamMatchActionData")
-									.Child(matchData.teamNumber.ToString())
-									.Child(matchData.matchNumber.ToString())
-									.PutAsync(mActions);
-				
-				var fbTeam = db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamMatchData")
-							.Child(matchData.teamNumber.ToString())
-							.Child(matchData.matchNumber.ToString())
-							.PutAsync(matchData);
+				if (mType == -1) {
+					var send = db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("PracticeMatches")
+								.Child(matchData.teamNumber.ToString())
+								.Child(matchData.matchNumber.ToString())
+								.PutAsync(matchData);
+				} else {
+					var matchBreakDown = db
+										.Child(GlobalVariables.regionalPointer)
+										.Child("teamMatchActionData")
+										.Child(matchData.teamNumber.ToString())
+										.Child(matchData.matchNumber.ToString())
+										.PutAsync(mActions);
+
+					var fbTeam = db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("teamMatchData")
+								.Child(matchData.teamNumber.ToString())
+								.Child(matchData.matchNumber.ToString())
+								.PutAsync(matchData);
+				}
 			}
 		}
 	}

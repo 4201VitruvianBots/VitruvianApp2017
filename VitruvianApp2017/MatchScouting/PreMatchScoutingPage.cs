@@ -214,19 +214,22 @@ namespace VitruvianApp2017
 
 		async Task setDefaultMatchType() {
 			int index = 0;
-			var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-			var phaseGet = await db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("competitionPhase")
-							.OnceSingleAsync<string>();
+			if (CheckInternetConnectivity.InternetStatus()) {
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-			for (int i = 0; i < 2; i++) {
-				if (Enum.GetName(typeof(matchPhase), i) == phaseGet)
-					index = i;
+				var phaseGet = await db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("competitionPhase")
+								.OnceSingleAsync<string>();
+
+				for (int i = 0; i < 2; i++) {
+					if (Enum.GetName(typeof(matchPhase), i) == phaseGet)
+						index = i;
+				}
+
+				checkBoxChanged(matchPhaseCheckboxes[index]);
 			}
-
-			checkBoxChanged(matchPhaseCheckboxes[index]);
 		}
 
 		void checkBoxChanged(CheckBox c) {
@@ -247,33 +250,35 @@ namespace VitruvianApp2017
 		}
 
 		async Task getTeamNoPickerOptions() {
-			busyIcon.IsVisible = true;
-			busyIcon.IsRunning = true;
+			if (CheckInternetConnectivity.InternetStatus()) {
+				busyIcon.IsVisible = true;
+				busyIcon.IsRunning = true;
 
-			var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-			var matchGet = await db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("matchList")
-							.Child(((matchNumber < 10) ? "0" + matchNumber.ToString() : matchNumber.ToString()))
-							.OnceSingleAsync<EventMatchData>();
-			Console.WriteLine("Match: " + matchNoEntry.inputEntry.Text + " , Alliance: " + alliancePicker.Items[alliancePicker.SelectedIndex]);
+				var matchGet = await db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("matchList")
+								.Child(((matchNumber < 10) ? "0" + matchNumber.ToString() : matchNumber.ToString()))
+								.OnceSingleAsync<EventMatchData>();
+				Console.WriteLine("Match: " + matchNoEntry.inputEntry.Text + " , Alliance: " + alliancePicker.Items[alliancePicker.SelectedIndex]);
 
-			if (matchGet == null)
-				teamNoPicker.Title = "[Select Match No. and Alliance first]";
-			else {
-				teamNoPicker.Title = "[Select A Team]";
-				teamNoPicker.Items.Clear();
-				if(alliancePicker.SelectedIndex == 0)
-					foreach (var item in matchGet.Red)
-						teamNoPicker.Items.Add(item.ToString());
-				else if(alliancePicker.SelectedIndex == 1)
-					foreach (var item in matchGet.Blue)
-						teamNoPicker.Items.Add(item.ToString());
+				if (matchGet == null)
+					teamNoPicker.Title = "[Select Match No. and Alliance first]";
+				else {
+					teamNoPicker.Title = "[Select A Team]";
+					teamNoPicker.Items.Clear();
+					if (alliancePicker.SelectedIndex == 0)
+						foreach (var item in matchGet.Red)
+							teamNoPicker.Items.Add(item.ToString());
+					else if (alliancePicker.SelectedIndex == 1)
+						foreach (var item in matchGet.Blue)
+							teamNoPicker.Items.Add(item.ToString());
+				}
+
+				busyIcon.IsVisible = false;
+				busyIcon.IsRunning = false;
 			}
-
-			busyIcon.IsVisible = false;
-			busyIcon.IsRunning = false;
 		}
 
 		async Task initializeTeamData() {

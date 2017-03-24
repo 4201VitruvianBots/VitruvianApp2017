@@ -58,6 +58,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\DataCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\ColumnHeaderCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Admin\AddMatchPopupPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Functions\FirebaseStorage.manifest" />

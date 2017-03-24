@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
+using Rg.Plugins.Popup.Pages;
+using Rg.Plugins.Popup.Extensions;
 using TheBlueAlliance;
 using TheBlueAlliance.Models;
 
@@ -63,6 +65,18 @@ namespace VitruvianApp2017
 				getEventStats();
 			};
 
+			var addMatchBtn = new Button() {
+				VerticalOptions = LayoutOptions.Fill,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Text = "Add Match",
+				TextColor = Color.Green,
+				BackgroundColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium
+			};
+			addMatchBtn.Clicked += (sender, e) => {
+				Navigation.PushPopupAsync(new AddMatchPopupPage());
+			};
+
 			var logoutBtn = new Button() {
 				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -91,6 +105,7 @@ namespace VitruvianApp2017
 							Children = {
 								updateTeamListBtn,
 								updateMatchListBtn,
+								addMatchBtn
 								//eventStatTestBtn,
 							}
 						}
