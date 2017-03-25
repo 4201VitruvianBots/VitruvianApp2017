@@ -10,8 +10,8 @@ namespace VitruvianApp2017
 {
 	public class MainMenuPage:ContentPage
 	{
-		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new MatchListIndexPage(), new AdminPage(), new AutoMatchScoutingPage(new TeamMatchData(), -1)};
-		String[] mainMenuPageTitles = { "Robot Info", "Match Scouting", "Match List", "Admin Page", "Test"};
+		ContentPage[] mainMenuLinks = { new RobotInfoIndexPage(), new PreMatchScoutingPage(), new MatchListIndexPage(), new AdminPage() };//, new AutoMatchScoutingPage(new TeamMatchData(), -1)};
+		String[] mainMenuPageTitles = { "Robot Info", "Match Scouting", "Match List", "Admin Page" };//, "Test"};
 
 		public MainMenuPage()
 		{

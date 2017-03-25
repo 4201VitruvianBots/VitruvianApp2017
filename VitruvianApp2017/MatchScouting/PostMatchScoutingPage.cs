@@ -212,7 +212,6 @@ namespace VitruvianApp2017
 							.Child(GlobalVariables.regionalPointer)
 							.Child("teamData")
 							.Child(matchData.teamNumber.ToString())
-							.Child(matchData.matchNumber.ToString())
 							.PutAsync(fbTeamData);
 			}
 		}

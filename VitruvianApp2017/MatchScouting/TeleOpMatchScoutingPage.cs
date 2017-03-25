@@ -190,6 +190,7 @@ namespace VitruvianApp2017 {
 			};
 
 			finishBtn.Clicked += (sender, e) => {
+				addAction(3);
 				saveData();
 				Navigation.PushAsync(new PostMatchScoutingPage(matchData, mType));
 			};
@@ -285,17 +286,14 @@ namespace VitruvianApp2017 {
 				mActions[aCount].hopperCapacity = 0;
 			}
 
-			if (v == 0)
+			if (v == 0) // gear scored
 				mActions[aCount].cyclePressure = 0;
-
-			if (v == 1)
+			else if (v == 1) // high shots
 				mActions[aCount].cyclePressure = (int)Math.Floor((robotMaxCapacity * hopperCapacity.getAvgPercentage() * goalAccuracy.getAvgPercentage()) / 3);
-			
-			if (v == 2) {
+			else if (v == 2) { // low shots
 				mActions[aCount].lowGoalDump = true;
 				mActions[aCount].cyclePressure = (int)Math.Floor((robotMaxCapacity * hopperCapacity.getAvgPercentage()) / 9);
-			}
-			else
+			} else // no complete scoring action
 				mActions[aCount].lowGoalDump = false;
 
 			mActions[aCount].gearsStationDrop = gearsStationDropped.getValue();
@@ -316,6 +314,7 @@ namespace VitruvianApp2017 {
 			lastActionLabels[6].Text = "Gear Transit Drops: " + mActions[aCount].gearsTransitDrop;
 			clearValues();
 
+			// if( v != 3) // arrayOutOfIndex?
 			aCount++;
 			actionCounter.Text = aCount.ToString();
 			actionCounter.BackgroundColor = Color.Transparent;
@@ -379,14 +378,21 @@ namespace VitruvianApp2017 {
 
 		async Task getMaxCapacity() {
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
+			bool semaphore = true;
 
-			var teamData = await db
+			var teamData = db
 					.Child(GlobalVariables.regionalPointer)
 					.Child("teamData")
 					.Child(matchData.teamNumber.ToString())
-					.OnceSingleAsync<TeamData>();
+					.OnceSingleAsync<TeamData>()
+					.ContinueWith((arg) => {
+						robotMaxCapacity = arg.Result.maxFuelCapacity;
+						semaphore = false;
+				});
 
-			robotMaxCapacity = teamData.maxFuelCapacity;
+			while (semaphore) {
+
+			}
 		}
 
 		async Task saveData() {

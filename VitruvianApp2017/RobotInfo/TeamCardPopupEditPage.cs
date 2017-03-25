@@ -157,23 +157,28 @@ namespace VitruvianApp2017
 				Items = {
 					"Configuartion A",
 					"Configuration B"
-				}
+				},
 			};
 			configurationPicker.SelectedIndexChanged += (sender, e) => {
 				config = configurationPicker.Items[configurationPicker.SelectedIndex];
 			};
+			if (data.volumeConfig == "Configuartion A")
+				configurationPicker.SelectedIndex = 0;
+			else
+				configurationPicker.SelectedIndex = 1;
 
 			var fuelCapacityLbl = new Label() {
 				Text = "Fuel Capacity:",
 				FontSize = GlobalVariables.sizeSmall,
-				TextColor = Color.White
+				TextColor = Color.White,
 			};
 
 			fuelCapacityEntry = new Entry() {
 				Placeholder = "[Enter Fuel Capcity]",
 				FontSize = GlobalVariables.sizeSmall,
 				TextColor = Color.White,
-				Keyboard = Keyboard.Numeric
+				Keyboard = Keyboard.Numeric,
+				Text = data.maxFuelCapacity.ToString()
 			};
 
 			var autoActionsLbl = new Label() {
@@ -192,7 +197,8 @@ namespace VitruvianApp2017
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				HeightRequest = 160,
 				BackgroundColor = Color.White,
-				TextColor = Color.Black
+				TextColor = Color.Black,
+				Text = data.notes
 			};
 
 			dataLayout.Children.Add(mechanismsLbl);

@@ -15,6 +15,7 @@ namespace VitruvianApp2017
 
 		public LineEntry(String entryTitle, String entryPlaceholder)
 		{
+			HorizontalOptions = LayoutOptions.FillAndExpand;
 			entryLbl.Text = entryTitle;
 			entryLbl.FontSize = GlobalVariables.sizeSmall;
 			entryLbl.FontAttributes = FontAttributes.Bold;
