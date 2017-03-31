@@ -15,7 +15,7 @@ namespace VitruvianApp2017
 {
 	public class ImagePopupPage:PopupPage
 	{
-		CachedImage robotImage = new CachedImage ();
+		RobotImageView robotImg;
 		CachedImage[] robotImages = new CachedImage[5];
 		Frame[] imageFrame = new Frame[5];
 		int imageIndex = 0;
@@ -33,20 +33,7 @@ namespace VitruvianApp2017
 		public ImagePopupPage (TeamData tData)
 		{
 			data = tData;
-			robotImage = new CachedImage() {
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				VerticalOptions = LayoutOptions.FillAndExpand,
-				HeightRequest = 120,
-				WidthRequest = 120,
-				DownsampleToViewSize = true,
-				Aspect = Aspect.AspectFit,
-				LoadingPlaceholder = "Loading_image_placeholder.png",
-			};
-			try {
-				robotImage.Source = new Uri(data.imageURL);
-			} catch {
-				robotImage.Source = "Placeholder_image_placeholder.png";
-			}
+			robotImg = new RobotImageView(tData);
 
 			Task.Factory.StartNew(() => fillImageStack());
 
@@ -94,7 +81,7 @@ namespace VitruvianApp2017
 					VerticalOptions = LayoutOptions.FillAndExpand,
 
 					Children = {
-						robotImage,
+						robotImg,
 						new ScrollView(){
 							HorizontalOptions = LayoutOptions.FillAndExpand,
 							Orientation = ScrollOrientation.Horizontal,
@@ -162,7 +149,7 @@ namespace VitruvianApp2017
 								});
 			} catch (Exception ex) {
 				Console.WriteLine("ImageStack Error: " + ex.Message);
-				//img.Source = "Placeholder_image_placeholder.png";
+				//img.Source = "Placeholder_image_placeholder.jpg";
 			}
 		}
 
@@ -171,7 +158,7 @@ namespace VitruvianApp2017
 				if (robotImages[i] == img) {
 					imageFrame[i].BackgroundColor = Color.Red;
 					imageIndex = i;
-					robotImage.Source = robotImages[i].Source;
+					robotImg.robotImage.Source = robotImages[i].Source;
 				} else {
 					imageFrame[i].BackgroundColor = Color.Transparent;
 				}

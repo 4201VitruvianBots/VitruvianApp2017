@@ -53,7 +53,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RobotInfo\TeamListCell\PitDataCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchHeaderList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventStats.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Images\RobotImageLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\RobotImageView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\DataCell.cs" />

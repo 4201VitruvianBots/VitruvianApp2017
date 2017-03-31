@@ -109,7 +109,7 @@ namespace VitruvianApp2017
 			Button[] btnArray = { editTeamBtn };
 			var navigationBtns = new PopupNavigationButtons(true, btnArray);
 
-			var robotImage = new RobotImageLayout(data);
+			var robotImage = new RobotImageView(data);
 			topGrid.Children.Add(robotImage, 0, 1, 0, 2);
 			topGrid.Children.Add(teamNo, 1, 0);
 			topGrid.Children.Add(teamNa, 1, 1);

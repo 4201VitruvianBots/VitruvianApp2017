@@ -182,6 +182,7 @@ namespace VitruvianApp2017
 					mCount++;
 				}
 
+				fbTeamData.matchCount = mCount;
 				fbTeamData.autoPressureHigh = autoPressureHigh;
 				fbTeamData.teleOpActionsHigh = teleOpActionsHigh;
 				fbTeamData.teleOpGearsScoredHigh = teleOpGearsScoredHigh;
