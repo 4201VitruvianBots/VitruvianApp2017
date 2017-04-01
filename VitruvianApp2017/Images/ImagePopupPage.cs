@@ -35,7 +35,6 @@ namespace VitruvianApp2017
 			data = tData;
 			robotImg = new RobotImageView(tData);
 
-			Task.Factory.StartNew(() => fillImageStack());
 
 			Button setImageDefaultBtn = new Button() {
 				VerticalOptions = LayoutOptions.Fill,
@@ -66,6 +65,10 @@ namespace VitruvianApp2017
 
 			btnArray = new Button[] { setImageDefaultBtn, retakeImageBtn };
 			var navigationBtns = new PopupNavigationButtons(true, btnArray);
+			navigationBtns.refreshBtn.Clicked += (sender, e) => {
+				refreshImages();
+				robotImg = new RobotImageView(tData);
+			};
 
 			Content = new Frame(){
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -94,9 +97,16 @@ namespace VitruvianApp2017
 			};
 		}
 
+		protected override void OnAppearing() {
+			base.OnAppearing();
+			var task = Task.Factory.StartNew(() => fillImageStack());
+			task.Wait();
+		}
+
 		async Task OpenImagePicker()
 		{
 			await ImageCapture.ImagePicker(data, imageIndex);
+			refreshImages();
 		}
 
 		async Task fillImageStack() {
@@ -127,8 +137,17 @@ namespace VitruvianApp2017
 
 					Content = robotImages[i]
 				};
-				imageStack.Children.Add(imageFrame[i]);
 
+				fileName = data.teamNumber + "_IMG" + i + ".jpg";
+
+				getImage(robotImages[i], fileName);
+				imageStack.Children.Add(imageFrame[i]);
+			}
+		}
+
+		async Task refreshImages() {
+			string fileName;
+			for (int i = 0; i < 5; i++) {
 				fileName = data.teamNumber + "_IMG" + i + ".jpg";
 
 				getImage(robotImages[i], fileName);

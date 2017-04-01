@@ -40,6 +40,17 @@ namespace VitruvianApp2017
 				Navigation.PushPopupAsync(new ImagePopupPage(data));
 			};
 
+			robotImage = new CachedImage() {
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.FillAndExpand,
+				HeightRequest = 120,
+				//WidthRequest = 120,
+				DownsampleToViewSize = true,
+				Aspect = Aspect.AspectFit,
+				CacheDuration = new TimeSpan(7, 0, 0, 0),
+			};
+			robotImage.GestureRecognizers.Add(tap);
+
 			loadingStack = new StackLayout() {
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -54,6 +65,7 @@ namespace VitruvianApp2017
 					}
 				}
 			};
+			/*
 			placeholderStack = new StackLayout() {
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -69,10 +81,17 @@ namespace VitruvianApp2017
 				}
 			};
 			placeholderStack.GestureRecognizers.Add(tap);
-
+			*/
 			errorMessageLbl = new Label() {
 				HorizontalTextAlignment = TextAlignment.Center,
 				FontSize = GlobalVariables.sizeTiny
+			};
+
+			retryBtn = new Button() {
+				Text = "Retry",
+			};
+			retryBtn.Clicked += (sender, e) => {
+				addRobotImage(data);
 			};
 
 			errorStack = new StackLayout() {
@@ -91,13 +110,6 @@ namespace VitruvianApp2017
 				}
 			};
 
-			retryBtn = new Button() {
-				Text = "Retry",
-			};
-			retryBtn.Clicked += (sender, e) => {
-				addRobotImage(data);
-			};
-
 			addRobotImage(data);
 		}
 
@@ -108,19 +120,10 @@ namespace VitruvianApp2017
 					busyIcon.IsRunning = true;
 					busyIcon.IsVisible = true;
 
-
 					imageURL = data.imageURL;
 
-					robotImage = new CachedImage() {
-						HorizontalOptions = LayoutOptions.FillAndExpand,
-						VerticalOptions = LayoutOptions.FillAndExpand,
-						HeightRequest = 120,
-						//WidthRequest = 120,
-						DownsampleToViewSize = true,
-						Aspect = Aspect.AspectFit,
-						CacheDuration = new TimeSpan(7, 0, 0, 0),
-						Source = new Uri(imageURL)
-					};
+					robotImage.Source = new Uri(imageURL);
+
 					robotImage.Success += (sender, ea) => {
 						Console.WriteLine("Image source: " + robotImage.Source);
 						busyIcon.IsRunning = false;
@@ -140,7 +143,8 @@ namespace VitruvianApp2017
 					Content = errorStack;
 				}
 			} else {
-				Content = placeholderStack;
+				robotImage.Source = "placeholder_image_placeholder.png";
+				Content = robotImage;
 			}
 		}
 	}

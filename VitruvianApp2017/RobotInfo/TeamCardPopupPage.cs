@@ -108,6 +108,10 @@ namespace VitruvianApp2017
 
 			Button[] btnArray = { editTeamBtn };
 			var navigationBtns = new PopupNavigationButtons(true, btnArray);
+			navigationBtns.refreshBtn.Clicked += (sender, e) => { 
+				getFirebaseData();
+				setPitData();
+			};
 
 			var robotImage = new RobotImageView(data);
 			topGrid.Children.Add(robotImage, 0, 1, 0, 2);
