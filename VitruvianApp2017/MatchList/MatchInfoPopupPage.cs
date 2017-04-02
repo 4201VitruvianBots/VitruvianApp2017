@@ -380,9 +380,11 @@ namespace VitruvianApp2017
 					rTeleOpPressure += (int)Math.Round(teams[i].avgTeleOpPressure, 0);
 					rTeleOpGears += (int)Math.Round(teams[i].avgTeleOpGearsScored, 0);
 
-					if((teams[i].successfulClimbCount + teams[i].attemptedClimbCount) > 0)
-						if (Math.Round(Convert.ToDouble(teams[i].successfulClimbCount / (teams[i].successfulClimbCount + teams[i].attemptedClimbCount)), 3) >= 0.5)
-								rTotalClimbs++;
+					int teamClimbTotal = teams[i].successfulClimbCount + teams[i].attemptedClimbCount;
+					if (teamClimbTotal > 0) {
+						if (Convert.ToDouble(teams[i].successfulClimbCount) / Convert.ToDouble(teamClimbTotal) >= 0.5)
+							rTotalClimbs++;
+					}
 				}
 			}
 			rTotalPressure += rAutoPressure + rTeleOpPressure;
@@ -464,9 +466,11 @@ namespace VitruvianApp2017
 					bTeleOpPressure += (int)Math.Round(teams[i].avgTeleOpPressure, 0);
 					bTeleOpGears += (int)Math.Round(teams[i].avgTeleOpGearsScored, 0);
 
-					if((teams[i].successfulClimbCount + teams[i].attemptedClimbCount) > 0)
-						if (Math.Round(Convert.ToDouble(teams[i].successfulClimbCount / (teams[i].successfulClimbCount + teams[i].attemptedClimbCount)), 3) >= 0.5)
+					int teamClimbTotal = teams[i].successfulClimbCount + teams[i].attemptedClimbCount;
+					if (teamClimbTotal > 0) {
+						if (Convert.ToDouble(teams[i].successfulClimbCount) / Convert.ToDouble(teamClimbTotal) >= 0.5)
 							bTotalClimbs++;
+					}
 				}
 			}
 			bTotalPressure += bAutoPressure + bTeleOpPressure;
