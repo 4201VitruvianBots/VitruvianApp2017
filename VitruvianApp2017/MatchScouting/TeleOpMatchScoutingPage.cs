@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
@@ -343,7 +344,7 @@ namespace VitruvianApp2017 {
 				lastActionLabels[6].Text = "Gear Transit Drops: " + 0;
 			}
 
-			actionCounter.Text = aIndex.ToString();
+			actionCounter.Text = aCount.ToString();
 			actionCounter.BackgroundColor = Color.Orange;
 			lastActionView.BackgroundColor = Color.Orange;
 		}
@@ -368,7 +369,7 @@ namespace VitruvianApp2017 {
 
 			for (int i = 0; i < aIndex; i++) {
 				teleOpGears += mActions[i].gearSet ? 1 : 0;
-				teleOpPressure = mActions[i].cyclePressure;
+				teleOpPressure += mActions[i].cyclePressure;
 			}
 			if (lowDumpOn)
 				cPressure += (int)Math.Floor(hopperCapacity.getAvgPercentage() * robotMaxCapacity);
@@ -380,21 +381,30 @@ namespace VitruvianApp2017 {
 		}
 
 		async Task getMaxCapacity() {
-			var db = new FirebaseClient(GlobalVariables.firebaseURL);
-			bool semaphore = true;
+			try {
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				bool semaphore = true;
 
-			var teamData = db
-					.Child(GlobalVariables.regionalPointer)
-					.Child("teamData")
-					.Child(matchData.teamNumber.ToString())
-					.OnceSingleAsync<TeamData>()
-					.ContinueWith((arg) => {
-						robotMaxCapacity = arg.Result.maxFuelCapacity;
-						semaphore = false;
-				});
-
-			while (semaphore) {
-
+				var teamData = db
+						.Child(GlobalVariables.regionalPointer)
+						.Child("teamData")
+						.Child(matchData.teamNumber.ToString())
+						.OnceSingleAsync<TeamData>()
+						.ContinueWith((arg) => {
+							robotMaxCapacity = arg.Result.maxFuelCapacity;
+							semaphore = false;
+						});
+				var stopwatch = new Stopwatch();
+				stopwatch.Start();
+				while (semaphore) {
+					if (stopwatch.ElapsedMilliseconds > 1000) {
+						stopwatch.Stop();
+						throw new TimeoutException();
+					}
+				}
+			} catch (Exception ex) {
+				Console.WriteLine("getMaxCapacity error: " + ex.Message);
+				robotMaxCapacity = 0;
 			}
 		}
 

@@ -149,7 +149,23 @@ namespace VitruvianApp2017
 			initializeDataRowHeaders();
 
 			var navigationBtns = new PopupNavigationButtons(true);
+			navigationBtns.refreshBtn.Clicked += (sender, e) => {
+				for (int i = 0; i < 6; i++) {
+					teamDataView[i].Content = loadingStack[i];
+					var task1 = Task.Factory.StartNew(() => awaitTeamData(i));
+					task1.Wait();
+					var task2 = Task.Factory.StartNew(() => initializeTeamHeaderData(i));
+					task2.Wait();
+					var task3 = Task.Factory.StartNew(() => initializeTeamData(i));
+					task3.Wait();
+					var task4 = Task.Factory.StartNew(() => getTeamImage(i));
+					task4.Wait();
 
+					busyIcon[i].IsRunning = false;
+					busyIcon[i].IsEnabled = false;
+				}
+				initializeAllianceData();
+			};
 			Content = new Frame()
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -259,6 +275,7 @@ namespace VitruvianApp2017
 					BackgroundColor = Color.Black,
 					ColumnSpacing = 1,
 					RowSpacing = 1,
+					RowDefinitions = rowHeaderGrid.RowDefinitions
 				};
 				// Add data headers
 				cHeaderCells[i, 0] = new ColumnHeaderCell();
@@ -351,17 +368,21 @@ namespace VitruvianApp2017
 
 		void initializeAllianceData() {
 			// Calculate Alliance Potential & display it
-			int rScore = 0, rAutoGears = 0, rTeleOpGears = 0, rAutoPressure = 0, rTeleOpPressure = 0, rTotalPressure = 0,
-				rTotalClimbs = 0;
+			int rScore = 0, rAutoCrosses = 0, rAutoGears = 0, rTeleOpGears = 0, rAutoPressure = 0, rTeleOpPressure = 0, rTotalPressure = 0,
+				rTotalClimbs = 0, rTGear = 0;
 			for (int i = 0; i < 3; i++) {
 				if (teams[i] != null) {
-					if (teams[i].avgAutoGearScored > 0.5)
+					if (teams[i].avgAutoGearScored  >= 0.25)
 						rAutoGears++;
+					if (teams[i].totalAutoCrossSuccesses > 0)
+						rAutoCrosses++;
 					rAutoPressure += (int)Math.Round(teams[i].avgAutoPressure, 0);
 					rTeleOpPressure += (int)Math.Round(teams[i].avgTeleOpPressure, 0);
 					rTeleOpGears += (int)Math.Round(teams[i].avgTeleOpGearsScored, 0);
-					if(teams[i].matchCount != 0)
-						rTotalClimbs += (int)Math.Round(Convert.ToDouble(teams[i].successfulClimbCount / teams[i].matchCount), 0);
+
+					if((teams[i].successfulClimbCount + teams[i].attemptedClimbCount) > 0)
+						if (Math.Round(Convert.ToDouble(teams[i].successfulClimbCount / (teams[i].successfulClimbCount + teams[i].attemptedClimbCount)), 3) >= 0.5)
+								rTotalClimbs++;
 				}
 			}
 			rTotalPressure += rAutoPressure + rTeleOpPressure;
@@ -372,19 +393,31 @@ namespace VitruvianApp2017
 				else if (rTeleOpGears >= 4)
 					rScore += 40;
 			} else if (rAutoGears > 0) {
-				int tGear = 0;
+				rTGear = 0;
 				rScore += 60;
 				if (rAutoGears == 2)
-					tGear = 1;
+					rTGear = 1;
 				
-				if (rTeleOpGears + tGear >= 12)
+				if (rTeleOpGears + rTGear >= 12)
 					rScore += 120;
-				else if (rTeleOpGears + tGear >= 6)
+				else if (rTeleOpGears + rTGear >= 6)
 					rScore += 80;
-				else if (rTeleOpGears+ tGear  >= 2)
+				else if (rTeleOpGears + rTGear  >= 2)
+					rScore += 40;
+			} else if (rAutoGears == 0) {
+				if (rTeleOpGears + rTGear >= 13)
+					rScore += 160;
+				else if (rTeleOpGears + rTGear >= 7)
+					rScore += 120;
+				else if (rTeleOpGears + rTGear >= 3)
+					rScore += 80;
+				else if (rTeleOpGears + rTGear >= 1)
 					rScore += 40;
 			}
+
+			rScore += 5 * rAutoCrosses;
 			rScore += rTotalPressure;
+			rScore += 50 * rTotalClimbs;
 
 			var rAllianceScoreLbl = new Label() {
 				FontSize = GlobalVariables.sizeMedium,
@@ -419,41 +452,55 @@ namespace VitruvianApp2017
 			layoutGrid.Children.Add(rAlliancePressureLbl, 2, 2);
 			layoutGrid.Children.Add(rAllianceClimbLbl, 3, 2);
 
-			int bScore = 0, bAutoGears = 0, bTeleOpGears = 0, bAutoPressure = 0, bTeleOpPressure = 0, bTotalPressure = 0,
-				bTotalClimbs = 0;
+			int bScore = 0, bAutoCrosses = 0, bAutoGears = 0, bTeleOpGears = 0, bAutoPressure = 0, bTeleOpPressure = 0, bTotalPressure = 0,
+				bTotalClimbs = 0, bTGear = 0;
 			for (int i = 3; i < 6; i++) {
 				if (teams[i] != null) {
-					if (teams[i].avgAutoGearScored > 0.5)
+					if (teams[i].avgAutoGearScored >= 0.25)
 						bAutoGears++;
+					if (teams[i].totalAutoCrossSuccesses > 0)
+						bAutoCrosses++;
 					bAutoPressure += (int)Math.Round(teams[i].avgAutoPressure, 0);
 					bTeleOpPressure += (int)Math.Round(teams[i].avgTeleOpPressure, 0);
 					bTeleOpGears += (int)Math.Round(teams[i].avgTeleOpGearsScored, 0);
-					if(teams[i].matchCount != 0)
-						bTotalClimbs += (int)Math.Round(Convert.ToDouble(teams[i].successfulClimbCount / teams[i].matchCount), 0);
+
+					if((teams[i].successfulClimbCount + teams[i].attemptedClimbCount) > 0)
+						if (Math.Round(Convert.ToDouble(teams[i].successfulClimbCount / (teams[i].successfulClimbCount + teams[i].attemptedClimbCount)), 3) >= 0.5)
+							bTotalClimbs++;
 				}
 			}
 			bTotalPressure += bAutoPressure + bTeleOpPressure;
 			if (bAutoGears == 3) {
 				bScore += 120;
 				if (bTeleOpGears >= 10)
-					rScore += 80;
+					bScore += 80;
 				else if (bTeleOpGears >= 4)
-					rScore += 40;
+					bScore += 40;
 			} else if (bAutoGears > 0) {
-				int tGear = 0;
+				bTGear = 0;
 				bScore += 60;
 				if (bAutoGears == 2)
-					tGear = 1;
+					bTGear = 1;
 				
-				if (bTeleOpGears + tGear >= 12)
-					rScore += 120;
-				else if (bTeleOpGears + tGear >= 6)
-					rScore += 80;
-				else if (bTeleOpGears + tGear >= 2)
-					rScore += 40;
+				if (bTeleOpGears + bTGear >= 12)
+					bScore += 120;
+				else if (bTeleOpGears + bTGear >= 6)
+					bScore += 80;
+				else if (bTeleOpGears + bTGear >= 2)
+					bScore += 40;
+			} else if (bAutoGears == 0) {
+				if (bTeleOpGears + bTGear >= 13)
+					bScore += 160;
+				else if (bTeleOpGears + bTGear >= 7)
+					bScore += 120;
+				else if (bTeleOpGears + bTGear >= 2)
+					bScore += 80;
+				else if (bTeleOpGears + bTGear >= 1)
+					bScore += 40;
 			}
-
+			bScore += 5 * bAutoCrosses;
 			bScore += bTotalPressure;
+			bScore += 50 * bTotalClimbs;
 
 			var bAllianceScoreLbl = new Label() {
 				FontSize = GlobalVariables.sizeMedium,
@@ -495,7 +542,7 @@ namespace VitruvianApp2017
 			}
 
 			teamNoBtn[i] = new Button() {
-				FontSize = GlobalVariables.sizeSmall,
+				FontSize = GlobalVariables.sizeTiny,
 				Text = teams[i].teamNumber.ToString(),
 				TextColor = Color.Black,
 				FontAttributes = FontAttributes.Bold
@@ -514,7 +561,7 @@ namespace VitruvianApp2017
 			robotImages[i] = new CachedImage() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				HeightRequest = 120,
+				HeightRequest = 85,
 				//WidthRequest = 120,
 				DownsampleToViewSize = true,
 				Aspect = Aspect.AspectFit,
@@ -564,7 +611,8 @@ namespace VitruvianApp2017
 			rowHeaderLabels[rowHeadersIndex] = new Label() {
 				FontSize = GlobalVariables.sizeTiny,
 				TextColor = Color.White,
-				Text = description
+				Text = description,
+				//HeightRequest = 10
 			};
 			if (rowHeadersIndex == 3 || rowHeadersIndex == 9)
 				rowHeaderLabels[rowHeadersIndex].FontAttributes = FontAttributes.Bold;

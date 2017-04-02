@@ -58,16 +58,7 @@ namespace VitruvianApp2017
 				BackgroundColor = Color.Green,
 			};
 			finishMatchBtn.Clicked += (sender, e) => {
-				saveData();
-				updateAvgTeamData();
-
-				//Console.WriteLine("Nav Count: " + Navigation.NavigationStack.Count);
-				//Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
-				//Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
-
-				Navigation.PushAsync(new PreMatchScoutingPage(matchData.scouterName));
-				//Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
-				//Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
+				finishMatch();
 			};
 
 			Content = new StackLayout() {
@@ -94,6 +85,33 @@ namespace VitruvianApp2017
 				}
 			};
 		}
+
+		async Task finishMatch() {
+			if(await DisplayAlert("Match Finished", "Are you sure you want to save this data?", "Yes", "No")) {
+				Console.WriteLine("Navigation Stack:");
+				Console.WriteLine("Navigation Index:" + Navigation.NavigationStack.Count);
+				foreach (var page in Navigation.NavigationStack)
+					Console.WriteLine("Page : " + page.ToString());
+
+				saveData();
+				updateAvgTeamData();
+				Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
+				foreach (var page in Navigation.NavigationStack)
+					Console.WriteLine("Page : " + page.ToString());
+				Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
+				foreach (var page in Navigation.NavigationStack)
+					Console.WriteLine("Page : " + page.ToString());
+				Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
+				foreach (var page in Navigation.NavigationStack)
+					Console.WriteLine("Page : " + page.ToString());
+				if (Navigation.NavigationStack[Navigation.NavigationStack.Count].Title == "Match Scouting")
+					Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
+
+				Navigation.InsertPageBefore(new PreMatchScoutingPage(matchData.scouterName), this);
+				Navigation.PopAsync();
+			}
+		}
+
 		async Task saveData() {
 			if (CheckInternetConnectivity.InternetStatus()) {
 				matchData.attemptedClimb = climbAttemptBtn.on;
@@ -123,97 +141,119 @@ namespace VitruvianApp2017
 
 		public async Task updateAvgTeamData() {
 			if (CheckInternetConnectivity.InternetStatus()) {
-				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				try {
+					var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-				var fbMatches = await db
-									.Child(GlobalVariables.regionalPointer)
-									.Child("teamMatchData")
-									.Child(matchData.teamNumber.ToString())
-									.OnceAsync<TeamMatchData>();
+					var fbMatches = await db
+										.Child(GlobalVariables.regionalPointer)
+										.Child("teamMatchData")
+										.Child(matchData.teamNumber.ToString())
+										.OnceAsync<TeamMatchData>();
 
-				var fbTeamData = await db
-									.Child(GlobalVariables.regionalPointer)
-									.Child("teamData")
-									.Child(matchData.teamNumber.ToString())
-									.OnceSingleAsync<TeamData>();
+					var fbTeamData = await db
+										.Child(GlobalVariables.regionalPointer)
+										.Child("teamData")
+										.Child(matchData.teamNumber.ToString())
+										.OnceSingleAsync<TeamData>();
 
-				int mCount = 0, successfulClimbs = 0, attemptedClimbs = 0, totalFouls = 0, totalGood = 0;
-				int autoCrosses = 0;
-				double autoGearsScored = 0, autoGearsDelivered = 0, autoGearsDropped = 0, autoHighHits = 0, autoPressure = 0;
-				double teleopActions = 0, teleOpPressure = 0, teleOpHighAcc = 0, teleOpGearsScored = 0,
-					teleOpGearsTransitDropped = 0, teleOpGearsStationDropped = 0;
-				int autoPressureHigh = 0, teleOpActionsHigh = 0, teleOpGearsScoredHigh = 0, teleOpGearsStationDroppedHigh = 0,
-					teleOpGearsTransitDroppedHigh = 0;
-				double teleOpPressureHigh = 0;
+					int mCount = 0, successfulClimbs = 0, attemptedClimbs = 0, totalFouls = 0, totalGood = 0;
+					int autoCrosses = 0;
+					double autoGearsScored = 0, autoGearsDelivered = 0, autoGearsDropped = 0, autoHighHits = 0, autoPressure = 0;
+					double teleopActions = 0, teleOpPressure = 0, teleOpHighAcc = 0, teleOpGearsScored = 0,
+						teleOpGearsTransitDropped = 0, teleOpGearsStationDropped = 0;
+					int autoPressureHigh = 0, teleOpActionsHigh = 0, teleOpGearsScoredHigh = 0, teleOpGearsStationDroppedHigh = 0,
+						teleOpGearsTransitDroppedHigh = 0;
+					double teleOpPressureHigh = 0;
+					int autoPressureCount = 0, autoHighCount = 0, teleOpPressureCount = 0, teleOpHighCount = 0;
+					int climbCount = 0;
 
-				foreach (var match in fbMatches) {
-					autoCrosses += match.Object.autoCross ? 1 : 0;
-					autoGearsScored += match.Object.autoGearScored ? 1 : 0;
-					autoGearsDelivered += match.Object.autoGearDelivered ? 1 : 0;
-					autoGearsDropped += match.Object.autoGearDropped ? 1 : 0;
-					autoHighHits += match.Object.autoHighHits;
-					autoPressure += match.Object.autoPressure;
+					foreach (var match in fbMatches) {
+						autoCrosses += match.Object.autoCross ? 1 : 0;
+						autoGearsScored += match.Object.autoGearScored ? 1 : 0;
+						autoGearsDelivered += match.Object.autoGearDelivered ? 1 : 0;
+						autoGearsDropped += match.Object.autoGearDropped ? 1 : 0;
+						if (match.Object.autoHighHits > 0) {
+							autoHighHits += match.Object.autoHighHits;
+							autoHighCount++;
+						}
+						if (match.Object.autoPressure > 0) {
+							autoPressure += match.Object.autoPressure;
+							autoPressureCount++;
+						}
 
-					teleopActions += match.Object.actionCount;
-					teleOpPressure += match.Object.teleOpTotalPressure;
-					teleOpHighAcc += match.Object.teleOpHighAcc;
-					teleOpGearsScored += match.Object.teleOpGearsDeposit;
-					teleOpGearsTransitDropped += match.Object.teleOpGearsTransitDropped;
-					teleOpGearsStationDropped += match.Object.teleOpGearsStationDropped;
+						teleopActions += match.Object.actionCount;
+						if (match.Object.teleOpHighAcc > 0) {
+							teleOpHighAcc += match.Object.teleOpHighAcc;
+							teleOpHighCount++;
+						}
+						if (match.Object.teleOpTotalPressure > 0) {
+							teleOpPressure += match.Object.teleOpTotalPressure;
+							teleOpHighAcc += match.Object.teleOpHighAcc;
+							teleOpPressureCount++;
+						}
+						teleOpGearsScored += match.Object.teleOpGearsDeposit;
+						teleOpGearsTransitDropped += match.Object.teleOpGearsTransitDropped;
+						teleOpGearsStationDropped += match.Object.teleOpGearsStationDropped;
 
-					successfulClimbs += match.Object.successfulClimb ? 1 : 0;
-					attemptedClimbs += match.Object.attemptedClimb ? 1 : 0;
-					totalFouls += match.Object.fouls;
-					totalGood += match.Object.good ? 1 : 0;
+						successfulClimbs += match.Object.successfulClimb ? 1 : 0;
+						attemptedClimbs += match.Object.attemptedClimb ? 1 : 0;
+						if (match.Object.successfulClimb != false || match.Object.attemptedClimb != false)
+							climbCount++;
+						totalFouls += match.Object.fouls;
+						totalGood += match.Object.good ? 1 : 0;
 
-					if (match.Object.autoPressure > autoPressureHigh)
-						autoPressureHigh = match.Object.autoPressure;
-					if (match.Object.actionCount > teleOpActionsHigh)
-						teleOpActionsHigh = match.Object.actionCount;
-					if (match.Object.teleOpGearsDeposit > teleOpGearsScoredHigh)
-						teleOpGearsScoredHigh = match.Object.teleOpGearsDeposit;
-					if (match.Object.teleOpGearsTransitDropped > teleOpGearsTransitDroppedHigh)
-						teleOpGearsTransitDroppedHigh = match.Object.teleOpGearsTransitDropped;
-					if (match.Object.teleOpGearsStationDropped > teleOpGearsStationDroppedHigh)
-						teleOpGearsStationDroppedHigh = match.Object.teleOpGearsStationDropped;
-					if (match.Object.teleOpTotalPressure > teleOpPressureHigh)
-						teleOpPressureHigh = match.Object.teleOpTotalPressure;
+						if (match.Object.autoPressure > autoPressureHigh)
+							autoPressureHigh = match.Object.autoPressure;
+						if (match.Object.actionCount > teleOpActionsHigh)
+							teleOpActionsHigh = match.Object.actionCount;
+						if (match.Object.teleOpGearsDeposit > teleOpGearsScoredHigh)
+							teleOpGearsScoredHigh = match.Object.teleOpGearsDeposit;
+						if (match.Object.teleOpGearsTransitDropped > teleOpGearsTransitDroppedHigh)
+							teleOpGearsTransitDroppedHigh = match.Object.teleOpGearsTransitDropped;
+						if (match.Object.teleOpGearsStationDropped > teleOpGearsStationDroppedHigh)
+							teleOpGearsStationDroppedHigh = match.Object.teleOpGearsStationDropped;
+						if (match.Object.teleOpTotalPressure > teleOpPressureHigh)
+							teleOpPressureHigh = match.Object.teleOpTotalPressure;
 
-					mCount++;
+						mCount++;
+					}
+
+					fbTeamData.matchCount = mCount;
+					fbTeamData.autoPressureHigh = autoPressureHigh;
+					fbTeamData.teleOpActionsHigh = teleOpActionsHigh;
+					fbTeamData.teleOpGearsScoredHigh = teleOpGearsScoredHigh;
+					fbTeamData.teleOpGearsTransitDroppedHigh = teleOpGearsTransitDroppedHigh;
+					fbTeamData.teleOpGearsStationDroppedHigh = teleOpGearsStationDroppedHigh;
+					fbTeamData.teleOpPressureHigh = teleOpPressureHigh;
+
+					fbTeamData.totalAutoCrossSuccesses = autoCrosses;
+					fbTeamData.avgAutoPressure = autoPressureCount > 0 ? autoPressure / autoPressureCount : 0;
+					fbTeamData.avgAutoHighHits = autoHighCount > 0 ? autoHighHits / autoHighCount : 0;
+					fbTeamData.avgAutoGearScored = autoGearsScored / mCount;
+					fbTeamData.avgAutoGearsDelivered = autoGearsDelivered / mCount;
+					fbTeamData.avgAutoGearsDropped = autoGearsDropped / mCount;
+
+					fbTeamData.avgTeleOpActions = teleopActions / mCount;
+					fbTeamData.avgTeleOpPressure = teleOpPressureCount > 0 ? teleOpPressure / teleOpPressureCount : 0;
+					fbTeamData.avgTeleOpHighAccuracy = teleOpHighCount > 0 ? teleOpHighAcc / teleOpHighCount : 0;
+					fbTeamData.avgTeleOpGearsScored = teleOpGearsScored / mCount;
+					fbTeamData.avgTeleOpGearsTransitDropped = teleOpGearsTransitDropped / mCount;
+					fbTeamData.avgTeleOpGearsStationDropped = teleOpGearsStationDropped / mCount;
+
+					fbTeamData.successfulClimbCount = successfulClimbs;
+					fbTeamData.attemptedClimbCount = attemptedClimbs;
+					fbTeamData.climbSuccessRate = climbCount > 0 ? successfulClimbs / climbCount : 0;
+					fbTeamData.foulCount = totalFouls;
+					fbTeamData.goodCount = totalGood;
+
+					var fbTeam = db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("teamData")
+								.Child(matchData.teamNumber.ToString())
+								.PutAsync(fbTeamData);
+				} catch (Exception ex) {
+					Console.WriteLine("avgTeamData error: " + ex.Message);
 				}
-
-				fbTeamData.matchCount = mCount;
-				fbTeamData.autoPressureHigh = autoPressureHigh;
-				fbTeamData.teleOpActionsHigh = teleOpActionsHigh;
-				fbTeamData.teleOpGearsScoredHigh = teleOpGearsScoredHigh;
-				fbTeamData.teleOpGearsTransitDroppedHigh = teleOpGearsTransitDroppedHigh;
-				fbTeamData.teleOpGearsStationDroppedHigh = teleOpGearsStationDroppedHigh;
-				fbTeamData.teleOpPressureHigh = teleOpPressureHigh;
-
-				fbTeamData.totalAutoCrossSuccesses = autoCrosses;
-				fbTeamData.avgAutoPressure = autoPressure / mCount;
-				fbTeamData.avgAutoHighHits = autoHighHits / mCount;
-				fbTeamData.avgAutoGearScored = autoGearsScored / mCount;
-				fbTeamData.avgAutoGearsDelivered = autoGearsDelivered / mCount;
-				fbTeamData.avgAutoGearsDropped = autoGearsDropped / mCount;
-
-				fbTeamData.avgTeleOpActions = teleopActions / mCount;
-				fbTeamData.avgTeleOpPressure = teleOpPressure / mCount;
-				fbTeamData.avgTeleOpHighAccuracy = teleOpHighAcc / mCount;
-				fbTeamData.avgTeleOpGearsScored = teleOpGearsScored / mCount;
-				fbTeamData.avgTeleOpGearsTransitDropped = teleOpGearsTransitDropped / mCount;
-				fbTeamData.avgTeleOpGearsStationDropped = teleOpGearsStationDropped / mCount;
-
-				fbTeamData.successfulClimbCount = successfulClimbs;
-				fbTeamData.attemptedClimbCount = attemptedClimbs;
-				fbTeamData.foulCount = totalFouls;
-				fbTeamData.goodCount = totalGood;
-
-				var fbTeam = db
-							.Child(GlobalVariables.regionalPointer)
-							.Child("teamData")
-							.Child(matchData.teamNumber.ToString())
-							.PutAsync(fbTeamData);
 			}
 		}
 	}

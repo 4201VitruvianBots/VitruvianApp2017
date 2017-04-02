@@ -198,15 +198,15 @@ namespace VitruvianApp2017
 
 		async Task saveData() {
 			if (CheckInternetConnectivity.InternetStatus()) {
-			calcScore();
+				calcScore();
 
-			matchData.autoCross = inputs[0].on;
-			matchData.autoGearScored = inputs[1].on;
-			matchData.autoGearDelivered = inputs[2].on;
-			matchData.autoGearDropped = inputs[3].on;
-			matchData.autoLowHits = lowGoalHits.getValue();
-			matchData.autoHighHits = highGoalHits.getValue();
-			matchData.autoPressure = lowGoalHits.getValue() + highGoalHits.getValue();
+				matchData.autoCross = inputs[0].on;
+				matchData.autoGearScored = inputs[1].on;
+				matchData.autoGearDelivered = inputs[2].on;
+				matchData.autoGearDropped = inputs[3].on;
+				matchData.autoLowHits = lowGoalHits.getValue();
+				matchData.autoHighHits = highGoalHits.getValue();
+				matchData.autoPressure = lowGoalHits.getValue() + highGoalHits.getValue();
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 				if (mType == -1) {

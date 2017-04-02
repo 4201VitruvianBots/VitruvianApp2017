@@ -46,6 +46,7 @@ namespace VitruvianApp2017
 		public double avgTeleOpGearsScored { get; set; }
 		public double avgTeleOpGearsTransitDropped { get; set; }
 		public double avgTeleOpGearsStationDropped { get; set; }
+		public double climbSuccessRate { get; set; }
 
 
 		//High
