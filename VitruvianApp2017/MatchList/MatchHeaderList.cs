@@ -17,13 +17,14 @@ namespace VitruvianApp2017
 		List<EventMatchData> upcomingMatchList = new List<EventMatchData>();
 		ListView pastMatchView = new ListView();
 		List<EventMatchData> pastMatchList = new List<EventMatchData>();
+		ListView ourMatchView = new ListView();
+		List<EventMatchData> ourMatchList = new List<EventMatchData>();
 		double height;
 
 		Grid searchBar;
 		Entry searchEntry;
 
 		public MatchHeaderLists() {
-			//updateMatchLists();
 			searchBar = new Grid() {
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -155,6 +156,44 @@ namespace VitruvianApp2017
 				Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
 			};
 
+			var ourMatchHeader = new ContentView() {
+				Content = new Frame() {
+					OutlineColor = Color.Gray,
+					Padding = new Thickness(5),
+
+					Content = new Label() {
+						Text = "Our Matches",
+						FontSize = GlobalVariables.sizeMedium,
+						FontAttributes = FontAttributes.Bold,
+						TextColor = Color.Black
+					}
+				}
+			};
+
+			ourMatchView.ItemTemplate = new DataTemplate(() => {
+				var matchLbl = new Label() {
+					TextColor = Color.Black,
+					FontSize = GlobalVariables.sizeMedium
+				};
+				matchLbl.SetBinding(Label.TextProperty, "matchNumber");
+				var cell = new ViewCell() {
+					View = new StackLayout() {
+						Children = {
+							matchLbl
+						}
+					}
+				};
+
+				return cell;
+			});
+
+			ourMatchView.ItemSelected += (sender, e) => {
+				((ListView)sender).SelectedItem = null;
+			};
+			ourMatchView.ItemTapped += (sender, e) => {
+				Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
+			};
+
 			height = Height;
 
 			Content = new StackLayout() {
@@ -163,10 +202,35 @@ namespace VitruvianApp2017
 
 				Children = {
 					searchBar,
-					upcomingMatchHeader,
-					upcomingMatchView,
-					pastMatchHeader,
-					pastMatchView,
+					new StackLayout(){
+						HorizontalOptions = LayoutOptions.FillAndExpand,
+						VerticalOptions = LayoutOptions.FillAndExpand,
+						Orientation = StackOrientation.Horizontal,
+
+						Children = {
+							new StackLayout(){
+								HorizontalOptions = LayoutOptions.FillAndExpand,
+								VerticalOptions = LayoutOptions.FillAndExpand,
+
+								Children = {
+									upcomingMatchHeader,
+									upcomingMatchView,
+									pastMatchHeader,
+									pastMatchView
+								}
+							},
+							new StackLayout(){
+								HorizontalOptions = LayoutOptions.FillAndExpand,
+								VerticalOptions = LayoutOptions.FillAndExpand,
+
+								Children = {
+									ourMatchHeader,
+									ourMatchView
+								}
+							}
+
+						}
+					}
 				}
 			};
 		}
@@ -202,6 +266,7 @@ namespace VitruvianApp2017
 
 			upcomingMatchView.ItemsSource = upcomingMatchList;
 			pastMatchView.ItemsSource = pastMatchList;
+			ourMatchView.ItemsSource = ourMatchList;
 			Console.WriteLine("test done");
 		}
 
@@ -215,6 +280,7 @@ namespace VitruvianApp2017
 			
 			var l1 = new List<EventMatchData>();
 			var l2 = new List<EventMatchData>();
+			var l3 = new List<EventMatchData>();
 
 			var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
@@ -229,18 +295,29 @@ namespace VitruvianApp2017
 					l1.Add(match.Object);
 				else
 					l2.Add(match.Object);
+				
+				foreach (var blue in match.Object.Blue)
+					if (blue == 4201)
+						l3.Add(match.Object);
+				foreach (var red in match.Object.Red)
+					if (red == 4201)
+						l3.Add(match.Object);
 			}
+
+			l1.Sort((x, y) => x.matchTime.CompareTo(y.matchTime));
+			l2.Sort((x, y) => y.matchTime.CompareTo(x.matchTime));
+			l3.Sort((x, y) => x.matchTime.CompareTo(y.matchTime));
 
 			// Needed to avoid Java.lang.IllegalStateException
 			upcomingMatchList = l1;
 			pastMatchList = l2;
-
-			Console.WriteLine("test get");
+			ourMatchList = l3;
 		}
 
 		void autoCompleteOptions() {
 			var oldMatchFilter = new List<EventMatchData>();
 			var newMatchFilter = new List<EventMatchData>();
+			var ourMatchFilter = new List<EventMatchData>();
 
 			foreach (var match in upcomingMatchList) {
 				foreach (var blue in match.Blue)
@@ -267,8 +344,22 @@ namespace VitruvianApp2017
 					}
 			}
 
+			foreach (var match in ourMatchList) {
+				foreach (var blue in match.Blue)
+					if (blue.ToString() == searchEntry.Text) {
+						ourMatchFilter.Add(match);
+						break;
+					}
+				foreach (var red in match.Red)
+					if (red.ToString() == searchEntry.Text) {
+						ourMatchFilter.Add(match);
+						break;
+					}
+			}
+
 			upcomingMatchView.ItemsSource = newMatchFilter;
 			pastMatchView.ItemsSource = oldMatchFilter;
+			ourMatchView.ItemsSource = ourMatchFilter;
 		}
 	}
 }

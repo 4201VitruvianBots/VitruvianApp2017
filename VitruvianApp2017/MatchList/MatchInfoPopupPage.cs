@@ -76,7 +76,8 @@ namespace VitruvianApp2017
 
 		int rowHeadersIndex = 0;
 		Label[] rowHeaderLabels = new Label[19];
-
+		Label rAllianceScoreLbl, rAllianceGearLbl, rAlliancePressureLbl, rAllianceClimbLbl, 
+			  bAllianceScoreLbl, bAllianceGearLbl, bAlliancePressureLbl, bAllianceClimbLbl;
 		ColumnHeaderCell[,] cHeaderCells = new ColumnHeaderCell[6,9];
 		DataCell[,,] gridData = new DataCell[6, 12, 3];
 		CachedImage[] robotImages = new CachedImage[6];
@@ -158,19 +159,19 @@ namespace VitruvianApp2017
 					task2.Wait();
 					var task3 = Task.Factory.StartNew(() => initializeTeamData(i));
 					task3.Wait();
-					var task4 = Task.Factory.StartNew(() => getTeamImage(i));
+					var task4 = Task.Factory.StartNew(() => refreshTeamImage(i));
 					task4.Wait();
 
 					busyIcon[i].IsRunning = false;
 					busyIcon[i].IsEnabled = false;
 				}
-				initializeAllianceData();
+				setAllianceData();
 			};
 			Content = new Frame()
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				Margin = new Thickness(50, 50),
+				Margin = GlobalVariables.popupMargin,
 				Padding = new Thickness(2),
 
 				BackgroundColor = Color.Gray,
@@ -367,12 +368,74 @@ namespace VitruvianApp2017
 		}
 
 		void initializeAllianceData() {
+			rAllianceScoreLbl = new Label() {
+				FontSize = GlobalVariables.sizeMedium,
+				FontAttributes = FontAttributes.Bold,
+				HorizontalTextAlignment = TextAlignment.Center,
+			};
+
+			rAllianceGearLbl = new Label() {
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold,
+				HorizontalTextAlignment = TextAlignment.Center,
+			};
+
+			rAlliancePressureLbl = new Label() {
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold,
+				HorizontalTextAlignment = TextAlignment.Center,
+			};
+
+			rAllianceClimbLbl = new Label() {
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold,
+				HorizontalTextAlignment = TextAlignment.Center,
+			};
+
+			layoutGrid.Children.Add(rAllianceScoreLbl, 1, 4, 1, 2);
+			layoutGrid.Children.Add(rAllianceGearLbl, 1, 2);
+			layoutGrid.Children.Add(rAlliancePressureLbl, 2, 2);
+			layoutGrid.Children.Add(rAllianceClimbLbl, 3, 2);
+
+			bAllianceScoreLbl = new Label() {
+				FontSize = GlobalVariables.sizeMedium,
+				FontAttributes = FontAttributes.Bold,
+				HorizontalTextAlignment = TextAlignment.Center,
+			};
+
+			bAllianceGearLbl = new Label() {
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold,
+				HorizontalTextAlignment = TextAlignment.Center,
+			};
+
+			bAlliancePressureLbl = new Label() {
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold,
+				HorizontalTextAlignment = TextAlignment.Center,
+			};
+
+			bAllianceClimbLbl = new Label() {
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold,
+				HorizontalTextAlignment = TextAlignment.Center,
+			};
+
+			layoutGrid.Children.Add(bAllianceScoreLbl, 4, 7, 1, 2);
+			layoutGrid.Children.Add(bAllianceGearLbl, 4, 2);
+			layoutGrid.Children.Add(bAlliancePressureLbl, 5, 2);
+			layoutGrid.Children.Add(bAllianceClimbLbl, 6, 2);
+
+			setAllianceData();
+		}
+
+		void setAllianceData() {
 			// Calculate Alliance Potential & display it
 			int rScore = 0, rAutoCrosses = 0, rAutoGears = 0, rTeleOpGears = 0, rAutoPressure = 0, rTeleOpPressure = 0, rTotalPressure = 0,
 				rTotalClimbs = 0, rTGear = 0;
 			for (int i = 0; i < 3; i++) {
 				if (teams[i] != null) {
-					if (teams[i].avgAutoGearScored  >= 0.25)
+					if (teams[i].avgAutoGearScored >= 0.25)
 						rAutoGears++;
 					if (teams[i].totalAutoCrossSuccesses > 0)
 						rAutoCrosses++;
@@ -399,12 +462,12 @@ namespace VitruvianApp2017
 				rScore += 60;
 				if (rAutoGears == 2)
 					rTGear = 1;
-				
+
 				if (rTeleOpGears + rTGear >= 12)
 					rScore += 120;
 				else if (rTeleOpGears + rTGear >= 6)
 					rScore += 80;
-				else if (rTeleOpGears + rTGear  >= 2)
+				else if (rTeleOpGears + rTGear >= 2)
 					rScore += 40;
 			} else if (rAutoGears == 0) {
 				if (rTeleOpGears + rTGear >= 13)
@@ -421,38 +484,10 @@ namespace VitruvianApp2017
 			rScore += rTotalPressure;
 			rScore += 50 * rTotalClimbs;
 
-			var rAllianceScoreLbl = new Label() {
-				FontSize = GlobalVariables.sizeMedium,
-				FontAttributes = FontAttributes.Bold,
-				Text = "Avg. Score: " + rScore,
-				HorizontalTextAlignment = TextAlignment.Center,
-			};
-
-			var rAllianceGearLbl = new Label() {
-				FontSize = GlobalVariables.sizeSmall,
-				FontAttributes = FontAttributes.Bold,
-				Text = "Avg. Gears: " + (rAutoGears + rTeleOpGears),
-				HorizontalTextAlignment = TextAlignment.Center,
-			};
-
-			var rAlliancePressureLbl = new Label() {
-				FontSize = GlobalVariables.sizeSmall,
-				FontAttributes = FontAttributes.Bold,
-				Text = "Avg. Pressure: " + rTotalPressure,
-				HorizontalTextAlignment = TextAlignment.Center,
-			};
-
-			var rAllianceClimbLbl = new Label() {
-				FontSize = GlobalVariables.sizeSmall,
-				FontAttributes = FontAttributes.Bold,
-				Text = "Avg. Climbs: " + rTotalClimbs,
-				HorizontalTextAlignment = TextAlignment.Center,
-			};
-
-			layoutGrid.Children.Add(rAllianceScoreLbl, 1, 4, 1, 2);
-			layoutGrid.Children.Add(rAllianceGearLbl, 1, 2);
-			layoutGrid.Children.Add(rAlliancePressureLbl, 2, 2);
-			layoutGrid.Children.Add(rAllianceClimbLbl, 3, 2);
+			rAllianceScoreLbl.Text = "Avg. Score: " + rScore;
+			rAllianceGearLbl.Text = "Avg. Gears: " + (rAutoGears + rTeleOpGears);
+			rAlliancePressureLbl.Text = "Avg. Pressure: " + rTotalPressure;
+			rAllianceClimbLbl.Text = "Avg. Climbs: " + rTotalClimbs;
 
 			int bScore = 0, bAutoCrosses = 0, bAutoGears = 0, bTeleOpGears = 0, bAutoPressure = 0, bTeleOpPressure = 0, bTotalPressure = 0,
 				bTotalClimbs = 0, bTGear = 0;
@@ -485,7 +520,7 @@ namespace VitruvianApp2017
 				bScore += 60;
 				if (bAutoGears == 2)
 					bTGear = 1;
-				
+
 				if (bTeleOpGears + bTGear >= 12)
 					bScore += 120;
 				else if (bTeleOpGears + bTGear >= 6)
@@ -506,38 +541,10 @@ namespace VitruvianApp2017
 			bScore += bTotalPressure;
 			bScore += 50 * bTotalClimbs;
 
-			var bAllianceScoreLbl = new Label() {
-				FontSize = GlobalVariables.sizeMedium,
-				FontAttributes = FontAttributes.Bold,
-				Text = "Avg. Score: " + bScore,
-				HorizontalTextAlignment = TextAlignment.Center,
-			};
-
-			var bAllianceGearLbl = new Label() {
-				FontSize = GlobalVariables.sizeSmall,
-				FontAttributes = FontAttributes.Bold,
-				Text = "Avg. Gears: " + (bAutoGears + bTeleOpGears),
-				HorizontalTextAlignment = TextAlignment.Center,
-			};
-
-			var bAlliancePressureLbl = new Label() {
-				FontSize = GlobalVariables.sizeSmall,
-				FontAttributes = FontAttributes.Bold,
-				Text = "Avg. Pressure: " + bTotalPressure,
-				HorizontalTextAlignment = TextAlignment.Center,
-			};
-
-			var bAllianceClimbLbl = new Label() {
-				FontSize = GlobalVariables.sizeSmall,
-				FontAttributes = FontAttributes.Bold,
-				Text = "Avg. Climbs: " + bTotalClimbs,
-				HorizontalTextAlignment = TextAlignment.Center,
-			};
-
-			layoutGrid.Children.Add(bAllianceScoreLbl, 4, 7, 1, 2);
-			layoutGrid.Children.Add(bAllianceGearLbl, 4, 2);
-			layoutGrid.Children.Add(bAlliancePressureLbl, 5, 2);
-			layoutGrid.Children.Add(bAllianceClimbLbl, 6, 2);
+			bAllianceScoreLbl.Text = "Avg. Score: " + bScore;
+			bAllianceGearLbl.Text = "Avg. Gears: " + (bAutoGears + bTeleOpGears);
+			bAlliancePressureLbl.Text = "Avg. Pressure: " + bTotalPressure;
+			bAllianceClimbLbl.Text = "Avg. Climbs: " + bTotalClimbs;
 		}
 
 		async Task initializeTeamHeaderData(int i) {
@@ -578,6 +585,16 @@ namespace VitruvianApp2017
 			robotImages[i].GestureRecognizers.Add(tap[i]);
 			layoutGrid.Children.Add(robotImages[i], i + 1, 3);
 
+			try {
+				robotImages[i].Source = new Uri(teams[i].imageURL);
+				layoutGrid.Children.Add(robotImages[i], i + 1, 3);
+			} catch (Exception ex) {
+				Console.WriteLine("initializeTeamHeader Error: " + ex.Message);
+				robotImages[i].Source = "placeholder_image_placeholder.png";
+			}
+		}
+
+		async Task refreshTeamImage(int i) {
 			try {
 				robotImages[i].Source = new Uri(teams[i].imageURL);
 				layoutGrid.Children.Add(robotImages[i], i + 1, 3);

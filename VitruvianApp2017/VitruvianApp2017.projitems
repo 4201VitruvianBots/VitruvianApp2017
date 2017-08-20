@@ -15,17 +15,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)MatchInfoTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\AdminLoginPopup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\AdminPage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\EventMatchData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Global.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\ScouterName.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\TeamData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\TeamMatchData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Events.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Teams.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventTeams.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\TeamInformation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Functions\AppSettings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Functions\CheckInternetConnectivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Backend\AppSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Backend\CheckInternetConnectivity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchInfoPopupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchListCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\MatchListIndexPage.cs" />
@@ -59,15 +54,21 @@
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\DataCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchList\ColumnHeaderCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\AddMatchPopupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\TeamData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\ScouterName.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\Global.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\EventMatchData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\MatchData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FirebaseAccess.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventMatches.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Functions\FirebaseStorage.manifest" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Placeholder_image_placeholder.png" />
     <None Include="$(MSBuildThisFileDirectory)TestPage.cs" />
     <None Include="$(MSBuildThisFileDirectory)TestPage2.cs" />
     <None Include="$(MSBuildThisFileDirectory)AutoCompleteTest.cs" />
-    <None Include="$(MSBuildThisFileDirectory)Functions\Listeners\Listeners.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Backend\Listeners\Listeners.cs" />
     <None Include="$(MSBuildThisFileDirectory)Depreciated\AddTeamPopupPage.cs" />
     <None Include="$(MSBuildThisFileDirectory)Depreciated\FirebaseInitialize.cs" />
     <None Include="$(MSBuildThisFileDirectory)Examples\AppSettingsTest.cs" />
@@ -76,8 +77,10 @@
     <None Include="$(MSBuildThisFileDirectory)Images\Images\icon.jpg" />
     <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FBApp.cs" />
     <None Include="$(MSBuildThisFileDirectory)DataAnalysis\DataAnalysisPage.cs" />
+    <None Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupPage%28old%29.cs" />
+    <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\TeamMatchData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Models\Lists\" />
+    <Folder Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\" />
   </ItemGroup>
 </Project>

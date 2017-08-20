@@ -6,12 +6,13 @@ using System.Net.Http;
 using ModernHttpClient;
 using Newtonsoft.Json;
 using TheBlueAlliance.Models;
+using VitruvianApp2017;
 
 namespace TheBlueAlliance
 {
 	public class EventsHttp
 	{
-		static string headerString = "frc4201:VitruvianApp2017:v01";
+		static string headerString = GlobalVariables.TBAAuthKey;
 		/*
 		public static EventTeams.Team[] GetEventTeamsList(string eventKey)
 		{
@@ -34,12 +35,12 @@ namespace TheBlueAlliance
 		public static async Task<EventTeams.Team[]> GetEventTeamsListHttp(string eventKey)
 		{
 			var teamList = new List<EventTeams.Team>();
-			var url = ("http://www.thebluealliance.com/api/v2/event/" + eventKey + "/teams");
+			var url = ("http://www.thebluealliance.com/api/v3/event/" + eventKey + "/teams");
 
 			try
 			{
 				var client = new HttpClient(new NativeMessageHandler());
-				client.DefaultRequestHeaders.Add("X-TBA-App-Id", headerString);
+				client.DefaultRequestHeaders.Add("X-TBA-Auth-Key", headerString);
 				using (client)
 					using (HttpResponseMessage response = await client.GetAsync(url))
 						using (HttpContent content = response.Content)
@@ -61,11 +62,11 @@ namespace TheBlueAlliance
 
 		public static async Task<EventMatches.Match[]> GetEventMatchesHttp(string eventKey) {
 			var dataList = new List<EventMatches.Match>();
-			var url = ("http://www.thebluealliance.com/api/v2/event/" + eventKey + "/matches");
+			var url = ("http://www.thebluealliance.com/api/v3/event/" + eventKey + "/matches");
 
 			try {
 				var client = new HttpClient(new NativeMessageHandler());
-				client.DefaultRequestHeaders.Add("X-TBA-App-Id", headerString);
+				client.DefaultRequestHeaders.Add("X-TBA-Auth-Key", headerString);
 				using (client)
 				using (HttpResponseMessage response = await client.GetAsync(url))
 				using (HttpContent content = response.Content) {
@@ -74,9 +75,9 @@ namespace TheBlueAlliance
 					dataList = JsonConvert.DeserializeObject<List<EventMatches.Match>>(jsonString);
 
 					//Remove elimination matches
-					dataList.RemoveAll((obj) => obj.comp_level.Equals("qf"));
-					dataList.RemoveAll((obj) => obj.comp_level.Equals("sf"));
-					dataList.RemoveAll((obj) => obj.comp_level.Equals("f"));
+					//dataList.RemoveAll((obj) => obj.comp_level.Equals("qf"));
+					//dataList.RemoveAll((obj) => obj.comp_level.Equals("sf"));
+					//dataList.RemoveAll((obj) => obj.comp_level.Equals("f"));
 						
 					// Sort match in descending order
 					dataList.Sort((x, y) => x.time.CompareTo(y.time));
@@ -93,11 +94,11 @@ namespace TheBlueAlliance
 
 		public static async Task<EventStatsHttp[]> GetEventStatsHttp(string eventKey) {
 			var dataList = new List<EventStatsHttp>();
-			var url = ("http://www.thebluealliance.com/api/v2/event/" + eventKey + "/stats");
+			var url = ("http://www.thebluealliance.com/api/v3/event/" + eventKey + "/stats");
 
 			try {
 				var client = new HttpClient(new NativeMessageHandler());
-				client.DefaultRequestHeaders.Add("X-TBA-App-Id", headerString);
+				client.DefaultRequestHeaders.Add("X-TBA-Auth-Key", headerString);
 				using (client)
 				using (HttpResponseMessage response = await client.GetAsync(url))
 				using (HttpContent content = response.Content) {

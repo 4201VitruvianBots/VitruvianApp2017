@@ -91,7 +91,7 @@ namespace VitruvianApp2017
 			};
 
 			setPitData();
-			setMatchData();
+			//setMatchData();
 
 			Button editTeamBtn = new Button(){
 				VerticalOptions = LayoutOptions.Fill,
@@ -127,7 +127,7 @@ namespace VitruvianApp2017
 			{
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				Margin = new Thickness(50, 50),
+				Margin = GlobalVariables.popupMargin,
 				Padding = new Thickness(5),
 
 				BackgroundColor = Color.Gray,
@@ -137,7 +137,7 @@ namespace VitruvianApp2017
 
 					Children = {
 						topGrid,
-						dataGrid,
+						pitDataLayout,
 						navigationBtns
 					}
 				}

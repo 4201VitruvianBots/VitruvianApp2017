@@ -49,11 +49,7 @@ namespace VitruvianApp2017
 				listScroll.IsEnabled = false;
 			};
 			lineEntry.TextChanged += (sender, e) => {
-				if (string.IsNullOrEmpty(lineEntry.Text)) {
-					listScroll.IsVisible = false;
-					listScroll.IsEnabled = false;
-				} else
-					autoCompleteOptions();
+				autoCompleteOptions();
 			};
 
 			listScroll.Content = list;
@@ -95,10 +91,11 @@ namespace VitruvianApp2017
 			int height = 0;
 
 			foreach (var name in scouterNames)
-				if (name.scouterName.ToLower().Contains(lineEntry.Text.ToLower())) {
-					filtered.Add(name);
-					height += 40;
-				}
+				if(!string.IsNullOrEmpty(lineEntry.Text))
+					if (name.scouterName.ToLower().Contains(lineEntry.Text.ToLower())) {
+						filtered.Add(name);
+						height += 40;
+					}
 			height = height > 0 ? height += 20 : height = 0;
 
 			list.HeightRequest = height;

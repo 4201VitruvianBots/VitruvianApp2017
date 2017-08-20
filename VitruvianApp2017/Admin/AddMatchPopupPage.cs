@@ -121,6 +121,8 @@ namespace VitruvianApp2017
 					match.matchTime = lvFinals + matchTime;
 				else if (GlobalVariables.regionalPointer == "2017cmptx")
 					match.matchTime = txFinals + matchTime;
+				else
+					match.matchTime = txFinals + matchTime;
 
 				Console.WriteLine("Match Time: " + match.matchTime);
 

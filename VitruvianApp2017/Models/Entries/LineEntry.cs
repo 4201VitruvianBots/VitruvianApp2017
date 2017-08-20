@@ -22,7 +22,10 @@ namespace VitruvianApp2017
 
 			inputEntry.Placeholder = entryPlaceholder;
 			inputEntry.TextChanged += (object sender, TextChangedEventArgs e) => {
-				data = inputEntry.Text;
+				if (!string.IsNullOrEmpty(inputEntry.Text))
+					data = inputEntry.Text;
+				else
+					data = null;
 			};
 			Children.Add(entryLbl);
 			Children.Add(inputEntry);

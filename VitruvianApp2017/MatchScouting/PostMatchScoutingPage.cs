@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Firebase.Xamarin.Database;
 using Firebase.Xamarin.Database.Query;
@@ -9,14 +9,14 @@ namespace VitruvianApp2017
 {
 	public class PostMatchScoutingPage:ContentPage
 	{
-		TeamMatchData matchData;
+		MatchData matchData;
 		int mType;
 
 		ColorButton climbAttemptBtn, climbSuccessBtn;
 		SingleCounter foulCounter;
 		CheckBox goodCheck;
 
-		public PostMatchScoutingPage(TeamMatchData data, int matchType) {
+		public PostMatchScoutingPage(MatchData data, int matchType) {
 			Title = "Post Match";
 			matchData = data;
 			mType = matchType;
@@ -94,7 +94,7 @@ namespace VitruvianApp2017
 					Console.WriteLine("Page : " + page.ToString());
 
 				saveData();
-				updateAvgTeamData();
+				//
 				Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
 				foreach (var page in Navigation.NavigationStack)
 					Console.WriteLine("Page : " + page.ToString());
@@ -120,7 +120,16 @@ namespace VitruvianApp2017
 				matchData.good = goodCheck.Checked;
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				string path = "ERROR";
 
+				if (mType == -1)
+					path = "practiceMatchData/" + matchData.matchID;
+				else
+					path = "matchData/" + matchData.matchID;
+
+				FirebaseAccess.saveMatchData(db, path, matchData);
+
+				/*
 				if (mType == -1) {
 					var send = db
 								.Child(GlobalVariables.regionalPointer)
@@ -136,9 +145,11 @@ namespace VitruvianApp2017
 								.Child(matchData.matchNumber.ToString())
 								.PutAsync(matchData);
 				}
+				*/
 			}
 		}
 
+		/*
 		public async Task updateAvgTeamData() {
 			if (CheckInternetConnectivity.InternetStatus()) {
 				try {
@@ -256,5 +267,6 @@ namespace VitruvianApp2017
 				}
 			}
 		}
+		*/
 	}
 }

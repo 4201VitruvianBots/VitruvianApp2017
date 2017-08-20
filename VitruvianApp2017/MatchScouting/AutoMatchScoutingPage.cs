@@ -25,9 +25,9 @@ namespace VitruvianApp2017
 		Label autoGearLbl, autoPressureLbl;
 		int autoGears = 0, autoPressure = 0;
 		int mType;
-		TeamMatchData matchData;
+		MatchData matchData;
 
-		public AutoMatchScoutingPage(TeamMatchData data, int matchType) {
+		public AutoMatchScoutingPage(MatchData data, int matchType) {
 			matchData = data;
 			mType = matchType;
 
@@ -209,6 +209,16 @@ namespace VitruvianApp2017
 				matchData.autoPressure = lowGoalHits.getValue() + highGoalHits.getValue();
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				string path = "ERROR";
+
+				if (mType == -1)
+					path = "practiceMatchData/" + matchData.matchID;
+				else
+					path = "matchData/" + matchData.matchID;
+
+				FirebaseAccess.saveMatchData(db, path, matchData);
+
+				/*
 				if (mType == -1) {
 					var send = db
 								.Child(GlobalVariables.regionalPointer)
@@ -224,6 +234,7 @@ namespace VitruvianApp2017
 								.Child(matchData.matchNumber.ToString())
 								.PutAsync(matchData);
 				}
+				*/
 			}
 		}
 	}

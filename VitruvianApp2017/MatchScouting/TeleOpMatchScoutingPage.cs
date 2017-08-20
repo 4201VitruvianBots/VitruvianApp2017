@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Firebase.Xamarin.Database;
@@ -41,10 +41,10 @@ namespace VitruvianApp2017 {
 		int aIndex = 0, aCount = 0;
 		Label[] lastActionLabels = new Label[7];
 		ContentView emptyWidth;
-		TeamMatchData matchData;
+		MatchData matchData;
 		int mType;
 
-		public TeleOpMatchScoutingPage(TeamMatchData data, int matchType) {
+		public TeleOpMatchScoutingPage(MatchData data, int matchType) {
 			mType = matchType;
 			matchData = data;
 			getMaxCapacity();
@@ -429,7 +429,18 @@ namespace VitruvianApp2017 {
 
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				string path = "ERROR";
 
+				if (mType == -1)
+					path = "practiceMatchData/" + matchData.matchID;
+				else {
+					path = "matchData/" + matchData.matchID;
+					FirebaseAccess.saveMatchActions(db, "matchActionData/" + matchData.matchID, mActions);
+				}
+
+				FirebaseAccess.saveMatchData(db, path, matchData);
+
+				/*
 				if (mType == -1) {
 					var send = db
 								.Child(GlobalVariables.regionalPointer)
@@ -452,6 +463,7 @@ namespace VitruvianApp2017 {
 								.Child(matchData.matchNumber.ToString())
 								.PutAsync(matchData);
 				}
+				*/
 			}
 		}
 	}

@@ -5,21 +5,22 @@ using System.Net;
 using System.Reflection;
 using Newtonsoft.Json;
 using TheBlueAlliance.Models;
+using VitruvianApp2017;
 
 namespace TheBlueAlliance
 {
 	public class Teams
 	{
-		static string headerString = "frc4201:VitruvianApp2017:v01";
+		static string headerString = GlobalVariables.TBAAuthKey;
 
 		public static TeamInformation GetTeamInformation(string teamKey)
 		{
 			var teamInformationToReturn = new TeamInformation();
 			var wc = new WebClient();
-			wc.Headers.Add("X-TBA-App-Id", headerString);
+			wc.Headers.Add("X-TBA-Auth-Key", headerString);
 			try
 			{
-				var url = ("https://www.thebluealliance.com/api/v2/team/" + teamKey);
+				var url = ("https://www.thebluealliance.com/api/v3/team/" + teamKey);
 				teamInformationToReturn = JsonConvert.DeserializeObject<TeamInformation>(wc.DownloadString(url));
 			}
 			catch (Exception webError)

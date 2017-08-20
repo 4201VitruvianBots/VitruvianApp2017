@@ -15,6 +15,7 @@ namespace VitruvianApp2017
 	{
 		ActivityIndicator busyIcon = new ActivityIndicator();
 		MatchHeaderLists lists;
+
 		public MatchListIndexPage() {
 			Title = "Match List";
 

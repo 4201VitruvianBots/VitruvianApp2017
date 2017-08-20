@@ -82,7 +82,7 @@ namespace VitruvianApp2017
 			Content = new Frame() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
-				Margin = new Thickness(50, 50),
+				Margin = GlobalVariables.popupMargin,
 				Padding = new Thickness(5),
 
 				BackgroundColor = Color.Gray,

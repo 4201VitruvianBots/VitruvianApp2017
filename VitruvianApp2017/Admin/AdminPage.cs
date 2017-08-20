@@ -77,7 +77,7 @@ namespace VitruvianApp2017
 				FontSize = GlobalVariables.sizeMedium
 			};
 			singleTeamStatUpdateBtn.Clicked += (sender, e) => {
-				updateAvgTeamData(Convert.ToInt32(updateTeamStats.data), true);
+				//updateAvgTeamData(Convert.ToInt32(updateTeamStats.data), true);
 			};
 
 			var singleTeamStatUpdateView = new StackLayout() {
@@ -99,7 +99,7 @@ namespace VitruvianApp2017
 				FontSize = GlobalVariables.sizeMedium
 			};
 			allTeamStatUpdateBtn.Clicked += (sender, e) => {
-				allTeamsStatsUpdateGrab();
+				//allTeamsStatsUpdateGrab();
 			};
 
 			var addMatchBtn = new Button() {
@@ -142,8 +142,8 @@ namespace VitruvianApp2017
 							Children = {
 								updateTeamListBtn,
 								updateMatchListBtn,
-								singleTeamStatUpdateView,
-								allTeamStatUpdateBtn,
+								//ingleTeamStatUpdateView,
+								//allTeamStatUpdateBtn,
 								addMatchBtn
 								//eventStatTestBtn,
 							}
@@ -201,45 +201,55 @@ namespace VitruvianApp2017
 				var matchList = await EventsHttp.GetEventMatchesHttp(GlobalVariables.regionalPointer);
 				var sorted = from Match in matchList orderby Match.time select Match;
 
-
-				foreach (var match in sorted)
+				string matchNumber;
+				foreach (var match in sorted.ToArray())
 					Console.WriteLine("Match: " + match.match_number);
 				
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
- 
 				foreach (var match in sorted) {
-					int n = 0, m = 0;
-					int[] blueA = new int[3], redA = new int[3];
+					if (match.comp_level == "qm") {
+						if (match.match_number < 10)
+							matchNumber = match.comp_level.ToUpper() + "0" + match.match_number;
+						else
+							matchNumber = match.comp_level.ToUpper() + match.match_number;
+					}
+					else
+						matchNumber = match.comp_level.ToUpper() + match.set_number + "M" + match.match_number;
 
-					foreach (var team in match.alliances.blue.teams) {
-						blueA[n] = Convert.ToInt32(match.alliances.blue.teams[n].Substring(3));
-						//Console.WriteLine("Blue: " + blueA[n]);
-						n++;
-					}
-					foreach (var team in match.alliances.red.teams) {
-						redA[m] = Convert.ToInt32(match.alliances.red.teams[m].Substring(3));
-						//Console.WriteLine("Red: " + redA[m]);
-						m++;;
-					}
+					int m = 0, n = 0;
+					int[] blueA = new int[match.alliances.blue.team_keys.Length + match.alliances.blue.surrogate_team_keys.Length], 
+					       redA = new int[match.alliances.red.team_keys.Length + match.alliances.red.surrogate_team_keys.Length];
+
+					foreach (var team in match.alliances.blue.team_keys)
+						blueA[m++] = Convert.ToInt32(team.Remove(0, 3));
+					foreach (var team in match.alliances.blue.surrogate_team_keys)
+						blueA[m++] = Convert.ToInt32(team.Remove(0, 3));
+					foreach (var team in match.alliances.red.team_keys)
+						redA[n++] = Convert.ToInt32(team.Remove(0, 3));
+					foreach (var team in match.alliances.red.surrogate_team_keys)
+						redA[n++] = Convert.ToInt32(team.Remove(0, 3));
+					
+					// Why is this needed?
 
 					var fbMatch = await db
 							.Child(GlobalVariables.regionalPointer)
 							.Child("matchList")
-							.Child(match.match_number.ToString())
+							.Child(matchNumber)
 							.OnceSingleAsync<EventMatchData>();
+					//*/
 
 					var send = db
 						.Child(GlobalVariables.regionalPointer)
 						.Child("matchList")
-						.Child(((match.match_number < 10) ? "0" + match.match_number.ToString() : match.match_number.ToString()))
+						.Child(matchNumber)
 						.PutAsync(new EventMatchData() {
-							matchNumber = ((match.match_number < 10)? "0" + match.match_number.ToString():match.match_number.ToString()),
+							matchNumber = matchNumber,
 							Blue = blueA,
 							Red = redA,
 							matchTime = match.time
 						});
 
-					Console.WriteLine("Completed Match: " + match.match_number);
+					Console.WriteLine("Completed Match: " + matchNumber);
 				}
 				await DisplayAlert("Done", "Match List Successfully Updated", "OK");
 				busyIcon.IsRunning = false;
@@ -251,6 +261,7 @@ namespace VitruvianApp2017
 			var test = await EventsHttp.GetEventStatsHttp(GlobalVariables.regionalPointer);
 		}
 
+		/*
 		public async Task allTeamsStatsUpdateGrab() {
 			if (CheckInternetConnectivity.InternetStatus()) {
 				busyIcon.IsRunning = true;
@@ -270,7 +281,7 @@ namespace VitruvianApp2017
 				busyIcon.IsVisible = false;
 			}
 		}
-
+		
 		public async Task updateAvgTeamData(int teamNumber, bool awaiter) {
 			if (CheckInternetConnectivity.InternetStatus()) {
 				busyIcon.IsRunning = true;
@@ -393,10 +404,12 @@ namespace VitruvianApp2017
 					Console.WriteLine("Updated Team Stats: " + fbTeamData.teamNumber);
 				} catch (Exception ex) {
 					Console.WriteLine("avgTeamData error: " + ex.Message);
+					Console.WriteLine("Bad data Team No.: " + teamNumber);
 				}
 				busyIcon.IsRunning = false;
 				busyIcon.IsVisible = false;
 			}
 		}
+		*/
 	}
 }
