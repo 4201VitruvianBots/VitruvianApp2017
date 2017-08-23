@@ -52,6 +52,15 @@ namespace VitruvianApp2017
 
 			foulCounter = new SingleCounter("Fouls");
 
+			var pilotCompetancyLbl = new Label(){
+				Text = "If this team had a pilot in the airship, rate their performance",
+			};
+
+			var pilotCompetancyList = new Picker() {
+				Title = "Choose an Option"
+			};
+			// Ask Keisic about Tableau and mixing numeric/non-numeric data before continuing
+
 			var finishMatchBtn = new Button() {
 				Text = "Save Match Data",
 				FontSize = GlobalVariables.sizeMedium,
@@ -127,7 +136,7 @@ namespace VitruvianApp2017
 				else
 					path = "matchData/" + matchData.matchID;
 
-				FirebaseAccess.saveMatchData(db, path, matchData);
+				FirebaseAccess.saveData(db, path, matchData);
 
 				/*
 				if (mType == -1) {

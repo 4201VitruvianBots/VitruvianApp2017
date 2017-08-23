@@ -202,12 +202,7 @@ namespace VitruvianApp2017
 
 			var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
-			var saveURL = db
-						.Child(GlobalVariables.regionalPointer)
-						.Child("teamData")
-						.Child(data.teamNumber.ToString())
-						.Child("imageURL")
-						.PutAsync(getURL);
+			FirebaseAccess.saveData(db, "teamData/" + data.teamNumber + "/imageURL", getURL);
 
 			await DisplayAlert("Success", "Default Image Changed", "OK");
 			await Navigation.PopAllPopupAsync();

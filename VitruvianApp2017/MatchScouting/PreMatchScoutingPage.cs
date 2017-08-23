@@ -15,15 +15,18 @@ namespace VitruvianApp2017
 		LineEntry matchNoEntry = new LineEntry("Match Number:"), teamNoEntry;
 		Picker alliancePicker = new Picker();
 		Picker teamNoPicker = new Picker();
+		Picker setNoPicker = new Picker();
 		StackLayout teamNoPickerLayout;
 		ContentView teamNoView;
 		Picker positionPicker = new Picker();
 		int teamNumber;
 		string matchNumber;
-		enum matchPhase { P, QM }; //, QF, SF, F };
+		enum matchPhase { P, QM, QF, SF, F };
 		string competitionPhase;
+		Label setLbl;
+		int setNumber;
 		int checkValue;
-		CheckBox[] matchPhaseCheckboxes = new CheckBox[2];
+		CheckBox[] matchPhaseCheckboxes = new CheckBox[5];
 		bool semaphore = false;
 
 		MatchData matchData = new MatchData();
@@ -51,7 +54,7 @@ namespace VitruvianApp2017
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
 				Orientation = StackOrientation.Horizontal
 			};
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < matchPhaseCheckboxes.Length; i++)
 				matchPhaseCheckboxes[i] = new CheckBox() {
 					DefaultText = Enum.GetName(typeof(matchPhase), i),
 					FontSize = GlobalVariables.sizeSmall
@@ -98,7 +101,7 @@ namespace VitruvianApp2017
 					getTeamNoPickerOptions();
 			};
 
-			Label teamNoLbl = new Label {
+			var teamNoLbl = new Label {
 				Text = "Team Number:",
 				FontSize = GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold
@@ -111,10 +114,44 @@ namespace VitruvianApp2017
 				if (teamNoPicker.IsEnabled)
 					teamNumber = Convert.ToInt32(teamNoPicker.Items[teamNoPicker.SelectedIndex]);
 			};
+
+			setLbl = new Label {
+				Text = "Set Number:",
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold,
+				IsEnabled = false,
+				IsVisible = false,
+			};
+
+			setNoPicker.Title = "[Select Set No.]";
+			setNoPicker.SelectedIndexChanged += (sender, e) => {
+				try {
+					setNumber = Convert.ToInt32(setNoPicker.Items[setNoPicker.SelectedIndex]);
+				} catch (Exception ex) {
+					Console.WriteLine("Error: " + ex.Message);
+				}
+			};
+
 			teamNoPickerLayout = new StackLayout() {
+				Orientation = StackOrientation.Horizontal,
+
 				Children = {
-					teamNoLbl,
-					teamNoPicker
+					new StackLayout{
+					HorizontalOptions = LayoutOptions.FillAndExpand,
+
+						Children = {
+							teamNoLbl,
+							teamNoPicker
+						}
+					},
+					new StackLayout{
+						HorizontalOptions = LayoutOptions.FillAndExpand,
+
+						Children = {
+							setLbl,
+							setNoPicker
+						}
+					},
 				}
 			};
 			teamNoView = new ContentView() {
@@ -249,7 +286,7 @@ namespace VitruvianApp2017
 
 		void checkBoxChanged(CheckBox c) {
 			semaphore = true;
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < matchPhaseCheckboxes.Length; i++) {
 				if (matchPhaseCheckboxes[i] != c)
 					matchPhaseCheckboxes[i].Checked = false;
 				else {
@@ -260,8 +297,20 @@ namespace VitruvianApp2017
 			}
 			if (checkValue == 0)
 				teamNoView.Content = teamNoEntry;
-			else
+			else if (checkValue == 1 || checkValue == 4){
 				teamNoView.Content = teamNoPickerLayout;
+				setLbl.IsVisible = false;
+				setLbl.IsEnabled = false;
+				setNoPicker.IsVisible = false;
+				setNoPicker.IsEnabled = false;
+			}
+			if (checkValue == 2 || checkValue == 3) {
+				setLbl.IsVisible = true;
+				setLbl.IsEnabled = true;
+				setNoPicker.IsVisible = true;
+				setNoPicker.IsEnabled = true;
+			}
+			
 			semaphore = false;
 		}
 
@@ -271,12 +320,26 @@ namespace VitruvianApp2017
 				busyIcon.IsRunning = true;
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				EventMatchData matchGet = new EventMatchData();
 
-				var matchGet = await db
-								.Child(GlobalVariables.regionalPointer)
-								.Child("matchList")
-								.Child(matchNumber)
-								.OnceSingleAsync<EventMatchData>();
+
+				if (competitionPhase == "QM" || competitionPhase == "F")
+					matchGet = await db
+									.Child(GlobalVariables.regionalPointer)
+									.Child("matchList")
+									.Child(competitionPhase + matchNumber.ToString())
+									.OnceSingleAsync<EventMatchData>();
+				else if (competitionPhase == "QF" || competitionPhase == "SF") {
+					matchGet = await db
+									.Child(GlobalVariables.regionalPointer)
+									.Child("matchList")
+									.Child(competitionPhase)
+									.Child(setNumber.ToString())
+									.Child("M" + matchNumber.ToString())
+									.OnceSingleAsync<EventMatchData>();
+
+				}
+					
 				Console.WriteLine("Match: " + matchNoEntry.inputEntry.Text + " , Alliance: " + alliancePicker.Items[alliancePicker.SelectedIndex]);
 
 				if (matchGet == null)
@@ -306,8 +369,8 @@ namespace VitruvianApp2017
 			matchData.matchNumber = matchNumber;
 			matchData.teamNumber = teamNumber;
 			matchData.matchID = teamNumber + "-" + matchNumber;
-			matchData.alliance = alliancePicker.Title;
-			matchData.startPos = positionPicker.Title;
+			matchData.alliance = alliancePicker.Items[alliancePicker.SelectedIndex];
+			matchData.startPos = positionPicker.Items[positionPicker.SelectedIndex];
 
 			if (CheckInternetConnectivity.InternetStatus()) {
 				bool test = true;
@@ -329,7 +392,7 @@ namespace VitruvianApp2017
 						test = false;
 
 				if (test) {
-					FirebaseAccess.saveMatchData(db, path, matchData);
+					FirebaseAccess.saveData(db, path, matchData);
 
 					await Navigation.PushAsync(new AutoMatchScoutingPage(matchData, matchType));
 				}

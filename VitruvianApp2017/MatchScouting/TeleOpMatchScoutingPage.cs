@@ -435,10 +435,10 @@ namespace VitruvianApp2017 {
 					path = "practiceMatchData/" + matchData.matchID;
 				else {
 					path = "matchData/" + matchData.matchID;
-					FirebaseAccess.saveMatchActions(db, "matchActionData/" + matchData.matchID, mActions);
+					FirebaseAccess.saveData(db, "matchActionData/" + matchData.matchID, mActions);
 				}
 
-				FirebaseAccess.saveMatchData(db, path, matchData);
+				FirebaseAccess.saveData(db, path, matchData);
 
 				/*
 				if (mType == -1) {

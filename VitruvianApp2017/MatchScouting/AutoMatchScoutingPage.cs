@@ -216,7 +216,7 @@ namespace VitruvianApp2017
 				else
 					path = "matchData/" + matchData.matchID;
 
-				FirebaseAccess.saveMatchData(db, path, matchData);
+				FirebaseAccess.saveData(db, path, matchData);
 
 				/*
 				if (mType == -1) {
