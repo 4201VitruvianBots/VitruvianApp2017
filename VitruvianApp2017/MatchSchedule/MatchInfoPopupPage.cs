@@ -256,6 +256,7 @@ namespace VitruvianApp2017
 			semaphore[i] = true;
 		}
 
+
 		async Task initializeTeamData(int i) {
 			while (semaphore[i] == false) {
 

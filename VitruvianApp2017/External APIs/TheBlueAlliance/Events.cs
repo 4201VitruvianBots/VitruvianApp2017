@@ -92,9 +92,9 @@ namespace TheBlueAlliance
 			return dataList.ToArray();
 		}
 
-		public static async Task<EventStatsHttp[]> GetEventStatsHttp(string eventKey) {
-			var dataList = new List<EventStatsHttp>();
-			var url = ("http://www.thebluealliance.com/api/v3/event/" + eventKey + "/stats");
+		public static async Task<EventOprs> GetEventTeamsOprsHttp(string eventKey) {
+			var statList = new EventOprs();
+			var url = ("http://www.thebluealliance.com/api/v3/event/" + eventKey + "/oprs");
 
 			try {
 				var client = new HttpClient(new NativeMessageHandler());
@@ -104,20 +104,15 @@ namespace TheBlueAlliance
 				using (HttpContent content = response.Content) {
 					var result = await content.ReadAsStreamAsync();
 					var jsonString = new StreamReader(result).ReadToEnd();
-					Console.WriteLine("JSON String: " + jsonString);
-					dataList = JsonConvert.DeserializeObject<List<EventStatsHttp>>(jsonString);
+					statList = JsonConvert.DeserializeObject<EventOprs>(jsonString);
 
-					// Sort match in descending order
-					foreach (var stats in dataList)
-						foreach(var opr in stats.oprs)
-							Console.WriteLine("TBA Stat Fetch - OPR: " + opr);
-
+					// Sort team number in descending order
 				}
-			} catch (Exception webError) {
+			}
+			catch (Exception webError) {
 				Console.WriteLine("Error Message: " + webError.Message);
 			}
-
-			return dataList.ToArray();
+			return statList;
 		}
 	}
 }

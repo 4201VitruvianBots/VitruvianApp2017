@@ -61,6 +61,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\MatchData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FirebaseAccess.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventMatches.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventOprs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />

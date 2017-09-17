@@ -29,5 +29,19 @@ namespace TheBlueAlliance
 			}
 			return teamInformationToReturn;
 		}
+
+		public static TeamHistoryAwards GetTeamAwards(string teamKey) {
+			var teamInformationToReturn = new TeamHistoryAwards();
+			var wc = new WebClient();
+			wc.Headers.Add("X-TBA-Auth-Key", headerString);
+			try {
+				var url = ("https://www.thebluealliance.com/api/v3/team/" + teamKey + "/awards");
+				teamInformationToReturn = JsonConvert.DeserializeObject<TeamHistoryAwards>(wc.DownloadString(url));
+			}
+			catch (Exception webError) {
+				Console.WriteLine("Error Message: " + webError.Message);
+			}
+			return teamInformationToReturn;
+		}
 	}
 }

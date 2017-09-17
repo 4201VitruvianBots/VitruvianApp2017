@@ -30,7 +30,7 @@ namespace VitruvianApp2017
 
 			 matchNoEntry = new Entry() {
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Placeholder = "Enter Match No.",
+				Placeholder = "Enter Match Number",
 				HorizontalTextAlignment = TextAlignment.Center,
 			};
 
@@ -107,7 +107,58 @@ namespace VitruvianApp2017
 
 		async Task addMatch() {
 			try {
-				var match = new EventMatchData();
+				long mTime;
+				if (GlobalVariables.regionalPointer == "2017calb")
+					mTime = laFinals + matchTime;
+				else if (GlobalVariables.regionalPointer == "2017nvlv")
+					mTime = lvFinals + matchTime;
+				else if (GlobalVariables.regionalPointer == "2017cmptx")
+					mTime = txFinals + matchTime;
+				else
+					mTime = txFinals + matchTime;
+
+				Console.WriteLine("Match Time: " +mTime);
+
+				var db = new FirebaseClient(GlobalVariables.firebaseURL);
+				var match = new TableauMatchShedule();
+
+				int i = 1;
+
+				foreach (var robot in red) {
+					var matchID = robot.Text + "-" + matchNoEntry.Text;
+
+					await db.Child(GlobalVariables.regionalPointer)
+							.Child("matchList")
+							.Child(matchID)
+							.PutAsync(new TableauMatchShedule() {
+								matchID = matchID,
+								matchNumber = matchNoEntry.Text,
+								alliance = "Red",
+								alliancePos = i++,
+								teamNumber = Convert.ToInt32(robot.Text),
+								matchTime = mTime
+							});
+				}
+
+				i = 1;
+				foreach (var robot in blue) {
+					var matchID = robot.Text + "-" + matchNoEntry.Text;
+
+					await db.Child(GlobalVariables.regionalPointer)
+							.Child("matchList")
+							.Child(matchID)
+							.PutAsync(new TableauMatchShedule() {
+								matchID = matchID,
+								matchNumber = matchNoEntry.Text,
+								alliance = "Blue",
+								alliancePos = i++,
+								teamNumber = Convert.ToInt32(robot.Text),
+								matchTime = mTime
+							});
+				}
+
+				// Depreciated
+				/*
 				match.Red = new int[3];
 				match.Blue = new int[3];
 				for (int i = 0; i < 3; i++) {
@@ -133,6 +184,7 @@ namespace VitruvianApp2017
 							.Child("matchList")
 							.Child(matchNoEntry.Text)
 							.PutAsync(match);
+				*/
 				
 				await DisplayAlert("Success", "Match Successfully Added", "OK").ContinueWith((a) => {
 					Navigation.PopPopupAsync();

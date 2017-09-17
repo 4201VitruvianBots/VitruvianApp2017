@@ -35,6 +35,8 @@ namespace VitruvianApp2017
 		// Post Match
 		public int fouls { get; set; }
 		public bool good { get; set; }
+		public long sendTime { get; set; }
+		public bool dataIsReady { get; set; }
 	}
 
 	public class ActionData

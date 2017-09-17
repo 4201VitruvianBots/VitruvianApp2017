@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -62,7 +63,7 @@ namespace VitruvianApp2017
 			};
 
 			eventStatTestBtn.Clicked += (sender, e) => {
-				getEventStats();
+				//getEventStats();
 			};
 
 			var updateTeamStats = new LineEntry("Update Single Team Stats");
@@ -114,6 +115,18 @@ namespace VitruvianApp2017
 				Navigation.PushPopupAsync(new AddMatchPopupPage());
 			};
 
+			var updateTeamOPRS = new Button() {
+				VerticalOptions = LayoutOptions.Fill,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Text = "Update OPRS",
+				TextColor = Color.Green,
+				BackgroundColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium
+			};
+			updateTeamOPRS.Clicked += (sender, e) => {
+				getEventOprs();
+			};
+
 			var logoutBtn = new Button() {
 				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -144,7 +157,8 @@ namespace VitruvianApp2017
 								updateMatchListBtn,
 								//ingleTeamStatUpdateView,
 								//allTeamStatUpdateBtn,
-								addMatchBtn
+								addMatchBtn,
+								updateTeamOPRS
 								//eventStatTestBtn,
 							}
 						}
@@ -220,6 +234,7 @@ namespace VitruvianApp2017
 					int[] blueA = new int[match.alliances.blue.team_keys.Length + match.alliances.blue.surrogate_team_keys.Length], 
 					       redA = new int[match.alliances.red.team_keys.Length + match.alliances.red.surrogate_team_keys.Length];
 
+					// remove the frc label from each team
 					foreach (var team in match.alliances.blue.team_keys)
 						blueA[m++] = Convert.ToInt32(team.Remove(0, 3));
 					foreach (var team in match.alliances.blue.surrogate_team_keys)
@@ -228,7 +243,53 @@ namespace VitruvianApp2017
 						redA[n++] = Convert.ToInt32(team.Remove(0, 3));
 					foreach (var team in match.alliances.red.surrogate_team_keys)
 						redA[n++] = Convert.ToInt32(team.Remove(0, 3));
-					
+
+					int i = 1;
+					string matchID;
+					foreach (var robot in blueA) {
+						matchID = robot + "-" + matchNumber;
+						await db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("tableauMatchSchedule")
+								.Child(matchID)
+								.OnceSingleAsync<TableauMatchShedule>();
+
+						await db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("tableauMatchSchedule")
+								.Child(matchID)
+								.PutAsync(new TableauMatchShedule() {
+									matchID = matchID,
+									matchNumber = matchNumber,
+									alliance = "Blue",
+									alliancePos = i++,
+									teamNumber = robot,
+									matchTime = match.time
+								});
+					}
+
+					i = 1;
+					foreach (var robot in redA) {
+						matchID = robot + "-" + matchNumber;
+						await db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("tableauMatchSchedule")
+								.Child(matchID)
+								.OnceSingleAsync<TableauMatchShedule>();
+
+						await db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("tableauMatchSchedule")
+								.Child(matchID)
+								.PutAsync(new TableauMatchShedule() {
+									matchID = matchID,
+									matchNumber = matchNumber,
+									alliance = "Red",
+									alliancePos = i++,
+									teamNumber = robot,
+									matchTime = match.time
+								});
+					}
 					// Why is this needed?
 
 					var fbMatch = await db
@@ -236,7 +297,6 @@ namespace VitruvianApp2017
 							.Child("matchList")
 							.Child(matchNumber)
 							.OnceSingleAsync<EventMatchData>();
-					//*/
 
 					var send = db
 						.Child(GlobalVariables.regionalPointer)
@@ -248,7 +308,6 @@ namespace VitruvianApp2017
 							Red = redA,
 							matchTime = match.time
 						});
-
 					Console.WriteLine("Completed Match: " + matchNumber);
 				}
 				await DisplayAlert("Done", "Match List Successfully Updated", "OK");
@@ -257,8 +316,40 @@ namespace VitruvianApp2017
 			}
 		}
 
-		public async Task getEventStats() {
-			var test = await EventsHttp.GetEventStatsHttp(GlobalVariables.regionalPointer);
+		public async Task getEventOprs() {
+			var data = await EventsHttp.GetEventTeamsOprsHttp(GlobalVariables.regionalPointer);
+			SortedDictionary<int, double> oprs = new SortedDictionary<int, double>();
+			SortedDictionary<int, double> dprs = new SortedDictionary<int, double>();
+			SortedDictionary<int, double> ccwms = new SortedDictionary<int, double>();
+
+			foreach (var i in data.oprs)
+				oprs.Add(Convert.ToInt32(i.Key.Remove(0, 3)), i.Value);
+			foreach (var i in data.dprs)
+				dprs.Add(Convert.ToInt32(i.Key.Remove(0, 3)), i.Value);
+			foreach (var i in data.ccwms)
+				ccwms.Add(Convert.ToInt32(i.Key.Remove(0, 3)), i.Value);
+
+			var db = new FirebaseClient(GlobalVariables.firebaseURL);
+			var teamData = await db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("teamData")
+								.OnceAsync<TeamData>();
+			
+			foreach (var i in teamData) {
+				double result;
+
+				if (oprs.TryGetValue(i.Object.teamNumber, out result))
+					i.Object.tbaOPR = result;
+				if (dprs.TryGetValue(i.Object.teamNumber, out result))
+					i.Object.tbaDPR = result;
+				if (ccwms.TryGetValue(i.Object.teamNumber, out result))
+					i.Object.tbaCCWM = result;
+
+				await db.Child(GlobalVariables.regionalPointer)
+						.Child("teamData")
+						.Child(i.Object.teamNumber.ToString())
+						.PutAsync(i.Object);
+			}
 		}
 
 		/*

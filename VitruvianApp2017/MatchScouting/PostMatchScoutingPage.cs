@@ -127,6 +127,8 @@ namespace VitruvianApp2017
 				matchData.successfulClimb = climbSuccessBtn.on;
 				matchData.fouls = foulCounter.getValue();
 				matchData.good = goodCheck.Checked;
+				matchData.sendTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+				matchData.dataIsReady = true;
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 				string path = "ERROR";
