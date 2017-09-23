@@ -16,7 +16,7 @@ namespace VitruvianApp2017
 		Picker alliancePicker = new Picker();
 		Picker teamNoPicker = new Picker();
 		Picker setNoPicker = new Picker();
-		StackLayout teamNoPickerLayout;
+		StackLayout teamNoPickerLayout, setTeamNoPickerLayout;
 		ContentView teamNoView;
 		Picker positionPicker = new Picker();
 		int teamNumber;
@@ -73,11 +73,18 @@ namespace VitruvianApp2017
 			matchNoEntry.inputEntry.Keyboard = Keyboard.Numeric;
 			matchNoEntry.inputEntry.TextChanged += (sender, e) => {
 				if (matchPhaseCheckboxes[1].Checked) {
-					if (!string.IsNullOrEmpty(matchNoEntry.inputEntry.Text))
-						if (matchNoEntry.inputEntry.Text.Length < 2)
-							matchNumber = competitionPhase + "0" + matchNoEntry.inputEntry.Text;
-						else
+					if (!string.IsNullOrEmpty(matchNoEntry.inputEntry.Text)) {
+						if (competitionPhase == "QM") {
+							if (matchNoEntry.inputEntry.Text.Length < 2)
+								matchNumber = competitionPhase + "0" + matchNoEntry.inputEntry.Text;
+							else
+								matchNumber = competitionPhase + matchNoEntry.inputEntry.Text;
+						}
+						else if (competitionPhase == "QF" || competitionPhase == "SF")
+							matchNumber = competitionPhase + setNoPicker.Items[setNoPicker.SelectedIndex] + "M" + matchNoEntry.inputEntry.Text;
+	  					else if (competitionPhase == "F")
 							matchNumber = competitionPhase + matchNoEntry.inputEntry.Text;
+					}
 				} 
 				else
 					matchNumber = matchNoEntry.inputEntry.Text;
@@ -119,8 +126,6 @@ namespace VitruvianApp2017
 				Text = "Set Number:",
 				FontSize = GlobalVariables.sizeSmall,
 				FontAttributes = FontAttributes.Bold,
-				IsEnabled = false,
-				IsVisible = false,
 			};
 
 			setNoPicker.Title = "[Select Set No.]";
@@ -133,19 +138,18 @@ namespace VitruvianApp2017
 			};
 
 			teamNoPickerLayout = new StackLayout() {
+				Children = {
+					teamNoLbl,
+					teamNoPicker
+				}
+			};
+
+			setTeamNoPickerLayout = new StackLayout() {
 				Orientation = StackOrientation.Horizontal,
 
 				Children = {
 					new StackLayout{
 					HorizontalOptions = LayoutOptions.FillAndExpand,
-
-						Children = {
-							teamNoLbl,
-							teamNoPicker
-						}
-					},
-					new StackLayout{
-						HorizontalOptions = LayoutOptions.FillAndExpand,
 
 						Children = {
 							setLbl,
@@ -198,7 +202,7 @@ namespace VitruvianApp2017
 					inputFlag = true;
 				if (string.IsNullOrEmpty(matchNoEntry.inputEntry.Text))
 					inputFlag = true;
-				if(teamNoPicker.SelectedIndex == -1 && string.IsNullOrEmpty(teamNoEntry.inputEntry.Text))
+				if(teamNoPicker.SelectedIndex == -1 || string.IsNullOrEmpty(teamNoEntry.inputEntry.Text))
 					inputFlag = true;
 
 				if (positionPicker.SelectedIndex == -1 || alliancePicker.SelectedIndex == -1 || inputFlag) {
@@ -295,20 +299,23 @@ namespace VitruvianApp2017
 					competitionPhase = ((matchPhase)i).ToString();
 				}
 			}
-			if (checkValue == 0)
+			if (checkValue == 0){
 				teamNoView.Content = teamNoEntry;
-			else if (checkValue == 1 || checkValue == 4){
+			
+			} else
 				teamNoView.Content = teamNoPickerLayout;
-				setLbl.IsVisible = false;
-				setLbl.IsEnabled = false;
-				setNoPicker.IsVisible = false;
-				setNoPicker.IsEnabled = false;
+
+			if (checkValue == 1 || checkValue == 4){
+			
 			}
 			if (checkValue == 2 || checkValue == 3) {
-				setLbl.IsVisible = true;
-				setLbl.IsEnabled = true;
-				setNoPicker.IsVisible = true;
-				setNoPicker.IsEnabled = true;
+				setNoPicker.Items.Clear();
+				if (checkValue == 2)
+					for (int i = 1; i <= 4; i++)
+						setNoPicker.Items.Add(i.ToString());
+				else if(checkValue == 3)
+					for (int i = 1; i <= 2; i++)
+						setNoPicker.Items.Add(i.ToString());
 			}
 			
 			semaphore = false;
@@ -322,24 +329,12 @@ namespace VitruvianApp2017
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 				EventMatchData matchGet = new EventMatchData();
 
-
-				if (competitionPhase == "QM" || competitionPhase == "F")
-					matchGet = await db
-									.Child(GlobalVariables.regionalPointer)
-									.Child("matchList")
-									.Child(competitionPhase + matchNumber.ToString())
-									.OnceSingleAsync<EventMatchData>();
-				else if (competitionPhase == "QF" || competitionPhase == "SF") {
-					matchGet = await db
-									.Child(GlobalVariables.regionalPointer)
-									.Child("matchList")
-									.Child(competitionPhase)
-									.Child(setNumber.ToString())
-									.Child("M" + matchNumber.ToString())
-									.OnceSingleAsync<EventMatchData>();
-
-				}
-					
+				matchGet = await db
+								.Child(GlobalVariables.regionalPointer)
+								.Child("matchList")
+								.Child(matchNumber.ToString())
+								.OnceSingleAsync<EventMatchData>();
+				
 				Console.WriteLine("Match: " + matchNoEntry.inputEntry.Text + " , Alliance: " + alliancePicker.Items[alliancePicker.SelectedIndex]);
 
 				if (matchGet == null)
