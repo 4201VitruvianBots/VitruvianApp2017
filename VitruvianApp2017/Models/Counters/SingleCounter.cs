@@ -6,7 +6,7 @@ namespace VitruvianApp2017
 	public class SingleCounter:Grid
 	{
 		public event PropertyChangingEventHandler ValueChanged;
-		int i;
+		int i, baseline = 0;
 		public int lowerLimit = 0;
 		public int upperLimit = 9001;
 		Label valueLbl;
@@ -76,8 +76,22 @@ namespace VitruvianApp2017
 			return i;
 		}
 
+		/*
 		public void setValue(int v) {
 			i = v;
+			valueLbl.Text = i.ToString();
+		}
+		*/
+
+		public void setLowerLimit(int v) {
+			lowerLimit = v;
+			valueLbl.Text = i.ToString();
+		}
+
+		public void addToLowerLimit(int v) {
+			var temp = i - lowerLimit;
+			i = v + temp;
+			lowerLimit = v;
 			valueLbl.Text = i.ToString();
 		}
 

@@ -14,10 +14,10 @@ namespace VitruvianApp2017
 			BackgroundColor = Color.Teal,
 
 			RowDefinitions = {
-				
-			},
-			ColumnDefinitions = {
-
+				new RowDefinition() { Height = GridLength.Auto},
+				new RowDefinition() { Height = GridLength.Auto},
+				new RowDefinition() { Height = GridLength.Star},
+				new RowDefinition() { Height = GridLength.Auto}
 			}
 		};
 		TitledColorButton[] inputs = new TitledColorButton[2];
@@ -97,6 +97,7 @@ namespace VitruvianApp2017
 			pageLayout.Children.Add(inputs[0], 0, 0);
 			pageLayout.Children.Add(pressureCounter, 1, 2, 0, 2);
 			pageLayout.Children.Add(inputs[1], 2, 0);
+
 			pageLayout.Children.Add(teleOpBtn, 1, 2, 3, 4);
 
 			BackgroundColor = Color.Teal;

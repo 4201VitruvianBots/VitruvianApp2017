@@ -9,57 +9,89 @@ namespace VitruvianApp2017
 {
 	public class PostMatchScoutingPage:ContentPage
 	{
+		Grid pageLayout = new Grid() {
+			HorizontalOptions = LayoutOptions.FillAndExpand,
+			VerticalOptions = LayoutOptions.FillAndExpand,
+			BackgroundColor = Color.White,
+
+			RowDefinitions = {
+				new RowDefinition() { Height = GridLength.Auto},
+				new RowDefinition() { Height = GridLength.Auto},
+				new RowDefinition() { Height = GridLength.Auto},
+				new RowDefinition() { Height = GridLength.Auto},
+				new RowDefinition() { Height = GridLength.Star},
+				new RowDefinition() { Height = GridLength.Auto},
+			}
+		};
+
 		MatchData matchData;
 		int mType;
+		Label pressureLbl, gearLbl;
 
-		ColorButton climbAttemptBtn, climbSuccessBtn;
-		SingleCounter foulCounter;
+		TitledColorButton climbSuccessBtn, fullDisableBtn, pilotErrorBtn;
+		SingleCounter foulCounter, partialDisablesCounter;
 		CheckBox goodCheck;
+		Editor foulNotes;
 
 		public PostMatchScoutingPage(MatchData data, int matchType) {
 			Title = "Post Match";
 			matchData = data;
 			mType = matchType;
 
+			Label teamNumberLbl = new Label() {
+				HorizontalOptions = LayoutOptions.StartAndExpand,
+				Text = "Team: " + matchData.teamNumber.ToString(),
+				TextColor = Color.White,
+				BackgroundColor = Color.Green,
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold
+			};
+
+			pressureLbl = new Label() {
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				Text = "Pressure: " + (matchData.autoPressure + matchData.teleOpPressure),
+				TextColor = Color.White,
+				BackgroundColor = Color.Green,
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold
+			};
+
+			gearLbl = new Label() {
+				HorizontalOptions = LayoutOptions.EndAndExpand,
+				Text = "Gears: " + ((matchData.autoGearScored ? 1 : 0) + matchData.teleOpGearsScored),
+				TextColor = Color.White,
+				BackgroundColor = Color.Green,
+				FontSize = GlobalVariables.sizeSmall,
+				FontAttributes = FontAttributes.Bold
+			};
+
+
+			climbSuccessBtn = new TitledColorButton("Climbing", "Success");
+
 			goodCheck = new CheckBox() {
 				DefaultText = "Did this team perform well?",
 				FontSize = GlobalVariables.sizeSmall
 			};
 
-			var disabledBtn = new ColorButton("Disabled");
-			var climbingLbl = new Label() {
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				Text = "Climbing",
-				TextColor = Color.Black,
-				FontSize = GlobalVariables.sizeMedium,
-				FontAttributes = FontAttributes.Bold
-
-			};
-			climbAttemptBtn = new ColorButton("Attempt");
-			climbSuccessBtn = new ColorButton("Success");
-			climbAttemptBtn.Clicked += (sender, e) => {
-				if (climbSuccessBtn.on) {
-					climbSuccessBtn.on = false;
-					climbSuccessBtn.BackgroundColor = Color.Red;
-				}
-			};
-			climbSuccessBtn.Clicked += (sender, e) => {
-				if (climbAttemptBtn.on) {
-					climbAttemptBtn.on = false;
-					climbAttemptBtn.BackgroundColor = Color.Red;
-				}
-			};
+			fullDisableBtn = new TitledColorButton("Full Disable", "Disabled");
+			partialDisablesCounter = new SingleCounter("Partial Disables");
 
 			foulCounter = new SingleCounter("Fouls");
 
-			var pilotCompetancyLbl = new Label(){
-				Text = "If this team had a pilot in the airship, rate their performance",
+			var foulNotesLbl = new Label() {
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				Text = "Foul Notes",
+				TextColor = Color.Black,
+				FontSize = GlobalVariables.sizeMedium,
+				FontAttributes = FontAttributes.Bold
 			};
 
-			var pilotCompetancyList = new Picker() {
-				Title = "Choose an Option"
+			foulNotes = new Editor() {
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				BackgroundColor = Color.Gray
 			};
-			// Ask Keisic about Tableau and mixing numeric/non-numeric data before continuing
+
+			pilotErrorBtn = new TitledColorButton("Pilot Error", "Error");
 
 			var finishMatchBtn = new Button() {
 				Text = "Save Match Data",
@@ -70,62 +102,66 @@ namespace VitruvianApp2017
 				finishMatch();
 			};
 
+			var topBar = new StackLayout() {
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Orientation = StackOrientation.Horizontal,
+				BackgroundColor = Color.Green,
+				Spacing = 0,
+			};
+
+			topBar.Children.Add(teamNumberLbl);
+			topBar.Children.Add(pressureLbl);
+			topBar.Children.Add(gearLbl);
+
+			pageLayout.Children.Add(climbSuccessBtn, 0, 0);
+			pageLayout.Children.Add(pilotErrorBtn, 0, 1);
+			pageLayout.Children.Add(goodCheck, 0, 2);
+			pageLayout.Children.Add(fullDisableBtn, 1, 0);
+			pageLayout.Children.Add(partialDisablesCounter, 1, 1);
+			pageLayout.Children.Add(foulCounter, 2, 0);
+			pageLayout.Children.Add(foulNotesLbl, 2, 1);
+			pageLayout.Children.Add(foulNotes, 2, 3, 1, 4);
+
+			pageLayout.Children.Add(finishMatchBtn, 1, 2, 5, 6);
+
 			Content = new StackLayout() {
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.FillAndExpand,
+				Spacing = 0,
+
 				Children = {
+					topBar,
 					new ScrollView(){
 						HorizontalOptions = LayoutOptions.FillAndExpand,
 						VerticalOptions = LayoutOptions.FillAndExpand,
+						IsClippedToBounds = true,
 
-						Content = new StackLayout(){
-							HorizontalOptions = LayoutOptions.FillAndExpand,
-							VerticalOptions = LayoutOptions.FillAndExpand,
-
-							Children = {
-								disabledBtn,
-								climbingLbl,
-								climbAttemptBtn,
-								climbSuccessBtn,
-								foulCounter,
-								goodCheck
-							}
-						}
-					},
-					finishMatchBtn
+						Content = pageLayout
+					}
 				}
 			};
 		}
 
 		async Task finishMatch() {
 			if(await DisplayAlert("Match Finished", "Are you sure you want to save this data?", "Yes", "No")) {
-				Console.WriteLine("Navigation Stack:");
-				Console.WriteLine("Navigation Index:" + Navigation.NavigationStack.Count);
-				foreach (var page in Navigation.NavigationStack)
-					Console.WriteLine("Page : " + page.ToString());
-
 				saveData();
-				//
-				Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
-				foreach (var page in Navigation.NavigationStack)
-					Console.WriteLine("Page : " + page.ToString());
-				Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
-				foreach (var page in Navigation.NavigationStack)
-					Console.WriteLine("Page : " + page.ToString());
-				Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
-				foreach (var page in Navigation.NavigationStack)
-					Console.WriteLine("Page : " + page.ToString());
-				if (Navigation.NavigationStack[Navigation.NavigationStack.Count].Title == "Match Scouting")
-					Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
 
-				Navigation.InsertPageBefore(new PreMatchScoutingPage(matchData.scouterName), this);
-				Navigation.PopModalAsync();
+				while (Navigation.ModalStack.Count > 0)
+					Navigation.PopModalAsync();
+
+				Navigation.PushModalAsync(new PreMatchScoutingPage(matchData.scouterName));
 			}
 		}
 
 		async Task saveData() {
 			if (CheckInternetConnectivity.InternetStatus()) {
-				matchData.successfulClimb = climbSuccessBtn.on;
-				matchData.fouls = foulCounter.getValue();
+				matchData.successfulClimb = climbSuccessBtn.getBtnStatus();
+				matchData.pilotError = pilotErrorBtn.getBtnStatus();
 				matchData.good = goodCheck.Checked;
+				matchData.fullDisable = fullDisableBtn.getBtnStatus();
+				matchData.partialDisables = partialDisablesCounter.getValue();
+				matchData.fouls = foulCounter.getValue();
+				matchData.foulNote = foulNotes.Text;
 				matchData.sendTime = DateTimeOffset.Now.ToUnixTimeSeconds();
 				matchData.dataIsReady = true;
 
