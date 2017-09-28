@@ -45,7 +45,6 @@ namespace VitruvianApp2017
 
 			RowDefinitions = {
 				new RowDefinition { Height = GridLength.Auto },
-				new RowDefinition { Height = GridLength.Auto },
 				new RowDefinition { Height = GridLength.Star },
 			}
 		};
