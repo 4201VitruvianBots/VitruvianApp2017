@@ -45,6 +45,7 @@ namespace VitruvianApp2017
 
 			RowDefinitions = {
 				new RowDefinition { Height = GridLength.Auto },
+				new RowDefinition { Height = GridLength.Auto },
 				new RowDefinition { Height = GridLength.Star },
 			}
 		};
@@ -137,7 +138,12 @@ namespace VitruvianApp2017
 
 					Children = {
 						topGrid,
-						pitDataLayout,
+						new ScrollView(){
+							HorizontalOptions = LayoutOptions.StartAndExpand,
+							VerticalOptions = LayoutOptions.FillAndExpand,
+							
+							Content = pitDataLayout
+						},
 						navigationBtns
 					}
 				}
@@ -184,7 +190,7 @@ namespace VitruvianApp2017
 
 		void setPitData() {
 			pitDataLayout = new StackLayout() {
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand,
 				BackgroundColor = Color.Gray,
 			};
@@ -201,56 +207,21 @@ namespace VitruvianApp2017
 				FontSize = GlobalVariables.sizeMedium,
 				TextColor = Color.White,
 			};
-
-			var configurationLbl = new Label() {
-				Text = "Configuration: " + data.volumeConfig,
-				FontSize = GlobalVariables.sizeSmall,
-				TextColor = Color.White
-			};
-
-			var fuelCapacityLabel = new Label() {
-				Text = "Max Fuel Capacity: " + data.maxFuelCapacity,
-				FontSize = GlobalVariables.sizeSmall,
-				TextColor = Color.White
-			};
-
-			var autoActionsLbl = new Label() {
-				Text = "Auto Actions:",
-				FontSize = GlobalVariables.sizeMedium,
-				TextColor = Color.White,
-			};
-
-			var notesLbl = new Label() {
-				Text = "Additional Notes:",
-				FontSize = GlobalVariables.sizeMedium,
-				TextColor = Color.White,
-			};
-
-			var notesText = new Label() {
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				VerticalOptions = LayoutOptions.FillAndExpand,
-				Text = data.notes,
-				FontSize = GlobalVariables.sizeSmall,
-				TextColor = Color.White,
-			};
-
 			pitDataLayout.Children.Add(pitDataLbl);
 			pitDataLayout.Children.Add(mechanismsLbl);
-			pitDataLayout.Children.Add(configurationLbl);
-			pitDataLayout.Children.Add(fuelCapacityLabel);
-			generateDataCheckBox(pitCheckBoxes[0], "Gear Delivery", data.gearMechanism);
-			generateDataCheckBox(pitCheckBoxes[1], "Fuel Deilvery - Low", data.fuelLowMechanism);
-			generateDataCheckBox(pitCheckBoxes[2], "Fuel Deilvery - High", data.fuelHighMechanism);
-			generateDataCheckBox(pitCheckBoxes[3], "Climbing", data.climbingMechanism);
+			//generateDataCheckBox(pitCheckBoxes[0], "Gear Delivery", data.gearMechanism);
+			//generateDataCheckBox(pitCheckBoxes[1], "Fuel Deilvery - Low", data.fuelLowMechanism);
+			//generateDataCheckBox(pitCheckBoxes[2], "Fuel Deilvery - High", data.fuelHighMechanism);
+			//generateDataCheckBox(pitCheckBoxes[3], "Climbing", data.climbingMechanism);
 			generateDataCheckBox(pitCheckBoxes[4], "Ground Intake - Gears", data.gearGroundIntakeMechanism);
-			generateDataCheckBox(pitCheckBoxes[5], "Ground Intake - Fuel", data.fuelGroundIntakeMechanism);
-			pitDataLayout.Children.Add(autoActionsLbl);
-			generateDataCheckBox(pitCheckBoxes[6], "Cross", data.pitAutoCross);
-			generateDataCheckBox(pitCheckBoxes[7], "Gear Delivery", data.pitAutoGear);
-			generateDataCheckBox(pitCheckBoxes[8], "Fuel Delivery - Low", data.pitAutoFuelLow);
-			generateDataCheckBox(pitCheckBoxes[9], "Fuel Delivery - High", data.pitAutoFuelHigh);
-			pitDataLayout.Children.Add(notesLbl);
-			pitDataLayout.Children.Add(notesText);
+			//generateDataCheckBox(pitCheckBoxes[5], "Ground Intake - Fuel", data.fuelGroundIntakeMechanism);
+			//pitDataLayout.Children.Add(autoActionsLbl);
+			//generateDataCheckBox(pitCheckBoxes[6], "Cross", data.pitAutoCross);
+			//generateDataCheckBox(pitCheckBoxes[7], "Gear Delivery", data.pitAutoGear);
+			//generateDataCheckBox(pitCheckBoxes[8], "Fuel Delivery - Low", data.pitAutoFuelLow);
+			//generateDataCheckBox(pitCheckBoxes[9], "Fuel Delivery - High", data.pitAutoFuelHigh);
+			//pitDataLayout.Children.Add(notesLbl);
+			//pitDataLayout.Children.Add(notesText);
 
 			dataGrid.Children.Add(new ScrollView(){
 				HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -276,7 +247,7 @@ namespace VitruvianApp2017
 
 		void setMatchData() {
 			matchDataLayout = new StackLayout() {
-				HorizontalOptions = LayoutOptions.FillAndExpand,
+				HorizontalOptions = LayoutOptions.StartAndExpand,
 				VerticalOptions = LayoutOptions.FillAndExpand
 			};
 			var pitDataLbl = new Label() {
@@ -287,7 +258,7 @@ namespace VitruvianApp2017
 				TextColor = Color.White,
 			};
 
-			initializeMatchData();
+			//initializeMatchData();
 
 			dataGrid.Children.Add(pitDataLbl, 1, 0);
 			dataGrid.Children.Add(matchDataGrid, 1, 1);
@@ -299,7 +270,7 @@ namespace VitruvianApp2017
 				Content = matchDataLayout }, 1, 0);
 				*/
 		}
-
+		/*
 		void initializeMatchData() {
 			initializeRowHeaders();
 			for (int j = 0; j < 12; j++)
@@ -425,5 +396,6 @@ namespace VitruvianApp2017
 			matchDataGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(20, GridUnitType.Absolute) });
 			rowHeadersIndex++;
 		}
+		*/
 	}
 }

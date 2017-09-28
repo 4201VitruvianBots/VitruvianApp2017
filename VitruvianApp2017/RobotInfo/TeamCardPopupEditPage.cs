@@ -37,7 +37,7 @@ namespace VitruvianApp2017
 		};
 		int cIndex = 0;
 		Entry fuelCapacityEntry;
-		CheckBox[] checkBoxes = new CheckBox[10];
+		CheckBox gearGroundIntake;
 		Picker configurationPicker;
 		string config;
 		Editor notesEditor;
@@ -106,20 +106,20 @@ namespace VitruvianApp2017
 
 		async Task saveData() {
 			if (CheckInternetConnectivity.InternetStatus()){
-				data.volumeConfig = config;
-				data.maxFuelCapacity = Convert.ToInt32(fuelCapacityEntry.Text);
-				data.gearMechanism = checkBoxes[0].Checked;
-				data.fuelLowMechanism = checkBoxes[1].Checked;
-				data.fuelHighMechanism = checkBoxes[2].Checked;
-				data.climbingMechanism = checkBoxes[3].Checked;
-				data.gearGroundIntakeMechanism = checkBoxes[4].Checked;
-				data.fuelGroundIntakeMechanism = checkBoxes[5].Checked;
+				//data.volumeConfig = config;
+				//data.maxFuelCapacity = Convert.ToInt32(fuelCapacityEntry.Text);
+				//data.gearMechanism = checkBoxes[0].Checked;
+				//data.fuelLowMechanism = checkBoxes[1].Checked;
+				//data.fuelHighMechanism = checkBoxes[2].Checked;
+				//data.climbingMechanism = checkBoxes[3].Checked;
+				data.gearGroundIntakeMechanism = gearGroundIntake.Checked;
+				//data.fuelGroundIntakeMechanism = checkBoxes[5].Checked;
 
-				data.pitAutoCross = checkBoxes[6].Checked;
-				data.pitAutoGear = checkBoxes[7].Checked;
-				data.pitAutoFuelLow = checkBoxes[8].Checked;
-				data.pitAutoFuelHigh = checkBoxes[9].Checked;
-				data.notes = notesEditor.Text;
+				//data.pitAutoCross = checkBoxes[6].Checked;
+				//data.pitAutoGear = checkBoxes[7].Checked;
+				//data.pitAutoFuelLow = checkBoxes[8].Checked;
+				//data.pitAutoFuelHigh = checkBoxes[9].Checked;
+				//data.notes = notesEditor.Text;
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 
@@ -146,90 +146,16 @@ namespace VitruvianApp2017
 				TextColor = Color.White,
 			};
 
-			var configLbl = new Label() {
-				Text = "Volume Configuration:",
-				FontSize = GlobalVariables.sizeSmall,
-				TextColor = Color.White
-			};
-
-			configurationPicker = new Picker(){
-				Title = "Select a Configuration",
-				Items = {
-					"Configuartion A",
-					"Configuration B"
-				},
-			};
-			configurationPicker.SelectedIndexChanged += (sender, e) => {
-				config = configurationPicker.Items[configurationPicker.SelectedIndex];
-			};
-			if (data.volumeConfig == "Configuartion A")
-				configurationPicker.SelectedIndex = 0;
-			else
-				configurationPicker.SelectedIndex = 1;
-
-			var fuelCapacityLbl = new Label() {
-				Text = "Fuel Capacity:",
-				FontSize = GlobalVariables.sizeSmall,
-				TextColor = Color.White,
-			};
-
-			fuelCapacityEntry = new Entry() {
-				Placeholder = "[Enter Fuel Capcity]",
-				FontSize = GlobalVariables.sizeSmall,
-				TextColor = Color.White,
-				Keyboard = Keyboard.Numeric,
-				Text = data.maxFuelCapacity.ToString()
-			};
-
-			var autoActionsLbl = new Label() {
-				Text = "Auto Actions:",
-				FontSize = GlobalVariables.sizeMedium,
-				TextColor = Color.White,
-			};
-
-			var notesEditorLbl = new Label() {
-				Text = "Additional Notes:",
-				FontSize = GlobalVariables.sizeMedium,
-				TextColor = Color.White,
-			};
-
-			 notesEditor = new Editor() {
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				HeightRequest = 160,
-				BackgroundColor = Color.White,
-				TextColor = Color.Black,
-				Text = data.notes
-			};
-
 			dataLayout.Children.Add(mechanismsLbl);
-			dataLayout.Children.Add(configLbl);
-			dataLayout.Children.Add(configurationPicker);
-			dataLayout.Children.Add(fuelCapacityLbl);
-			dataLayout.Children.Add(fuelCapacityEntry);
-			addCheckBox("Gear Delivery", data.gearMechanism);
-			addCheckBox("Fuel Deilvery - Low", data.fuelLowMechanism);
-			addCheckBox("Fuel Deilvery - High", data.fuelHighMechanism);
-			addCheckBox("Climbing", data.climbingMechanism);
-			addCheckBox("Ground Intake - Gears", data.gearGroundIntakeMechanism);
-			addCheckBox("Ground Intake - Fuel", data.fuelGroundIntakeMechanism);
-			dataLayout.Children.Add(autoActionsLbl);
-			addCheckBox("Cross", data.pitAutoCross);
-			addCheckBox("Gear Delivery", data.pitAutoGear);
-			addCheckBox("Fuel Deilvery - Low", data.pitAutoFuelLow);
-			addCheckBox("Fuel Deilvery - High", data.pitAutoFuelHigh);
 
-			dataLayout.Children.Add(notesEditorLbl);
-			dataLayout.Children.Add(notesEditor);
-		}
-
-		void addCheckBox(string description, bool dataBool) {
-			checkBoxes[cIndex] = new CheckBox {
-				DefaultText = description,
+			gearGroundIntake = new CheckBox {
+				DefaultText = "Ground Intake - Gears",
 				FontSize = GlobalVariables.sizeSmall,
 				TextColor = Color.White,
-				Checked = dataBool
+				Checked = data.gearGroundIntakeMechanism
 			};
-			dataLayout.Children.Add(checkBoxes[cIndex++]);
+
+			dataLayout.Children.Add(gearGroundIntake);
 		}
 	}
 }

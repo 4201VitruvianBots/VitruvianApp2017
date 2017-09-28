@@ -6,12 +6,13 @@ namespace VitruvianApp2017
 		public int teamNumber { get; set; }
 		public string teamName { get; set; }
 		public string imageURL { get; set; }
+		public bool gearGroundIntakeMechanism { get; set; }
 		public double tbaOPR { get; set;}
 		public double tbaDPR { get; set; }
 		public double tbaCCWM { get; set; }
 		public string notes { get; set; }
 
-
+		/*
 		// Pit Data
 		public string volumeConfig { get; set; }
 		public int maxFuelCapacity { get; set; }
@@ -19,7 +20,6 @@ namespace VitruvianApp2017
 		public bool fuelLowMechanism { get; set; }
 		public bool fuelHighMechanism { get; set; }
 		public bool climbingMechanism { get; set; }
-		public bool gearGroundIntakeMechanism { get; set; }
 		public bool fuelGroundIntakeMechanism { get; set; }
 		//public bool cheesecake { get; set; }
 		// auto actions
@@ -63,6 +63,6 @@ namespace VitruvianApp2017
 
 		public int foulCount { get; set; }
 		public int goodCount { get; set; }
-
+		*/
 	}
 }

@@ -106,7 +106,7 @@ namespace VitruvianApp2017
 			};
 
 			upcomingMatchView.ItemTapped += (sender, e) => {
-				Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
+				//Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
 			};
 
 			var pastMatchHeader = new ContentView() {
@@ -153,7 +153,7 @@ namespace VitruvianApp2017
 				((ListView)sender).SelectedItem = null;
 			};
 			pastMatchView.ItemTapped += (sender, e) => {
-				Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
+				//Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
 			};
 
 			var ourMatchHeader = new ContentView() {
@@ -191,7 +191,7 @@ namespace VitruvianApp2017
 				((ListView)sender).SelectedItem = null;
 			};
 			ourMatchView.ItemTapped += (sender, e) => {
-				Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
+				//Navigation.PushPopupAsync(new MatchInfoPopupPage((EventMatchData)e.Item));
 			};
 
 			height = Height;
