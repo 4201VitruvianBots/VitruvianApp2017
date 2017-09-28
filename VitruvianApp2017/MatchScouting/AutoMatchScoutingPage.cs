@@ -23,7 +23,6 @@ namespace VitruvianApp2017
 		TitledColorButton[] inputs = new TitledColorButton[2];
 		MultiCounter pressureCounter;
 		Label autoGearLbl, autoPressureLbl;
-		int autoGears = 0, autoPressure = 0;
 		int mType;
 		MatchData matchData;
 
@@ -44,7 +43,7 @@ namespace VitruvianApp2017
 
 			autoPressureLbl = new Label() {
 				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				Text = "Pressure: " + autoPressure,
+				Text = "Total Pressure: 0",
 				TextColor = Color.White,
 				BackgroundColor = Color.Green,
 				FontSize = GlobalVariables.sizeSmall,
@@ -53,7 +52,7 @@ namespace VitruvianApp2017
 
 			autoGearLbl = new Label() {
 				HorizontalOptions = LayoutOptions.EndAndExpand,
-				Text = "Gears: " + autoGears,
+				Text = "Total Gears: 0",
 				TextColor = Color.White,
 				BackgroundColor = Color.Green,
 				FontSize = GlobalVariables.sizeSmall,
@@ -62,7 +61,13 @@ namespace VitruvianApp2017
 
 			inputs[0] = new TitledColorButton("Crossing", "CROSSED");
 			inputs[1] = new TitledColorButton("Gears", "Gear Scored");
+			inputs[1].PropertyChanged += (sender, e) => {
+				autoGearLbl.Text = "Total Gears: " + (inputs[1].getBtnStatus() ? 1 : 0);
+			};
 			pressureCounter = new MultiCounter("Pressure");
+			pressureCounter.PropertyChanged += (sender, e) => {
+				autoPressureLbl.Text = "Total Pressure: " + pressureCounter.getValue();
+			};
 
 			var teleOpBtn = new Button() {
 				Text = "TELEOP",
@@ -90,9 +95,9 @@ namespace VitruvianApp2017
 			topBar.Children.Add(autoGearLbl);
 
 			pageLayout.Children.Add(inputs[0], 0, 0);
-			pageLayout.Children.Add(pressureCounter, 1, 0);
+			pageLayout.Children.Add(pressureCounter, 1, 2, 0, 2);
 			pageLayout.Children.Add(inputs[1], 2, 0);
-			pageLayout.Children.Add(teleOpBtn, 1, 2, 2, 3);
+			pageLayout.Children.Add(teleOpBtn, 1, 2, 3, 4);
 
 			BackgroundColor = Color.Teal;
 

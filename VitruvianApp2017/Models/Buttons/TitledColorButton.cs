@@ -5,6 +5,7 @@ namespace VitruvianApp2017
 {
 	public class TitledColorButton:StackLayout
 	{
+		public event PropertyChangingEventHandler ValueChanged;
 		ColorButton colorBtn;
 		Label titleLbl;
 
@@ -21,13 +22,23 @@ namespace VitruvianApp2017
 			};
 
 			colorBtn = new ColorButton(buttonTitle);
-
+			colorBtn.Clicked += (sender, e) => {
+				this.OnPropertyChanged();
+			};
 			Children.Add(titleLbl);
 			Children.Add(colorBtn);
 		}
 
 		public bool getBtnStatus() {
 			return colorBtn.on;
+		}
+
+		protected void OnValueChanged(string i) {
+			PropertyChangingEventHandler c = this.ValueChanged;
+
+			if (c != null) {
+				c(this, new PropertyChangingEventArgs(i));
+			}
 		}
 	}
 }

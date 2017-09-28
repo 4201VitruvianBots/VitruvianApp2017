@@ -25,7 +25,6 @@ namespace VitruvianApp2017
 		int teamNumber;
 		string matchNumber;
 		int setNumber;
-		int matchType = 0;
 		string competitionPhase;
 		Label setNoLbl;
 		CheckBox[] matchPhaseCheckboxes = new CheckBox[5];
@@ -207,7 +206,7 @@ namespace VitruvianApp2017
 					DisplayAlert("Error", "Fill out all inputs", "OK");
 				}
 				else {
-					var task = Task.Factory.StartNew(() => initializeTeamData());
+					initializeTeamData();
 				}
 			};
 
@@ -299,9 +298,6 @@ namespace VitruvianApp2017
 
 		void setMatchTeamNumberLayout() {
 			if (competitionPhase == "P") {
-				busyIcon.IsVisible = false;
-				busyIcon.IsRunning = false;
-
 				teamNoView.Content = teamNoLineEntry;
 				matchNoLayout.Children.Remove(matchNoLineEntry);
 			}
@@ -384,6 +380,7 @@ namespace VitruvianApp2017
 		async Task initializeTeamData() {
 			busyIcon.IsVisible = true;
 			busyIcon.IsRunning = true;
+			int matchType = 0;
 
 			matchData.scouterName = scouts.lineEntry.Text;;
 			matchData.matchNumber = matchNumber;
@@ -407,7 +404,7 @@ namespace VitruvianApp2017
 					matchType = -1;
 				}
 
-				if (await FirebaseAccess.checkExistingMatchData(db, path)) 
+				if (await FirebaseAccess.checkExistingMatchData(db, path))
 					if (!await DisplayAlert("Error", "Match Data already exists for this team-match. Do you want to overwrite it?", "OK", "Cancel"))
 						test = false;
 
@@ -416,7 +413,6 @@ namespace VitruvianApp2017
 
 					await Navigation.PushModalAsync(new AutoMatchScoutingPage(matchData, matchType));
 				}
-					
 				/*
 				if (checkValue == 1) {
 					
@@ -441,7 +437,7 @@ namespace VitruvianApp2017
 						
 						matchType = 0;
 
-						await Navigation.PushModalAsync(new AutoMatchScoutingPage(matchData, matchType));
+						await Navigation.PushAsync(new AutoMatchScoutingPage(matchData, matchType));
 					}
 				} else {
 					var dataCheck = await db
@@ -465,12 +461,12 @@ namespace VitruvianApp2017
 
 						matchType = -1;
 
-						await Navigation.PushModalAsync(new AutoMatchScoutingPage(matchData, matchType));
+						await Navigation.PushAsync(new AutoMatchScoutingPage(matchData, matchType));
 					}
 
 				}
 				*/
-			} 
+			}
 			busyIcon.IsVisible = false;
 			busyIcon.IsRunning = false;
 		}

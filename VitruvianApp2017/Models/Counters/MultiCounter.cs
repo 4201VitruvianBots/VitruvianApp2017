@@ -5,6 +5,7 @@ namespace VitruvianApp2017
 {
 	public class MultiCounter:Grid
 	{
+		public event PropertyChangingEventHandler ValueChanged;
 		int val = 0;
 
 		public MultiCounter(String mainTitle) : this(mainTitle, 0) {
@@ -25,7 +26,8 @@ namespace VitruvianApp2017
 
 			var valueLbl = new Label() {
 				Text = val.ToString(),
-				HorizontalTextAlignment = TextAlignment.Center
+				HorizontalTextAlignment = TextAlignment.Center,
+				FontSize = GlobalVariables.sizeMedium
 			};
 
 			var decrement1 = new Button() {
@@ -36,6 +38,7 @@ namespace VitruvianApp2017
 				if (val > 0){
 					val--;
 					valueLbl.Text = val.ToString();
+					this.OnPropertyChanged();
 				}
 			};
 
@@ -47,6 +50,7 @@ namespace VitruvianApp2017
 				if (val > 1) {
 					val -= 2;
 					valueLbl.Text = val.ToString();
+					this.OnPropertyChanged();
 				}
 			};
 
@@ -58,6 +62,7 @@ namespace VitruvianApp2017
 				if (val > 4) {
 					val -= 5;
 					valueLbl.Text = val.ToString();
+					this.OnPropertyChanged();
 				}
 			};
 
@@ -70,6 +75,7 @@ namespace VitruvianApp2017
 			{
 				val++;
 				valueLbl.Text = val.ToString();
+				this.OnPropertyChanged();
 			};
 
 			var increment2 = new Button()
@@ -81,6 +87,7 @@ namespace VitruvianApp2017
 			{
 				val += 2;
 				valueLbl.Text = val.ToString();
+				this.OnPropertyChanged();
 			};
 
 			var increment5 = new Button() {
@@ -90,6 +97,7 @@ namespace VitruvianApp2017
 			increment5.Clicked += (object sender, EventArgs e) => {
 				val += 5;
 				valueLbl.Text = val.ToString();
+				this.OnPropertyChanged();
 			};
 
 			this.Children.Add(titleLbl, 0, 2, 0, 1);
@@ -99,12 +107,20 @@ namespace VitruvianApp2017
 			this.Children.Add(decrement2, 0, 3);
 			this.Children.Add(increment2, 1, 3);
 			this.Children.Add(decrement5, 0, 4);
-			this.Children.Add(increment5, 1, 5);
+			this.Children.Add(increment5, 1, 4);
 		}
 
 		public int getValue()
 		{
 			return val;
+		}
+
+		protected void OnValueChanged(string i) {
+			PropertyChangingEventHandler c = this.ValueChanged;
+
+			if (c != null) {
+				c(this, new PropertyChangingEventArgs(i));
+			}
 		}
 	}
 }
