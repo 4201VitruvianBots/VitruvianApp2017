@@ -62,6 +62,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\Firebase\FirebaseAccess.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventMatches.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventOprs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\MultiCounter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\TitledColorButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />

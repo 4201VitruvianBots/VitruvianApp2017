@@ -194,7 +194,7 @@ namespace VitruvianApp2017 {
 			finishBtn.Clicked += (sender, e) => {
 				addAction(3);
 				saveData();
-				Navigation.PushAsync(new PostMatchScoutingPage(matchData, mType));
+				Navigation.PushModalAsync(new PostMatchScoutingPage(matchData, mType));
 			};
 
 
@@ -271,6 +271,7 @@ namespace VitruvianApp2017 {
 
 
 		void addAction(int v) {
+			/*
 			bool t = false;
 			mActions[aIndex] = new ActionData();
 			try {
@@ -314,6 +315,7 @@ namespace VitruvianApp2017 {
 			lastActionLabels[4].Text = "Gear Set: " + mActions[aIndex].gearSet;
 			lastActionLabels[5].Text = "Gear Station Drops: " + mActions[aIndex].gearsStationDrop;
 			lastActionLabels[6].Text = "Gear Transit Drops: " + mActions[aIndex].gearsTransitDrop;
+			*/
 			clearValues();
 
 			if (v != 3) // aCount != aIndex in the event that the last 'action' the robot performs yeilds no score
@@ -326,6 +328,7 @@ namespace VitruvianApp2017 {
 
 		void undoAction() {
 			if (aIndex > 1) {
+				/*
 				lastActionLabels[0].Text = "Hopper Capacity: " + mActions[aIndex - 1].hopperCapacity;
 				lastActionLabels[1].Text = "High Accuracy: " + mActions[aIndex - 1].highGoalAccuracy;
 				lastActionLabels[2].Text = "Low Goal Dump: " + mActions[aIndex - 1].lowGoalDump;
@@ -334,6 +337,7 @@ namespace VitruvianApp2017 {
 				lastActionLabels[5].Text = "Gear Station Drops: " + mActions[aIndex - 1].gearsStationDrop;
 				lastActionLabels[6].Text = "Gear Transit Drops: " + mActions[aIndex - 1].gearsTransitDrop;
 				aIndex--;
+				*/
 			} else {
 				lastActionLabels[0].Text = "Hopper Capacity: " + 0;
 				lastActionLabels[1].Text = "High Accuracy: " + 0;
@@ -368,8 +372,10 @@ namespace VitruvianApp2017 {
 			teleOpPressure = 0;
 
 			for (int i = 0; i < aIndex; i++) {
+				/*
 				teleOpGears += mActions[i].gearSet ? 1 : 0;
 				teleOpPressure += mActions[i].cyclePressure;
+				*/
 			}
 			if (lowDumpOn)
 				cPressure += (int)Math.Floor(hopperCapacity.getAvgPercentage() * robotMaxCapacity);
@@ -411,7 +417,7 @@ namespace VitruvianApp2017 {
 		async Task saveData() {
 			if (CheckInternetConnectivity.InternetStatus()) {
 				calcObjects();
-
+				/*
 				matchData.actionCount = aCount;
 				matchData.teleOpTotalPressure = teleOpPressure;
 				matchData.teleOpGearsDeposit = teleOpGears;
@@ -426,7 +432,7 @@ namespace VitruvianApp2017 {
 				matchData.teleOpHighAcc = hAcc / aCount;
 				matchData.teleOpGearsStationDropped = stationDropped;
 				matchData.teleOpGearsTransitDropped = transitDropped;
-
+				*/
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 				string path = "ERROR";

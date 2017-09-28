@@ -25,6 +25,7 @@ namespace VitruvianApp2017
 		int teamNumber;
 		string matchNumber;
 		int setNumber;
+		int matchType = 0;
 		string competitionPhase;
 		Label setNoLbl;
 		CheckBox[] matchPhaseCheckboxes = new CheckBox[5];
@@ -206,13 +207,13 @@ namespace VitruvianApp2017
 					DisplayAlert("Error", "Fill out all inputs", "OK");
 				}
 				else {
-					initializeTeamData();
+					var task = Task.Factory.StartNew(() => initializeTeamData());
 				}
 			};
 
 			var navigationBtns = new NavigationButtons(false, new Button[] { beginMatchBtn });
 			navigationBtns.backBtn.Clicked += (sender, e) => {
-				Navigation.PopToRootAsync();
+				Navigation.PopModalAsync();
 			};
 
 			var pageLayout = new StackLayout() {
@@ -298,6 +299,9 @@ namespace VitruvianApp2017
 
 		void setMatchTeamNumberLayout() {
 			if (competitionPhase == "P") {
+				busyIcon.IsVisible = false;
+				busyIcon.IsRunning = false;
+
 				teamNoView.Content = teamNoLineEntry;
 				matchNoLayout.Children.Remove(matchNoLineEntry);
 			}
@@ -380,7 +384,6 @@ namespace VitruvianApp2017
 		async Task initializeTeamData() {
 			busyIcon.IsVisible = true;
 			busyIcon.IsRunning = true;
-			int matchType = 0;
 
 			matchData.scouterName = scouts.lineEntry.Text;;
 			matchData.matchNumber = matchNumber;
@@ -403,15 +406,15 @@ namespace VitruvianApp2017
 					path = "practiceMatchData/" + matchData.matchID;
 					matchType = -1;
 				}
-				
-				if (await FirebaseAccess.checkExistingMatchData(db, path))
+
+				if (await FirebaseAccess.checkExistingMatchData(db, path)) 
 					if (!await DisplayAlert("Error", "Match Data already exists for this team-match. Do you want to overwrite it?", "OK", "Cancel"))
 						test = false;
 
 				if (test) {
 					FirebaseAccess.saveData(db, path, matchData);
 
-					await Navigation.PushAsync(new AutoMatchScoutingPage(matchData, matchType));
+					await Navigation.PushModalAsync(new AutoMatchScoutingPage(matchData, matchType));
 				}
 					
 				/*
@@ -438,7 +441,7 @@ namespace VitruvianApp2017
 						
 						matchType = 0;
 
-						await Navigation.PushAsync(new AutoMatchScoutingPage(matchData, matchType));
+						await Navigation.PushModalAsync(new AutoMatchScoutingPage(matchData, matchType));
 					}
 				} else {
 					var dataCheck = await db
@@ -462,7 +465,7 @@ namespace VitruvianApp2017
 
 						matchType = -1;
 
-						await Navigation.PushAsync(new AutoMatchScoutingPage(matchData, matchType));
+						await Navigation.PushModalAsync(new AutoMatchScoutingPage(matchData, matchType));
 					}
 
 				}

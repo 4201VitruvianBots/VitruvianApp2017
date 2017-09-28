@@ -20,8 +20,8 @@ namespace VitruvianApp2017
 
 			}
 		};
-		ColorButton[] inputs = new ColorButton[4];
-		SingleCounter highGoalHits, lowGoalHits;
+		TitledColorButton[] inputs = new TitledColorButton[2];
+		MultiCounter pressureCounter;
 		Label autoGearLbl, autoPressureLbl;
 		int autoGears = 0, autoPressure = 0;
 		int mType;
@@ -60,66 +60,9 @@ namespace VitruvianApp2017
 				FontAttributes = FontAttributes.Bold
 			};
 
-			Label crossingLbl = new Label() {
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				Text = "Crossing",
-				TextColor = Color.Black,
-				FontSize = GlobalVariables.sizeMedium,
-				FontAttributes = FontAttributes.Bold
-			};
-
-			Label fuelLbl = new Label() {
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				Text = "Fuel",
-				TextColor = Color.Black,
-				FontSize = GlobalVariables.sizeMedium,
-				FontAttributes = FontAttributes.Bold
-			};
-
-			Label gearsLbl = new Label() {
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				Text = "Gears",
-				TextColor = Color.Black,
-				FontSize = GlobalVariables.sizeMedium,
-				FontAttributes = FontAttributes.Bold
-			};
-
-			inputs[0] = new ColorButton("Crossed");
-			inputs[1] = new ColorButton("Gear Scored");
-			inputs[2] = new ColorButton("Gear Delivered");
-			inputs[3] = new ColorButton("Gear Dropped");
-			
-			inputs[1].Clicked += (sender, e) => {
-				inputs[2].on = false;
-				inputs[2].BackgroundColor = Color.Red;
-				inputs[3].on = false;
-				inputs[3].BackgroundColor = Color.Red;
-			};
-			inputs[2].Clicked += (sender, e) => {
-				inputs[1].on = false;
-				inputs[1].BackgroundColor = Color.Red;
-				inputs[3].on = false;
-				inputs[3].BackgroundColor = Color.Red;
-			};
-			inputs[3].Clicked += (sender, e) => {
-				inputs[1].on = false;
-				inputs[1].BackgroundColor = Color.Red;
-				inputs[2].on = false;
-				inputs[2].BackgroundColor = Color.Red;
-			};
-
-			foreach (var input in inputs) 
-				input.Clicked += (sender, e) => { calcScore(); };
-
-			highGoalHits = new SingleCounter("High Goal Hits");
-			highGoalHits.PropertyChanged += (sender, e) => {
-				calcScore();
-			};
-
-			lowGoalHits = new SingleCounter("Low Goal Hits");
-			lowGoalHits.PropertyChanged += (sender, e) => {
-				calcScore();
-			};
+			inputs[0] = new TitledColorButton("Crossing", "CROSSED");
+			inputs[1] = new TitledColorButton("Gears", "Gear Scored");
+			pressureCounter = new MultiCounter("Pressure");
 
 			var teleOpBtn = new Button() {
 				Text = "TELEOP",
@@ -132,7 +75,7 @@ namespace VitruvianApp2017
 
 			teleOpBtn.Clicked += (sender, e) => {
 				saveData();
-				Navigation.PushAsync(new TeleOpMatchScoutingPage(matchData, mType));
+				Navigation.PushModalAsync(new TeleOpMatchScoutingPage(matchData, mType));
 			};
 
 
@@ -146,16 +89,10 @@ namespace VitruvianApp2017
 			topBar.Children.Add(autoPressureLbl);
 			topBar.Children.Add(autoGearLbl);
 
-			pageLayout.Children.Add(crossingLbl, 0, 0);
-			pageLayout.Children.Add(inputs[0], 0, 1);
-			pageLayout.Children.Add(fuelLbl, 1, 0);
-			pageLayout.Children.Add(highGoalHits, 1, 2, 1, 3);
-			pageLayout.Children.Add(lowGoalHits, 1, 2, 3, 5);
-			pageLayout.Children.Add(gearsLbl, 2, 0);
-			pageLayout.Children.Add(inputs[1], 2, 1);
-			pageLayout.Children.Add(inputs[2], 2, 2);
-			pageLayout.Children.Add(inputs[3], 2, 3);
-			pageLayout.Children.Add(teleOpBtn, 1, 2, 6, 7);
+			pageLayout.Children.Add(inputs[0], 0, 0);
+			pageLayout.Children.Add(pressureCounter, 1, 0);
+			pageLayout.Children.Add(inputs[1], 2, 0);
+			pageLayout.Children.Add(teleOpBtn, 1, 2, 2, 3);
 
 			BackgroundColor = Color.Teal;
 
@@ -179,34 +116,15 @@ namespace VitruvianApp2017
 
 		protected override void OnAppearing() {
 			base.OnAppearing();
-			inputs[1].WidthRequest = inputs[2].Width;
-			inputs[3].WidthRequest = inputs[2].Width;
-		}
-
-		void calcScore() {
-			autoGears = 0;
-			autoPressure = 0;
-			if (inputs[1].on)
-				autoGears = 1;
-
-			autoPressure += highGoalHits.getValue();
-			autoPressure += lowGoalHits.getValue();
-
-			autoGearLbl.Text = "Gears: " + autoGears;
-			autoPressureLbl.Text = "Pressure: " + autoPressure;
+			//inputs[1].WidthRequest = inputs[2].Width;
 		}
 
 		async Task saveData() {
 			if (CheckInternetConnectivity.InternetStatus()) {
-				calcScore();
 
-				matchData.autoCross = inputs[0].on;
-				matchData.autoGearScored = inputs[1].on;
-				matchData.autoGearDelivered = inputs[2].on;
-				matchData.autoGearDropped = inputs[3].on;
-				matchData.autoLowHits = lowGoalHits.getValue();
-				matchData.autoHighHits = highGoalHits.getValue();
-				matchData.autoPressure = lowGoalHits.getValue() + highGoalHits.getValue();
+				matchData.autoCross = inputs[0].getBtnStatus();
+				matchData.autoGearScored = inputs[1].getBtnStatus();
+				matchData.autoPressure = pressureCounter.getValue();
 
 				var db = new FirebaseClient(GlobalVariables.firebaseURL);
 				string path = "ERROR";

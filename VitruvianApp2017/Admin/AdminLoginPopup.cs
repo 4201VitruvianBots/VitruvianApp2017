@@ -42,7 +42,7 @@ namespace VitruvianApp2017
 						
 					pw.inputEntry.Text = null;
 					Navigation.PopPopupAsync();
-					Navigation.PushAsync(new AdminPage());
+					Navigation.PushModalAsync(new AdminPage());
 				} else
 					DisplayAlert("Error", "Incorrect password", "OK");
 			};

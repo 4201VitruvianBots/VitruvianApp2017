@@ -58,12 +58,12 @@ namespace VitruvianApp2017
 						var setting = AppSettings.RetrieveSettings("AdminLogin");
 
 						if (setting == "true")
-							Navigation.PushAsync(new AdminPage());
+							Navigation.PushModalAsync(new AdminPage());
 						else
 							Navigation.PushPopupAsync((PopupPage)mainMenuLinks[index]);
 					}
 					else
-						Navigation.PushAsync(mainMenuLinks[index]);
+						Navigation.PushModalAsync(mainMenuLinks[index]);
 				};
 				pageStack.Children.Add(btn);
 			}

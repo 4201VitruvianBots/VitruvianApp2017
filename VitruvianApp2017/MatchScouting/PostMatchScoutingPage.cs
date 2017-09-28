@@ -117,13 +117,12 @@ namespace VitruvianApp2017
 					Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
 
 				Navigation.InsertPageBefore(new PreMatchScoutingPage(matchData.scouterName), this);
-				Navigation.PopAsync();
+				Navigation.PopModalAsync();
 			}
 		}
 
 		async Task saveData() {
 			if (CheckInternetConnectivity.InternetStatus()) {
-				matchData.attemptedClimb = climbAttemptBtn.on;
 				matchData.successfulClimb = climbSuccessBtn.on;
 				matchData.fouls = foulCounter.getValue();
 				matchData.good = goodCheck.Checked;

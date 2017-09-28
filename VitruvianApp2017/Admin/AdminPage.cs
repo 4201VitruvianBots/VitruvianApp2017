@@ -171,7 +171,7 @@ namespace VitruvianApp2017
 		void logout() {
 			AppSettings.SaveSettings("AdminLogin", "false");
 
-			Navigation.PopToRootAsync();
+			Navigation.PopModalAsync();
 		}
 
 		public async Task UpdateTeamList() {
