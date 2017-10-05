@@ -48,7 +48,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MatchSchedule\MatchHeaderList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventStats.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Images\RobotImageView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Images\ImagePopupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchSchedule\DataCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MatchSchedule\ColumnHeaderCell.cs" />
@@ -63,6 +62,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)External APIs\TheBlueAlliance\Models\EventOprs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Counters\MultiCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Buttons\TitledColorButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImageCapture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Images\Images\Menu_Icon.png" />
@@ -82,6 +82,7 @@
     <None Include="$(MSBuildThisFileDirectory)RobotInfo\TeamCardPopupPage%28old%29.cs" />
     <None Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\TeamMatchData.cs" />
     <None Include="$(MSBuildThisFileDirectory)MatchSchedule\MatchInfoPopupPage.cs" />
+    <None Include="$(MSBuildThisFileDirectory)Images\ImageCapture %28old%29.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)External APIs\Firebase\Models\" />

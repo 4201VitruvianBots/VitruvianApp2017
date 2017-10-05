@@ -2,7 +2,8 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xamarin.Media;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
 using Xamarin.Forms;
 using Firebase.Storage;
 using Firebase.Xamarin.Database;
@@ -105,7 +106,9 @@ namespace VitruvianApp2017
 
 		async Task OpenImagePicker()
 		{
-			await ImageCapture.ImagePicker(data, imageIndex);
+			//await ImagePicker(data, imageIndex);
+			var task = Task.Factory.StartNew(() => ImageCapture.ImagePicker(data, imageIndex));
+			task.Wait();
 			refreshImages();
 		}
 
